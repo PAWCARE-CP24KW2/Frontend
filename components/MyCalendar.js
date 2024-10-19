@@ -16,7 +16,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-// test comment
+// test comment 2
 export default function MyCalendar() {
   // const [items, setItems] = useState({
   //   '2024-10-14': [{ id: 1, name: 'Agenda 1', data: 'Lorem ipsum, or lipsum as it is sometimes known.' }, { id: 2, name: 'Agenda 1.2', data: 'Lorem ipsum, or lipsum as it is sometimes known.' }],
