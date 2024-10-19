@@ -31,39 +31,9 @@ jobs:
         run: |
           yarn install
 
-      - name: Install CocoaPods for iOS builds
-        if: matrix.platform == 'ios'
-        run: |
-          cd ios
-          pod install
-          cd ..
-
       - name: Build Android app
         if: matrix.platform == 'android'
         run: |
           cd android
           ./gradlew assembleRelease
-          cd ..
-
-      - name: Build iOS app
-        if: matrix.platform == 'ios'
-        run: |
-          xcodebuild -workspace ios/YourApp.xcworkspace \
-          -scheme YourApp \
-          -sdk iphoneos \
-          -configuration Release \
-          archive -archivePath $PWD/build/YourApp.xcarchive
-
-      - name: Upload Android APK
-        if: matrix.platform == 'android'
-        uses: actions/upload-artifact@v3
-        with:
-          name: android-apk
-          path: android/app/build/outputs/apk/release/app-release.apk
-
-      - name: Upload iOS IPA
-        if: matrix.platform == 'ios'
-        uses: actions/upload-artifact@v3
-        with:
-          name: ios-ipa
-          path: ios/build/YourApp.xcarchive/Products/Applications/YourApp.app
+          cd .. 
