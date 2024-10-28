@@ -34,23 +34,6 @@ export default function MyCalendar() {
   const [show, setShow] = useState(false)
   const [text, setText] = useState("empty")
 
-  // const onChange = (event, selectedDate, selectedTime) => {
-  //   const currentDate = selectedDate || date;
-  //   const currentTime = selectedTime || time;
-
-  //   setShow(Platform.OS === 'ios')
-  //   setDate(currentDate)
-  //   setTime(currentTime);
-
-  //   let tempDate = new Date(currentDate)
-  //   let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear()
-  //   let fTime = 'Hours: ' + tempDate.getHours() + ' | Minues: ' + tempDate.getMinutes()
-  //   setText(fDate + '\n' + fTime)
-
-  //   setSelectedDate(currentDate.toISOString().split("T")[0]);
-  //   setSelectedTime(formatTime(currentTime));
-  //   console.log(fDate + ' (' + fTime + ')')
-  // }
   const onChange = (event, selectedValue) => {
     setShow(Platform.OS === 'ios')
     if (event.type === 'set') {
