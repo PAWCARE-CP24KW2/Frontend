@@ -1,4 +1,4 @@
-name: React Native CI/CD Pipeline
+name: React Native Android CI/CD Pipeline
 
 on:
   push:
@@ -10,13 +10,8 @@ on:
 
 jobs:
   build:
-    name: Build React Native App
+    name: Build Android App
     runs-on: macos-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x]
-        platform: [ios, android]
 
     steps:
       - name: Checkout the repository
@@ -25,7 +20,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.x
 
       - name: Install dependencies
         run: |
@@ -33,10 +28,15 @@ jobs:
 
       - name: Set Gradlew Permissions
         run: chmod +x android/gradlew
-      
+
       - name: Build Android app
-        if: matrix.platform == 'android'
         run: |
           cd android
           ./gradlew assembleRelease
-          cd .. 
+          cd ..
+
+      - name: Upload Android Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-release
+          path: android/app/build/outputs/apk/release/app-release.apk
