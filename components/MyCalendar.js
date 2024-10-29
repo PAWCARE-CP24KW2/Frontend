@@ -108,10 +108,16 @@ export default function MyCalendar() {
 
   const renderEmptyData = () => {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text style={{ fontSize: 20, color: "#493628" }}>
-          No events for this day
+      <View style={{ flex: 1, alignItems: "center", marginTop: 25 }}>
+        <Text style={{ fontSize: 20, color: "#493628", fontWeight: "bold" }}>
+          No activity found for this day.
         </Text>
+        <Text style={{ fontSize: 16, color: "#493628", textAlign: "center", margin: 10 }}>
+          Add your fist Schedule by clicking the + button at the top or button below.
+        </Text>
+        <TouchableOpacity style={MyStyles.button}>
+          <Text style={MyStyles.buttonText} onPress={() => setisModalVisible(true)}>Create Activity</Text>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -146,7 +152,6 @@ export default function MyCalendar() {
   return (
     <SafeAreaView style={MyStyles.container}>
       <View style={MyStyles.header}>
-        <Text style={MyStyles.textHeader}>Demo Calendar</Text>
         <TouchableOpacity
           style={MyStyles.icon}
           onPress={() => setisModalVisible(true)}

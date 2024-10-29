@@ -10,9 +10,12 @@ export const MyStyles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 60,
-    marginBottom: 30,
+    justifyContent: "flex-end",
+    marginTop: 45,
+    marginBottom: 15,
+  },
+  icon: {
+    marginRight: 12
   },
   textHeader: {
     fontSize: 30,
@@ -47,28 +50,24 @@ export const MyStyles = StyleSheet.create({
     paddingLeft: 8,
   },
   button: {
-    backgroundColor: "#B6917B",
-    padding: 10,
-    borderRadius: 50,
-    alignItems: "center",
-    margin: 10,
-    marginBottom: 16,
+    backgroundColor: "#493628",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginTop: 5,
   },
   buttonText: {
-    color: "white",
-    fontWeight: "bold",
+    color: "#FFFFFF",
     fontSize: 16,
-  },
-  icon: {
-    position: "absolute",
-    right: 12, 
+    fontWeight: "bold",
+    textAlign: "center",
   },
   closeButton: {
     backgroundColor: "#fd7444",
-    padding: 10,
-    borderRadius: 50,
-    alignItems: "center",
-    marginHorizontal: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginTop: 20,
   },
   deleteButton: {
     position: "absolute",
