@@ -3,10 +3,6 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
-  TextInput,
-  Modal,
-  Platform,
-  Button,
 } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
 import React, { useState, useEffect  } from "react";
@@ -17,9 +13,16 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import AddAgenda from "./AddAgenda";
 
 export default function MyCalendar() {
+  const getCurrentTime = () => {
+    const date = new Date();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
+
   const [items, setItems] = useState({})
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
-  const [selectedTime, setSelectedTime] = useState('00:00')
+  const [selectedTime, setSelectedTime] = useState(getCurrentTime())
 
   useEffect(() => {
     console.log("Updated Date: " + selectedDate + ", Updated Time: " + selectedTime);
@@ -51,7 +54,7 @@ export default function MyCalendar() {
           No activity found for this day.
         </Text>
         <Text style={{ fontSize: 16, color: "#493628", textAlign: "center", margin: 10 }}>
-          Add your fist Schedule by clicking the + button at the top or button below.
+          Add your first Schedule by clicking the + button at the top or button below.
         </Text>
         <TouchableOpacity style={MyStyles.button}>
           <Text style={MyStyles.buttonText} onPress={() => setisModalVisible(true)}>Create Activity</Text>
@@ -77,7 +80,7 @@ export default function MyCalendar() {
   const RenderAgendaItem = React.memo(({ item }) => (
     <TouchableOpacity style={MyStyles.item}>
       <Text style={MyStyles.itemHeader}>{item.name}</Text>
-      <Text style={MyStyles.itemText}>{item.data}</Text>
+      <Text style={MyStyles.itemText}>{item.desc}</Text>
       <Text style={MyStyles.itemTime}>{item.time}</Text>
       <TouchableOpacity onPress={() => deleteData(item.id, selectedDate)} style={MyStyles.deleteButton}>
         <AntDesign name="delete" size={20} color="black" />
@@ -91,7 +94,7 @@ export default function MyCalendar() {
     <SafeAreaView style={MyStyles.container}>
       <View style={MyStyles.header}>
         <TouchableOpacity
-          style={MyStyles.icon}
+          style={{marginRight: 12}}
           onPress={() => setisModalVisible(true)}
         >
           <Ionicons name="add-circle-outline" size={45} color="black" />
