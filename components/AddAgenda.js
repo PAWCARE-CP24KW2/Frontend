@@ -6,11 +6,12 @@ import {
   TextInput,
   Modal,
   Platform,
-  Button,
 } from "react-native";
 import { MyStyles } from "../styles/MyStyle.js";
 import React, { useState, useEffect } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import TopBar from "./Topbar.js";
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function AddAgenda({
   isModalVisible,
@@ -25,7 +26,7 @@ export default function AddAgenda({
   const [newItem, setNewItem] = useState({
     id: 0,
     name: "",
-    data: "",
+    desc: "",
     time: "",
   });
   const [date, setDate] = useState(new Date());
@@ -48,7 +49,7 @@ export default function AddAgenda({
   };
 
   const addItemToAgenda = () => {
-    if (!newItem.name || !newItem.data || !selectedDate) return; // Prevent adding empty items
+    if (!newItem.name || !newItem.desc || !selectedDate) return; // Prevent adding empty items
     setItems((prevItems) => {
       const updatedItems = { ...prevItems }; // Copy previous state
 
@@ -70,7 +71,7 @@ export default function AddAgenda({
       return updatedItems;
     });
 
-    setNewItem({ name: "", data: "", time: "" });
+    setNewItem({ name: "", desc: "", time: "" });
   };
 
   const formatTime = (date) => {
@@ -90,67 +91,85 @@ export default function AddAgenda({
       onRequestClose={onClose}
       animationType="slide"
     >
-      <View style={MyStyles.modal}>
-        <Text
-          style={{ fontSize: 30, textAlign: "center", paddingVertical: 30 }}
-        >
-          Adding Agenda
-        </Text>
-        <SafeAreaView>
-          <TextInput
-            style={MyStyles.input}
-            placeholder="Agenda's Name"
-            value={newItem.name}
-            onChangeText={(text) => setNewItem({ ...newItem, name: text })}
-          />
-          <TextInput
-            style={MyStyles.input}
-            placeholder="Agenda's Detail"
-            value={newItem.data}
-            onChangeText={(text) => setNewItem({ ...newItem, data: text })}
-          />
-          <TouchableOpacity onPress={() => showMode("date")}>
-            <TextInput
-              style={MyStyles.input}
-              value={selectedDate}
-              editable={false}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => showMode("time")}>
-            <TextInput
-              style={MyStyles.input}
-              placeholder="00:00"
-              value={selectedTime}
-              editable={false}
-              onChangeText={(text) => setNewItem({ ...newItem, time: text })}
-            />
-          </TouchableOpacity>
+      <View style={{flex: 1, backgroundColor:"#EACEBE"}}>
+        <TopBar onClose={onClose}/>
+        <View style={MyStyles.modal}>
+          <Text style={{ fontSize: 27, textAlign: "center", paddingTop: 4, }}>
+            Create Activity
+          </Text>
+          <Text style={{ fontSize: 19, textAlign: "center", paddingVertical: 5 }}>
+            Which activities do you want to be reminded of ?
+          </Text>
+          <SafeAreaView>
 
-          {show && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={mode === "date" ? date : time}
-              mode={mode}
-              is24Hour={true}
-              display="default"
-              onChange={onChange}
-            />
-          )}
+            <View style={MyStyles.inputContainer}>
+              <Icon name="search" size={20} color="black" style={MyStyles.icon} />
+              <TextInput 
+                placeholder="search" 
+                style={MyStyles.input} 
+                value={newItem.name}
+                onChangeText={(text) => setNewItem({ ...newItem, name: text })} 
+              />
+              <Icon name="chevron-down" size={20} color="black" style={MyStyles.icon} />
+            </View>
+            
+            <Text style={MyStyles.label}>Description</Text>
+            <View style={MyStyles.descriptionContainer}>
+              <TextInput
+                placeholder="Remind me to take care of a task"
+                style={MyStyles.input}
+                value={newItem.desc}
+                onChangeText={(text) => setNewItem({ ...newItem, desc: text })}
+              />
+            </View>
+          
+            <Text style={MyStyles.label}>Schedule Start Date and Time</Text>
+            <TouchableOpacity style={MyStyles.dateContainer} onPress={() => showMode("date")}>
+              <Icon name="calendar" size={20} color="black" style={MyStyles.icon} />
+              <TextInput 
+                style={MyStyles.input}
+                value={selectedDate}
+                editable={false}
+              />
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={MyStyles.timeContainer} onPress={() => showMode("time")}>
+            <Icon name="time" size={22} color="black" style={MyStyles.icon} />
+              <TextInput
+                style={MyStyles.input}
+                placeholder="00:00"
+                value={selectedTime}
+                editable={false}
+                onChangeText={(text) => setNewItem({ ...newItem, time: text })}
+              />
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={MyStyles.button}
-            onPress={() => {
-              addItemToAgenda();
-              onClose();
-            }}
-          >
-            <Text style={MyStyles.buttonText}>Add Item to Agenda</Text>
+            {show && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={mode === "date" ? date : time}
+                mode={mode}
+                is24Hour={true}
+                display="default"
+                onChange={onChange}
+              />
+            )}
+
+            <TouchableOpacity
+              style={MyStyles.button}
+              onPress={() => {
+                addItemToAgenda();
+                onClose();
+              }}
+            >
+              <Text style={MyStyles.buttonText}>Add Item to Agenda</Text>
+            </TouchableOpacity>
+          </SafeAreaView>
+
+          <TouchableOpacity style={MyStyles.closeButton} onPress={onClose}>
+            <Text style={MyStyles.buttonText}>Close</Text>
           </TouchableOpacity>
-        </SafeAreaView>
-
-        <TouchableOpacity style={MyStyles.closeButton} onPress={onClose}>
-          <Text style={MyStyles.buttonText}>Close</Text>
-        </TouchableOpacity>
+        </View>
       </View>
     </Modal>
   );

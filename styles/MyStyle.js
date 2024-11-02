@@ -14,9 +14,6 @@ export const MyStyles = StyleSheet.create({
     marginTop: 45,
     marginBottom: 15,
   },
-  icon: {
-    marginRight: 12
-  },
   textHeader: {
     fontSize: 30,
     color: "black",
@@ -43,7 +40,7 @@ export const MyStyles = StyleSheet.create({
     right: 12,
     top: 12
   },
-  input: {
+  addInput: {
     backgroundColor: "white",
     height: 40,
     margin: 10,
@@ -78,5 +75,78 @@ export const MyStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#EACEBE",
     padding: 20,
+  },
+
+  // Add agenda container
+  addContainer: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#EACEBE',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginTop: 20,
+    backgroundColor: '#FFF',
+  },
+  descriptionContainer: {
+    height: 49,
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 8,
+    backgroundColor: '#FFF',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 5,
+    paddingLeft: 2,
+    fontSize: 16,
+    color: '#000',
+  },
+  label: {
+    fontSize: 14,
+    color: '#000',
+    marginTop: 20,
+    marginBottom: 5,
+    paddingLeft: 4,
+  },
+  dateContainer: {
+    height: 49,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: '#FFF',
+  },
+  timeContainer: {
+    height: 49,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: '#FFF',
+    marginTop: 10,
+    marginBottom: 20
+  },
+  dateText: {
+    flex: 1,
+    fontSize: 16,
+    color: '#000',
+  },
+  icon: {
+    marginHorizontal: 4,
   },
 });
