@@ -11,6 +11,7 @@ import { calendarTheme } from "react-native-calendars";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AddAgenda from "./AddAgenda";
+import { showDelToast } from "../composable/showToast.js";
 
 export default function MyCalendar() {
   const getCurrentTime = () => {
@@ -24,15 +25,15 @@ export default function MyCalendar() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
   const [selectedTime, setSelectedTime] = useState(getCurrentTime())
 
-  useEffect(() => {
-    console.log("Updated Date: " + selectedDate + ", Updated Time: " + selectedTime);
-  }, [selectedDate, selectedTime]);
+  // useEffect(() => {
+  //   console.log("Updated Date: " + selectedDate + ", Updated Time: " + selectedTime);
+  // }, [selectedDate, selectedTime]);
 
-  const deleteData = (id, date) => {
+  const deleteData = (id, date, name) => {
     setItems((prevItems) => {
       const updatedItems = { ...prevItems };
-
       if (updatedItems[date]) {
+        showDelToast(name)
         updatedItems[date] = updatedItems[date].filter(
           (item) => item.id !== id
         );
@@ -42,8 +43,8 @@ export default function MyCalendar() {
           delete updatedItems[date]; // Remove the date key
         }
       }
-      console.log(updatedItems);
-      return updatedItems; // Return the updated state
+      // console.log(updatedItems);
+      return updatedItems;
     });
   };
 
@@ -82,7 +83,7 @@ export default function MyCalendar() {
       <Text style={MyStyles.itemHeader}>{item.name}</Text>
       <Text style={MyStyles.itemText}>{item.desc}</Text>
       <Text style={MyStyles.itemTime}>{item.time}</Text>
-      <TouchableOpacity onPress={() => deleteData(item.id, selectedDate)} style={MyStyles.deleteButton}>
+      <TouchableOpacity onPress={() => deleteData(item.id, selectedDate, item.name)} style={MyStyles.deleteButton}>
         <AntDesign name="delete" size={20} color="black" />
       </TouchableOpacity>
     </TouchableOpacity>

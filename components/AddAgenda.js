@@ -12,6 +12,7 @@ import React, { useState, useEffect } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import TopBar from "./Topbar.js";
 import Icon from 'react-native-vector-icons/Ionicons';
+import { showToast } from "../composable/showToast.js";
 
 export default function AddAgenda({
   isModalVisible,
@@ -49,7 +50,10 @@ export default function AddAgenda({
   };
 
   const addItemToAgenda = () => {
-    if (!newItem.name || !newItem.desc || !selectedDate) return; // Prevent adding empty items
+    if (!newItem.name || !newItem.desc || !selectedDate){
+      showToast("error");
+      return; 
+    }
     setItems((prevItems) => {
       const updatedItems = { ...prevItems }; // Copy previous state
 
@@ -67,7 +71,8 @@ export default function AddAgenda({
         id: newId,
         time: selectedTime,
       });
-      console.log(updatedItems);
+      // console.log(updatedItems);
+      showToast("success");
       return updatedItems;
     });
 
