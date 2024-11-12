@@ -13,6 +13,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import TopBar from "./Topbar.js";
 import Icon from 'react-native-vector-icons/Ionicons';
 import { showToast } from "../composable/showToast.js";
+import DropdownComponent from "./Dropdown.js";
 
 export default function AddAgenda({
   isModalVisible,
@@ -102,22 +103,16 @@ export default function AddAgenda({
           <Text style={{ fontSize: 27, textAlign: "center", paddingTop: 4, }}>
             Create Activity
           </Text>
-          <Text style={{ fontSize: 19, textAlign: "center", paddingVertical: 5 }}>
+          <Text style={{ fontSize: 19, textAlign: "center", paddingVertical: 5, marginBottom:15}}>
             Which activities do you want to be reminded of ?
           </Text>
-          <SafeAreaView>
 
-            <View style={MyStyles.inputContainer}>
-              <Icon name="search" size={20} color="black" style={MyStyles.icon} />
-              <TextInput 
-                placeholder="search" 
-                style={MyStyles.input} 
-                value={newItem.name}
-                onChangeText={(text) => setNewItem({ ...newItem, name: text })} 
-              />
-              <Icon name="chevron-down" size={20} color="black" style={MyStyles.icon} />
-            </View>
-            
+          <SafeAreaView>
+            <DropdownComponent 
+              newItem={newItem}
+              setNewItem={setNewItem}
+            />
+
             <Text style={MyStyles.label}>Description</Text>
             <View style={MyStyles.descriptionContainer}>
               <TextInput
