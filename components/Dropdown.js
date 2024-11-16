@@ -4,12 +4,12 @@ import { Dropdown } from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const data = [
-    { name: 'Category 1', value: '1' },
-    { name: 'Category 2', value: '2' },
-    { name: 'Category 3', value: '3' },
-    { name: 'Category 4', value: '4' },
-    { name: 'Category 5', value: '5' }
-  ];
+  { name: 'Appointment', value: '1' },
+  { name: 'Vaccine', value: '2' },
+  { name: 'Bath', value: '3' },
+  { name: 'Exercise', value: '4' },
+  { name: 'Grooming', value: '5' }
+];
 
 const DropdownComponent = ({ newItem, setNewItem }) => {
   const [value, setValue] = useState(null);

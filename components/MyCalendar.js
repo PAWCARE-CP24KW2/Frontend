@@ -5,7 +5,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect, useCallback  } from "react";
 import { Agenda } from "react-native-calendars";
 import { calendarTheme } from "react-native-calendars";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -29,7 +29,7 @@ export default function MyCalendar() {
   //   console.log("Updated Date: " + selectedDate + ", Updated Time: " + selectedTime);
   // }, [selectedDate, selectedTime]);
 
-  const deleteData = (id, date, name) => {
+  const deleteData = useCallback((id, date, name) => {
     setItems((prevItems) => {
       const updatedItems = { ...prevItems };
       if (updatedItems[date]) {
@@ -46,7 +46,7 @@ export default function MyCalendar() {
       // console.log(updatedItems);
       return updatedItems;
     });
-  };
+  }, []);
 
   const renderEmptyData = () => {
     return (
