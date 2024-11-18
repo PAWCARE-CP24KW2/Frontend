@@ -11,7 +11,7 @@ export function showToast(status) {
         Toast.show({
             type: 'error',
             text1: "Can't add Agenda.",
-            text2: "Description should not be empty. ❌"
+            text2: "Fields should not be empty. ❌"
         });
     }
 }

@@ -1,52 +1,84 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-} from "react-native";
+import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
-import React, { useState, useEffect, useCallback  } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Agenda } from "react-native-calendars";
 import { calendarTheme } from "react-native-calendars";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AddAgenda from "./AddAgenda";
+import UpdateAgenda from "./UpdateAgenda";
 import { showDelToast } from "../composable/showToast.js";
+import { fetchAgendas } from "../composable/fetchAgendas.js";
+import { deleteAgenda } from "../composable/deleteAgenda.js";
 
 export default function MyCalendar() {
+
+  useEffect(() => {
+    const getAgendas = async () => {
+      try {
+        const agendas = await fetchAgendas();
+
+        const transformedAgendas = {};
+        agendas.forEach(agenda => {
+          const date = agenda.appointment.split('T')[0];
+          const time = agenda.appointment.split('T')[1].split(':').slice(0, 2).join(':');
+          if (!transformedAgendas[date]) {
+            transformedAgendas[date] = [];
+          }
+          transformedAgendas[date].push({
+            id: agenda.agenda_id,
+            title: agenda.agenda_title,
+            message: agenda.agenda_message,
+            status: agenda.status,
+            time: time,
+          });
+        });
+
+        setItems(transformedAgendas); // Update items state
+        console.log('Transformed Agenda:', transformedAgendas);
+      } catch (error) {
+        console.error('Failed to fetch agendas in component:', error);
+      }
+    };
+    getAgendas();
+  }, []);
+
   const getCurrentTime = () => {
     const date = new Date();
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
     return `${hours}:${minutes}`;
   };
 
-  const [items, setItems] = useState({})
+  const [items, setItems] = useState({});
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
-  const [selectedTime, setSelectedTime] = useState(getCurrentTime())
+  const [selectedTime, setSelectedTime] = useState(getCurrentTime());
+  const [editDate, setEditDate] = useState("");
 
-  // useEffect(() => {
-  //   console.log("Updated Date: " + selectedDate + ", Updated Time: " + selectedTime);
-  // }, [selectedDate, selectedTime]);
+  const deleteData = useCallback( async (id, date, title) => {
+    try {
+      
+      await deleteAgenda(id);
 
-  const deleteData = useCallback((id, date, name) => {
-    setItems((prevItems) => {
-      const updatedItems = { ...prevItems };
-      if (updatedItems[date]) {
-        showDelToast(name)
-        updatedItems[date] = updatedItems[date].filter(
-          (item) => item.id !== id
-        );
+      setItems((prevItems) => {
+        const updatedItems = { ...prevItems };
+        if (updatedItems[date]) {
+          showDelToast(title); // Show deletion toast with title
+          updatedItems[date] = updatedItems[date].filter((item) => item.id !== id);
 
-        // If the array becomes empty after filtering, delete the key
-        if (updatedItems[date].length === 0) {
-          delete updatedItems[date]; // Remove the date key
+          // If the array becomes empty after filtering, delete the key
+          if (updatedItems[date].length === 0) {
+            delete updatedItems[date]; // Remove the date key if no more items exist for that date
+          }
         }
-      }
-      // console.log(updatedItems);
-      return updatedItems;
-    });
+        
+        return updatedItems;
+      });
+    } catch (error) {
+      console.error('Error deleting agenda:', error);
+    }
   }, []);
+
 
   const renderEmptyData = () => {
     return (
@@ -54,11 +86,24 @@ export default function MyCalendar() {
         <Text style={{ fontSize: 20, color: "#493628", fontWeight: "bold" }}>
           No activity found for this day.
         </Text>
-        <Text style={{ fontSize: 16, color: "#493628", textAlign: "center", margin: 10 }}>
-          Add your first Schedule by clicking the + button at the top or button below.
+        <Text
+          style={{
+            fontSize: 16,
+            color: "#493628",
+            textAlign: "center",
+            margin: 10,
+          }}
+        >
+          Add your first Schedule by clicking the + button at the top or button
+          below.
         </Text>
         <TouchableOpacity style={MyStyles.button}>
-          <Text style={MyStyles.buttonText} onPress={() => setisModalVisible(true)}>Create Activity</Text>
+          <Text
+            style={MyStyles.buttonText}
+            onPress={() => setisAddModalVisible(true)}
+          >
+            Create Activity
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -78,25 +123,39 @@ export default function MyCalendar() {
     reservationsBackgroundColor: "#EACEBE", //Agenda list backgroundColor
   };
 
-  const RenderAgendaItem = React.memo(({ item }) => (
-    <TouchableOpacity style={MyStyles.item}>
-      <Text style={MyStyles.itemHeader}>{item.name}</Text>
-      <Text style={MyStyles.itemText}>{item.desc}</Text>
+  const RenderAgendaItem = React.memo(({ item, date }) => (
+    <TouchableOpacity
+      style={MyStyles.item}
+      onPress={() => {
+        setSelectedItem(item); // Store the selected item
+        setEditDate(date);
+        console.log(item)
+        console.log("Selected Date:", date)
+        console.log("===================")
+        setisEditModalVisible(true); // Open the modal
+      }}
+    >
+      <Text style={MyStyles.itemHeader}>{item.title}</Text>
+      <Text style={MyStyles.itemText}>{item.message}</Text>
       <Text style={MyStyles.itemTime}>{item.time}</Text>
-      <TouchableOpacity onPress={() => deleteData(item.id, selectedDate, item.name)} style={MyStyles.deleteButton}>
+      <TouchableOpacity
+        onPress={() => deleteData(item.id, selectedDate, item.title)}
+        style={MyStyles.deleteButton}
+      >
         <AntDesign name="delete" size={20} color="black" />
       </TouchableOpacity>
     </TouchableOpacity>
   ));
 
-  const [isModalVisible, setisModalVisible] = useState(false);
-
+  const [isAddModalVisible, setisAddModalVisible] = useState(false);
+  const [isEditModalVisible, setisEditModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   return (
     <SafeAreaView style={MyStyles.container}>
       <View style={MyStyles.header}>
         <TouchableOpacity
-          style={{marginRight: 12}}
-          onPress={() => setisModalVisible(true)}
+          style={{ marginRight: 12 }}
+          onPress={() => setisAddModalVisible(true)}
         >
           <Ionicons name="add-circle-outline" size={45} color="black" />
         </TouchableOpacity>
@@ -107,14 +166,25 @@ export default function MyCalendar() {
         renderEmptyData={renderEmptyData}
         theme={customTheme}
         onDayPress={(day) => setSelectedDate(day.dateString)}
-        renderItem={(item, isFirst) => <RenderAgendaItem item={item} />}
+        renderItem={(item) => <RenderAgendaItem item={item} date={selectedDate} />}
       />
 
       <AddAgenda
-        isModalVisible={isModalVisible} // Pass the visibility state
-        onClose={() => setisModalVisible(false)} // Close the modal
+        isAddModalVisible={isAddModalVisible} // Pass the visibility state
+        onClose={() => setisAddModalVisible(false)} // Close the modal
+        getCurrentTime={getCurrentTime}
         selectedDate={selectedDate}
         selectedTime={selectedTime}
+        setSelectedDate={setSelectedDate}
+        setSelectedTime={setSelectedTime}
+        setItems={setItems}
+      />
+
+      <UpdateAgenda
+        isEditModalVisible={isEditModalVisible}
+        onClose={() => setisEditModalVisible(false)}
+        selectedItem={selectedItem}
+        selectedDate={editDate}
         setSelectedDate={setSelectedDate}
         setSelectedTime={setSelectedTime}
         setItems={setItems}
