@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -10,10 +10,17 @@ const data = [
   { name: 'Exercise', value: '4' },
   { name: 'Grooming', value: '5' }
 ];
-
 const DropdownComponent = ({ newItem, setNewItem }) => {
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
+
+  // useEffect(() => {
+  //   // Ensure the value is set based on newItem.name
+  //   if (newItem?.title) {
+  //     setValue(newItem.title); // Set dropdown value to the newItem.name
+  //   }
+    
+  // }, [newItem.title]); // Ensure this effect runs when newItem.name changes
 
   return (
     <View style={styles.container}>
@@ -35,8 +42,8 @@ const DropdownComponent = ({ newItem, setNewItem }) => {
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={item => {
-            setNewItem({ ...newItem, name: item.name})
-            setIsFocus(false);
+          setNewItem({ ...newItem, title: item.name})
+          setIsFocus(false);
         }}
         renderLeftIcon={() => (
             <Icon name="search" size={20} style={{marginLeft:5}} color="black"/>

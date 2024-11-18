@@ -8,24 +8,26 @@ import {
   Platform,
 } from "react-native";
 import { MyStyles } from "../styles/MyStyle.js";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import TopBar from "./Topbar.js";
 import Icon from "react-native-vector-icons/Ionicons";
 import { showToast } from "../composable/showToast.js";
 import DropdownComponent from "./Dropdown.js";
-import { postAgenda } from "../composable/postAgenda.js";
 
-export default function AddAgenda({
-  isAddModalVisible,
+export default function UpdateAgenda({
+  selectedItem,
+  isEditModalVisible,
   onClose,
   selectedDate,
   selectedTime,
   setSelectedDate,
   setSelectedTime,
   setItems,
-  getCurrentTime,
 }) {
+  if (!selectedItem) {
+    return null; // Render nothing if selectedItem is null
+  }
 
   const [show, setShow] = useState(false);
   const [newItem, setNewItem] = useState({
@@ -33,6 +35,22 @@ export default function AddAgenda({
     message: "",
     time: "",
   });
+
+  useEffect(() => {
+    console.log(selectedItem)
+    if (selectedItem) {
+      setNewItem({
+        title: selectedItem.title,
+        message: selectedItem.message,
+        time: selectedItem.time,
+      });
+    }
+  }, [selectedItem]);
+
+  const updateAgenda = () => {
+    console.log(newItem)
+  };
+  
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
   const [mode, setMode] = useState("date");
@@ -52,39 +70,6 @@ export default function AddAgenda({
     setPickerVisible(false); // Hide the picker after selection
   };
 
-  const addItemToAgenda = async () => {
-    if (!newItem.title || !newItem.message || !selectedDate){
-      showToast("error");
-      return; 
-    }
-    try {
-      const response = await postAgenda(newItem, selectedDate, selectedTime);
-      // const createdAgenda = response;
-      // console.log(createdAgenda)
-
-      setItems((prevItems) => {
-        const updatedItems = { ...prevItems };
-
-        if (!updatedItems[selectedDate]) {
-          updatedItems[selectedDate] = [];
-        }
-
-        updatedItems[selectedDate].push({
-          ...newItem,
-          time: selectedTime,
-        });
-
-        showToast("success");
-        return updatedItems;
-      });
-      setNewItem({ title: "", message: "", time: "" });
-      setSelectedTime(getCurrentTime());
-    } catch (error) {
-      console.error('Failed to add agenda:', error);
-      showToast("error"); 
-    }
-  };
-
   const formatTime = (date) => {
     const hours = String(date.getHours()).padStart(2, "0"); // Ensure two digits
     const minutes = String(date.getMinutes()).padStart(2, "0"); // Ensure two digits
@@ -98,7 +83,7 @@ export default function AddAgenda({
 
   return (
     <Modal
-      visible={isAddModalVisible}
+      visible={isEditModalVisible}
       onRequestClose={onClose}
       animationType="slide"
     >
@@ -106,7 +91,7 @@ export default function AddAgenda({
         <TopBar onClose={onClose} />
         <View style={MyStyles.modal}>
           <Text style={{ fontSize: 27, textAlign: "center", paddingTop: 4 }}>
-            Create Activity
+            Update {selectedItem.name} Activity
           </Text>
           <Text
             style={{
@@ -116,7 +101,7 @@ export default function AddAgenda({
               marginBottom: 15,
             }}
           >
-            Which activities do you want to be reminded of ?
+            What would you like to change about the activity ?
           </Text>
 
           <SafeAreaView>
@@ -128,12 +113,7 @@ export default function AddAgenda({
                 placeholder="Remind me to take care of a task"
                 style={MyStyles.input}
                 value={newItem.message}
-                onChangeText={(text) => {
-                  setNewItem((prevNewItem) => {
-                    prevNewItem.message = text; // Direct modification
-                    return { ...prevNewItem };
-                  });
-                }}
+                onChangeText={(text) => setNewItem({ ...newItem, message: text })}
               />
             </View>
 
@@ -163,7 +143,7 @@ export default function AddAgenda({
               <TextInput
                 style={MyStyles.input}
                 placeholder="00:00"
-                value={selectedTime}
+                value={selectedItem.time}
                 editable={false}
                 onChangeText={(text) => setNewItem({ ...newItem, time: text })}
               />
@@ -183,11 +163,11 @@ export default function AddAgenda({
             <TouchableOpacity
               style={MyStyles.button}
               onPress={() => {
-                addItemToAgenda();
+                updateAgenda();
                 onClose();
               }}
             >
-              <Text style={MyStyles.buttonText}>Add Item to Agenda</Text>
+              <Text style={MyStyles.buttonText}>Update Item to Agenda</Text>
             </TouchableOpacity>
           </SafeAreaView>
 
