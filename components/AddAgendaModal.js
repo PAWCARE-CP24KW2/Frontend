@@ -37,7 +37,6 @@ export default function AddAgenda({
   const [time, setTime] = useState(new Date());
   const [mode, setMode] = useState("date");
   const onChange = (event, selectedValue) => {
-    setShow(Platform.OS === "ios");
     if (event.type === "set") {
       if (mode === "date") {
         const currentDate = selectedValue || date;
@@ -49,7 +48,7 @@ export default function AddAgenda({
         setSelectedTime(formatTime(currentTime)); // Format and store the time
       }
     }
-    setPickerVisible(false); // Hide the picker after selection
+    setShow(false);
   };
 
   const addItemToAgenda = async () => {
@@ -59,8 +58,7 @@ export default function AddAgenda({
     }
     try {
       const response = await postAgenda(newItem, selectedDate, selectedTime);
-      // const createdAgenda = response;
-      // console.log(createdAgenda)
+      const agendaId = response.agenda_id;
 
       setItems((prevItems) => {
         const updatedItems = { ...prevItems };
@@ -71,9 +69,9 @@ export default function AddAgenda({
 
         updatedItems[selectedDate].push({
           ...newItem,
+          id: agendaId,
           time: selectedTime,
         });
-
         showToast("success");
         return updatedItems;
       });

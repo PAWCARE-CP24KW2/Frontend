@@ -5,37 +5,21 @@ import { Agenda } from "react-native-calendars";
 import { calendarTheme } from "react-native-calendars";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import AddAgenda from "./AddAgenda";
-import UpdateAgenda from "./UpdateAgenda";
+import AddAgenda from "./AddAgendaModal.js";
+import UpdateAgenda from "./UpdateAgendaModal.js";
 import { showDelToast } from "../composable/showToast.js";
-import { fetchAgendas } from "../composable/fetchAgendas.js";
+import { fetchAgendas } from "../composable/getAllAgendas.js";
 import { deleteAgenda } from "../composable/deleteAgenda.js";
+import { logProfileData } from "react-native-calendars/src/Profiler.js";
 
 export default function MyCalendar() {
 
   useEffect(() => {
-    const getAgendas = async () => {
+     const getAgendas = async () => {
       try {
         const agendas = await fetchAgendas();
-
-        const transformedAgendas = {};
-        agendas.forEach(agenda => {
-          const date = agenda.appointment.split('T')[0];
-          const time = agenda.appointment.split('T')[1].split(':').slice(0, 2).join(':');
-          if (!transformedAgendas[date]) {
-            transformedAgendas[date] = [];
-          }
-          transformedAgendas[date].push({
-            id: agenda.agenda_id,
-            title: agenda.agenda_title,
-            message: agenda.agenda_message,
-            status: agenda.status,
-            time: time,
-          });
-        });
-
-        setItems(transformedAgendas); // Update items state
-        console.log('Transformed Agenda:', transformedAgendas);
+        setItems(agendas); 
+        // console.log('Transformed Agenda:', agendas);
       } catch (error) {
         console.error('Failed to fetch agendas in component:', error);
       }
@@ -54,6 +38,7 @@ export default function MyCalendar() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
   const [selectedTime, setSelectedTime] = useState(getCurrentTime());
   const [editDate, setEditDate] = useState("");
+  const [currentTitle, setCurrentTitle] = useState(null);
 
   const deleteData = useCallback( async (id, date, title) => {
     try {
@@ -68,7 +53,7 @@ export default function MyCalendar() {
 
           // If the array becomes empty after filtering, delete the key
           if (updatedItems[date].length === 0) {
-            delete updatedItems[date]; // Remove the date key if no more items exist for that date
+            delete updatedItems[date];
           }
         }
         
@@ -129,10 +114,8 @@ export default function MyCalendar() {
       onPress={() => {
         setSelectedItem(item); // Store the selected item
         setEditDate(date);
-        console.log(item)
-        console.log("Selected Date:", date)
-        console.log("===================")
         setisEditModalVisible(true); // Open the modal
+        setCurrentTitle(item.title);
       }}
     >
       <Text style={MyStyles.itemHeader}>{item.title}</Text>
@@ -188,6 +171,7 @@ export default function MyCalendar() {
         setSelectedDate={setSelectedDate}
         setSelectedTime={setSelectedTime}
         setItems={setItems}
+        currentTitle={currentTitle}
       />
     </SafeAreaView>
   );
