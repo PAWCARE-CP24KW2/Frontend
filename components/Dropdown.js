@@ -10,17 +10,15 @@ const data = [
   { name: 'Exercise', value: '4' },
   { name: 'Grooming', value: '5' }
 ];
-const DropdownComponent = ({ newItem, setNewItem }) => {
+const DropdownComponent = ({ newItem, setNewItem, currentTitle }) => {
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
 
-  // useEffect(() => {
-  //   // Ensure the value is set based on newItem.name
-  //   if (newItem?.title) {
-  //     setValue(newItem.title); // Set dropdown value to the newItem.name
-  //   }
-    
-  // }, [newItem.title]); // Ensure this effect runs when newItem.name changes
+  useEffect(() => {
+    if (currentTitle) {
+      console.log("in dropdown " + currentTitle);
+    }
+  }, [currentTitle]);
 
   return (
     <View style={styles.container}>
@@ -36,7 +34,7 @@ const DropdownComponent = ({ newItem, setNewItem }) => {
         maxHeight={300}
         labelField="name"
         valueField="value"
-        placeholder={!isFocus ? 'Select appointment' : '...'}
+        placeholder={currentTitle || 'Select an appointment...'}
         searchPlaceholder="Search..."
         value={value}
         onFocus={() => setIsFocus(true)}

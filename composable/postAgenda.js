@@ -12,8 +12,8 @@ export const postAgenda = async (newItem, selectedDate, selectedTime) => {
   };
 
   try {
-    const response = await axios.post(`${baseUrl}/api/pet/1/agendas`, postData);
-    console.log('Agenda added to backend:', response.data);
+    const response = await axios.post(`${baseUrl}/api/agendas/1/agendas`, postData);
+    // console.log('Agenda added to backend:', response.data);
     return response.data; // Return the response from the backend if needed
   } catch (error) {
     console.error('Error adding agenda:', error);
