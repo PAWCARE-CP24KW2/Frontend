@@ -23,3 +23,11 @@ export function showDelToast(name) {
         text2: 'Your agenda deleted successfully. 🗑️'
     });
 }
+
+export function showUpdateToast(name) {
+    Toast.show({
+        type: 'info',
+        text1: `Update agenda.`,
+        text2: 'Your agenda Updated successfully. 🗑️'
+    });
+}

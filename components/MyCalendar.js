@@ -48,7 +48,7 @@ export default function MyCalendar() {
       setItems((prevItems) => {
         const updatedItems = { ...prevItems };
         if (updatedItems[date]) {
-          showDelToast(title); // Show deletion toast with title
+          showDelToast(title); 
           updatedItems[date] = updatedItems[date].filter((item) => item.id !== id);
 
           // If the array becomes empty after filtering, delete the key
