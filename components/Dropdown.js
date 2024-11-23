@@ -14,11 +14,11 @@ const DropdownComponent = ({ newItem, setNewItem, currentTitle }) => {
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
 
-  useEffect(() => {
-    if (currentTitle) {
-      console.log("in dropdown " + currentTitle);
-    }
-  }, [currentTitle]);
+  // useEffect(() => {
+  //   if (currentTitle) {
+  //     console.log("in dropdown " + currentTitle);
+  //   }
+  // }, [currentTitle]);
 
   return (
     <View style={styles.container}>
