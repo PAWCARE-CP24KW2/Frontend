@@ -9,6 +9,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import { toastConfig } from './composable/toastConfig';
+import NewPet from './pages/NewPet';
+import AddPet from './pages/Addpet';
 
 const Tab = createBottomTabNavigator();
 
@@ -46,6 +48,8 @@ export default function App() {
         <Tab.Screen name="Calendar" component={Calendar} />
         <Tab.Screen name="Webboard" component={Webboard} />
         <Tab.Screen name="Settings" component={Settings} />
+        <Tab.Screen name="NewPet" component={NewPet} />
+        <Tab.Screen name="Addpet" component={AddPet} />
       </Tab.Navigator>
       <Toast config={toastConfig}/>
     </NavigationContainer>    

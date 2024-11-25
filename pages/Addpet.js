@@ -12,23 +12,22 @@ import { MyStyles } from "../styles/MyStyle";
 import { Ionicons } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-
-
-export default function AddPet({ 
-  navigation ,
-   selectedDate,
-  setSelectedDate,
+import DropdownTypeComponent from "../components/DropdownTypePet";
+export default function AddPet({
+  navigation,
+  setItems,
 }) {
-  const [name, setName] = useState("");
-  const [breed, setBreed] = useState("");
-  const [type, setType] = useState("");
-  const [color, setColor] = useState("");
-  const [weight, setWeight] = useState("");
-  const [gender, setGender] = useState(null);
-  const [dob, setDob] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [Item, setItem] = useState({
+    name: "",
+    breed: "",
+    type: "",
+    color: "",
+    weight: "",
+    gender: null,
+  });
 
   const [show, setShow] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const onChange = (event, selectedValue) => {
@@ -39,23 +38,24 @@ export default function AddPet({
         setSelectedDate(currentDate.toISOString().split("T")[0]); // Format and store the date
       }
     }
-      setShow(false); // Hide the picker after selection
+    setShow(false); // Hide the picker after selection
   };
 
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
-  };
-
-  const addItemToAgenda = async () => {
-    if (!newItem.title || !newItem.message || !selectedDate){
+  const addPetInPet = async () => {
+    if (
+      !Item.name ||
+      !Item.breed ||
+      !Item.type ||
+      !Item.color ||
+      !Item.weight ||
+      !Item.gender
+    ) {
       showToast("error");
-      return; 
+      return;
     }
     try {
-      const response = await postAgenda(newItem, selectedDate, selectedTime);
-      // const createdAgenda = response;
-      // console.log(createdAgenda)
+      const response = await postAgenda(Item, selectedDate);
+      const petId = response.pet_id;
 
       setItems((prevItems) => {
         const updatedItems = { ...prevItems };
@@ -65,112 +65,118 @@ export default function AddPet({
         }
 
         updatedItems[selectedDate].push({
-          ...newItem,
-          time: selectedTime,
+          ...Item,
+          id: petId,
         });
-
         showToast("success");
         return updatedItems;
       });
-      setNewItem({ title: "", message: "", time: "" });
-      setSelectedTime(getCurrentTime());
+      setItem({
+        name: "",
+        breed: "",
+        type: "",
+        color: "",
+        weight: "",
+        gender: "",
+      });
     } catch (error) {
-      console.error('Failed to add agenda:', error);
-      showToast("error"); 
+      console.error("Failed to add Pet:", error);
+      showToast("error");
     }
+  };
+
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
   };
 
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.topNavBar}>
-        <View style={MyStyles.header}>
-        </View>
+        <View style={MyStyles.header}></View>
       </SafeAreaView>
 
       <Text style={styles.header}>Add your pet!</Text>
       <TextInput
         style={styles.input}
         placeholder="Name"
-        value={name}
-        onChangeText={setName}
+        value={Item.name}
+        onChangeText={(text) => setItem({ ...Item, name: text })}
       />
       <TextInput
         style={styles.input}
         placeholder="Breed"
-        value={breed}
-        onChangeText={setBreed}
+        value={Item.breed}
+        onChangeText={(text) => setItem({ ...Item, breed: text })}
       />
-      {/* <Picker
-        selectedValue={type}
-        style={styles.input}
-        onValueChange={(itemValue) => setType(itemValue)}
-      >
-        <Picker.Item label="Select Type" value="" />
-        <Picker.Item label="Dog" value="dog" />
-        <Picker.Item label="Cat" value="cat" />
-      </Picker> */}
+      <DropdownTypeComponent
+        style={styles.DropdownType}
+        type={Item.type}
+        Item={Item} setItem={setItem}
+      />
       <TextInput
         style={styles.input}
         placeholder="Color"
-        value={color}
-        onChangeText={setColor}
+        value={Item.color}
+        onChangeText={(text) => setItem({ ...Item, color: text })}
       />
       <View style={styles.genderContainer}>
         <TouchableOpacity
           style={[
             styles.genderButton,
-            gender === "male" && styles.selectedGender,
+            Item.gender === "male" && styles.selectedGender,
           ]}
-          onPress={() => setGender("male")}
+          onPress={() => setItem({ ...Item, gender: "male" })}
         >
           <Text style={styles.genderText}>Male</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.genderButton,
-            gender === "female" && styles.selectedGender,
+            Item.gender === "female" && styles.selectedGender,
           ]}
-          onPress={() => setGender("female")}
+          onPress={() => setItem({ ...Item, gender: "female" })}
         >
           <Text style={styles.genderText}>Female</Text>
         </TouchableOpacity>
       </View>
       <TextInput
         style={styles.input}
-        placeholder="Weight (kg)"
-        value={weight}
-        onChangeText={setWeight}
+        placeholder="Weight"
+        value={Item.weight}
         keyboardType="numeric"
+        onChangeText={(text) => setItem({ ...Item, weight: text })}
       />
-     <TouchableOpacity
-              style={MyStyles.dateContainer}
-              onPress={() => showMode("date")}
-            >
-              <Icon
-                name="calendar"
-                size={20}
-                color="black"
-                style={MyStyles.icon}
-              />
-              <TextInput
-                style={MyStyles.input}
-                value={selectedDate}
-                editable={false}
-              />
-    </TouchableOpacity>
-            {show && (
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={mode === "date" ? date : time}
-                mode={mode}
-                is24Hour={true}
-                display="default"
-                onChange={onChange}
-              />
-            )}
+      
+      <TouchableOpacity
+        style={MyStyles.dateContainer}
+        onPress={() => showMode("date")}
+      >
+        <Icon name="calendar" size={20} color="black" style={MyStyles.icon} />
+        <TextInput
+          style={MyStyles.input}
+          placeholder="Date of Birth"
+          value={selectedDate}
+          editable={false}
+        />
+      </TouchableOpacity>
+      {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={mode === "date" ? date : time}
+          mode={mode}
+          is24Hour={true}
+          display="default"
+          onChange={onChange}
+        />
+
+      )}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate("NextScreen")}
+        onPress={() => {
+          navigation.navigate("Home");
+          addPetInPet();
+        }}
       >
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>

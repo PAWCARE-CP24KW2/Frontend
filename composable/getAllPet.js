@@ -2,9 +2,9 @@ import axios from 'axios';
 
 const baseUrl = 'http://192.168.1.106:8080'
 
-export const fetchAgendas = async () => {
+export const getAllPet = async () => {
   try {
-    const response = await axios.get(`${baseUrl}/api/pet/1/agendas`);
+    const response = await axios.get(`${baseUrl}api/pet/my?userId=1`);
     return response.data
   } catch (err) {
     console.error('Error fetching data:', err);
