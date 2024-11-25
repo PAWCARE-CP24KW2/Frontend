@@ -1,13 +1,15 @@
 import axios from 'axios';
 
-const baseUrl = 'http://192.168.1.106:8080'
+const baseUrl = 'http://192.168.1.139:8080/';
 
 export const getAllPet = async () => {
   try {
-    const response = await axios.get(`${baseUrl}api/pet/my?userId=1`);
-    return response.data
+    const url = `${baseUrl}api/pet/my?userId=1`;
+    const response = await axios.get(url);
+    console.log('Response data:', response.data);
+    return response.data;
   } catch (err) {
-    console.error('Error fetching data:', err);
-    throw err
+    console.error('Error fetching data: ', err);
+    throw err;
   }
-}
+};

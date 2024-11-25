@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'http://192.168.1.106:8080';
+const baseUrl = 'http://192.168.1.139:8080';
 
 export const postAgenda = async (newItem, selectedDate, selectedTime) => {
   // Prepare the data to be sent to the backend
