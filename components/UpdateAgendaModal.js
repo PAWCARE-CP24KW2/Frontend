@@ -17,6 +17,7 @@ import DropdownComponent from "./Dropdown.js";
 import { getAgendaFromId } from "../composable/getAgendaFromId.js";
 import { putAgenda } from "../composable/putAgenda.js";
 import { fetchAgendas } from "../composable/getAllAgendas.js";
+import { cancelNotification, scheduleNotification } from '../composable/notificationService.js';
 
 export default function UpdateAgenda({
   selectedItem,
@@ -97,8 +98,56 @@ export default function UpdateAgenda({
     try {
       await putAgenda(agendaId, eventTitle, eventDescription, eventStart, status);
       
-      const agendas = await fetchAgendas();
-      setItems(agendas); 
+      // Cancel the existing notification
+      if (selectedItem.notificationId) {
+        await cancelNotification(selectedItem.notificationId);
+      }
+
+      // Schedule the new notification
+      const notificationDate = new Date(`${newItem.date}T${newItem.time}:00`);
+      const notificationId = await scheduleNotification(
+        `Reminder for ${newItem.title}`,
+        `${newItem.message}`,
+        { agendaId },
+        notificationDate
+      );
+
+      setItems((prevItems) => {
+        const updatedItems = { ...prevItems };
+
+        if (!updatedItems[newItem.date]) {
+          updatedItems[newItem.date] = [];
+        }
+
+        // Update the specific agenda item or add it if it doesn't exist
+        const itemIndex = updatedItems[newItem.date].findIndex((item) => item.id === agendaId);
+        if (itemIndex !== -1) {
+          // Update existing item
+          updatedItems[newItem.date][itemIndex] = {
+            ...updatedItems[newItem.date][itemIndex],
+            title: newItem.title,
+            message: newItem.message,
+            time: newItem.time,
+            status: newItem.status,
+            notificationId, // Store the new notification ID
+          };
+        } else {
+          // Add new item
+          updatedItems[newItem.date].push({
+            id: agendaId,
+            title: newItem.title,
+            message: newItem.message,
+            time: newItem.time,
+            status: newItem.status,
+            notificationId, // Store the new notification ID
+          });
+        }
+        console.log(updatedItems);
+        return updatedItems;
+      });
+
+      // const agendas = await fetchAgendas();
+      // setItems(agendas); 
       showUpdateToast()
     } catch (error) {
       console.log(error)

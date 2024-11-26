@@ -15,8 +15,9 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { showToast } from "../composable/showToast.js";
 import DropdownComponent from "./Dropdown.js";
 import { postAgenda } from "../composable/postAgenda.js";
+import { scheduleNotification } from '../composable/notificationService.js';
 
-export default function AddAgenda({
+export default function AddAgendaModal({
   isAddModalVisible,
   onClose,
   selectedDate,
@@ -52,13 +53,22 @@ export default function AddAgenda({
   };
 
   const addItemToAgenda = async () => {
-    if (!newItem.title || !newItem.message || !selectedDate){
-      showToast("error");
-      return; 
+    if (!newItem.title || !newItem.message || !selectedDate) {
+      showToast('error');
+      return;
     }
     try {
       const response = await postAgenda(newItem, selectedDate, selectedTime);
       const agendaId = response.agenda_id;
+
+      // Schedule the notification
+      const notificationDate = new Date(`${selectedDate}T${selectedTime}:00`);
+      const notificationId = await scheduleNotification(
+        `Reminder for ${newItem.title}`,
+        `${newItem.message}`,
+        { agendaId },
+        notificationDate
+      );
 
       setItems((prevItems) => {
         const updatedItems = { ...prevItems };
@@ -71,15 +81,18 @@ export default function AddAgenda({
           ...newItem,
           id: agendaId,
           time: selectedTime,
+          notificationId,
         });
-        showToast("success");
+        setNewItem({ title: "", message: "", time: "" });
+        // console.log(updatedItems);
         return updatedItems;
       });
-      setNewItem({ title: "", message: "", time: "" });
-      setSelectedTime(getCurrentTime());
+
+      showToast('success');
+      onClose();
     } catch (error) {
+      showToast('error');
       console.error('Failed to add agenda:', error);
-      showToast("error"); 
     }
   };
 
@@ -92,6 +105,13 @@ export default function AddAgenda({
   const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);
+  };
+
+  const handleClose = () => {
+    setNewItem({ title: '', message: '' });
+    setSelectedDate(new Date().toISOString().split('T')[0]);
+    setSelectedTime(formatTime(new Date()));
+    onClose();
   };
 
   return (
@@ -189,7 +209,7 @@ export default function AddAgenda({
             </TouchableOpacity>
           </SafeAreaView>
 
-          <TouchableOpacity style={MyStyles.closeButton} onPress={onClose}>
+          <TouchableOpacity style={MyStyles.closeButton} onPress={handleClose}>
             <Text style={MyStyles.buttonText}>Close</Text>
           </TouchableOpacity>
         </View>
