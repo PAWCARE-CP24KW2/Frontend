@@ -76,6 +76,20 @@ export const MyStyles = StyleSheet.create({
     backgroundColor: "#EACEBE",
     padding: 20,
   },
+  petItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFF",
+    borderRadius: 10,
+    padding: 10,
+    marginVertical: 5,
+    marginHorizontal: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 2,
+  },
 
   // Add agenda container
   addContainer: {
@@ -141,6 +155,20 @@ export const MyStyles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 20
   },
+  petItem: {
+  flexDirection: "row",
+  alignItems: "center",
+  backgroundColor: "#FFF",
+  borderRadius: 10,
+  padding: 10,
+  marginVertical: 5,
+  marginHorizontal: 10,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.2,
+  shadowRadius: 3,
+  elevation: 2,
+},
   dateText: {
     flex: 1,
     fontSize: 16,

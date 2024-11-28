@@ -85,6 +85,7 @@ export default function AddAgendaModal({
         });
         setNewItem({ title: "", message: "", time: "" });
         // console.log(updatedItems);
+        
         return updatedItems;
       });
 
