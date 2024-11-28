@@ -8,21 +8,32 @@ import {
   Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { MyStyles } from "../styles/MyStyle";
 
 export default function NewPet({ navigation }) {
   return (
     <View style={styles.container}>
       {/* Top Navigation Bar */}
       <SafeAreaView style={styles.topNavBar}>
-        <Ionicons name="search-outline" size={24} color="black" />
-        <Ionicons name="add-outline" size={24} color="black" />
+        <View style={MyStyles.header}>
+          <TouchableOpacity
+            style={{ marginRight: 12 }}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="arrow-back" size={45} color="black" />
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
 
       {/* Main Content */}
       <View style={styles.content}>
         <Text style={styles.title}>Add a new pet</Text>
-        <TouchableOpacity style={styles.actionButton}>
+        <TouchableOpacity 
+        style={styles.actionButton}
+        onPress={() => navigation.navigate('AddPet')}
+        >
           <Text style={styles.actionText}>ADD</Text>
+          
         </TouchableOpacity>
 
         {/* Pet Icons */}
@@ -51,14 +62,14 @@ export default function NewPet({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5D6C6",
+    backgroundColor: "#F5E4D8",
   },
   topNavBar: {
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor: "#DAB49D",
+    backgroundColor: "#B6917B",
   },
   content: {
     flex: 1,

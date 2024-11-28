@@ -6,13 +6,38 @@ import Settings from './pages/Settings';
 import Home from './pages/Home';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import { toastConfig } from './composable/toastConfig';
 import NewPet from './pages/NewPet';
-import AddPet from './pages/Addpet';
+import Addpet from './pages/Addpet';
+import ViewPet from './pages/ViewPet';
+import UpdatePetData from './components/UpdatePetData';
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+function HomeStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="AddPet" component={Addpet} />
+      <Stack.Screen name="NewPet" component={NewPet} />
+      <Stack.Screen name="ViewPet" component={ViewPet} />
+      <Stack.Screen name="UpdatePetData" component={UpdatePetData} />
+    </Stack.Navigator>
+  );
+}
+
+// function PetStack() {
+//   return (
+//     <Stack.Navigator screenOptions={{ headerShown: false }}>
+//       <Stack.Screen name="NewPet" component={NewPet} />
+//       <Stack.Screen name="AddPet" component={Addpet} />
+//     </Stack.Navigator>
+//   );
+// }
 
 export default function App() {
   return (
@@ -44,12 +69,10 @@ export default function App() {
           headerShown: false,
         })}
       >
-        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Home" component={HomeStack} />
         <Tab.Screen name="Calendar" component={Calendar} />
         <Tab.Screen name="Webboard" component={Webboard} />
         <Tab.Screen name="Settings" component={Settings} />
-        <Tab.Screen name="NewPet" component={NewPet} />
-        <Tab.Screen name="Addpet" component={AddPet} />
       </Tab.Navigator>
       <Toast config={toastConfig}/>
     </NavigationContainer>    

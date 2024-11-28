@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from 'axios';
 import {
   View,
   Text,
@@ -7,21 +8,17 @@ import {
   StyleSheet,
   SafeAreaView,
 } from "react-native";
-// import { Picker } from "@react-native-picker/picker";
 import { MyStyles } from "../styles/MyStyle";
-import { Ionicons } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import DropdownTypeComponent from "../components/DropdownTypePet";
-export default function AddPet({
-  navigation,
-  setItems,
-}) {
+import { addPet } from "../composable/postPet";
+
+export default function AddPet({ navigation }) {
   const [Item, setItem] = useState({
     name: "",
     breed: "",
     type: "",
-    color: "",
     weight: "",
     gender: null,
   });
@@ -41,53 +38,34 @@ export default function AddPet({
     setShow(false); // Hide the picker after selection
   };
 
-  const addPetInPet = async () => {
-    if (
-      !Item.name ||
-      !Item.breed ||
-      !Item.type ||
-      !Item.color ||
-      !Item.weight ||
-      !Item.gender
-    ) {
-      showToast("error");
-      return;
-    }
-    try {
-      const response = await postAgenda(Item, selectedDate);
-      const petId = response.pet_id;
-
-      setItems((prevItems) => {
-        const updatedItems = { ...prevItems };
-
-        if (!updatedItems[selectedDate]) {
-          updatedItems[selectedDate] = [];
-        }
-
-        updatedItems[selectedDate].push({
-          ...Item,
-          id: petId,
-        });
-        showToast("success");
-        return updatedItems;
-      });
-      setItem({
-        name: "",
-        breed: "",
-        type: "",
-        color: "",
-        weight: "",
-        gender: "",
-      });
-    } catch (error) {
-      console.error("Failed to add Pet:", error);
-      showToast("error");
-    }
-  };
-
   const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);
+  };
+
+  const handleAddPet = async () => {
+    try {
+      const petData = {
+        ...Item,
+        weight: parseFloat(Item.weight), // Convert weight to a number
+      };
+      const response = await addPet(petData, selectedDate);
+      console.log('Pet added successfully:', response.pet_id);
+      // Reset the form
+      setItem({
+        name: '',
+        breed: '',
+        type: '',
+        weight: '',
+        gender: null,
+      });
+      setSelectedDate(null);
+      
+      navigation.navigate('Home', { pet: { ...petData, id: response.pet_id } });
+    } catch (error) {
+      console.error('Error adding pet:', error);
+      Alert.alert('Error', 'Failed to add pet');
+    }
   };
 
   return (
@@ -173,16 +151,14 @@ export default function AddPet({
       )}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => {
-          navigation.navigate("Home");
-          addPetInPet();
-        }}
-      >
-        <Text style={styles.buttonText}>Continue</Text>
+        onPress={handleAddPet}
+        >
+        <Text style={styles.buttonText}>Add</Text>
       </TouchableOpacity>
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

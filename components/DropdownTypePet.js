@@ -1,30 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
-import Icon from 'react-native-vector-icons/Ionicons';
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const data = [
-  { name: 'Dog', value: '1' },
-  { name: 'Cat', value: '2' },
-  { name: 'Hamster', value: '3' },
-  { name: 'Horse', value: '4' },
-  { name: 'Crocodie', value: '5' }
+  { name: "Dog", value: "1" },
+  { name: "Cat", value: "2" },
+  { name: "Hamster", value: "3" },
+  { name: "Horse", value: "4" },
+  { name: "Crocodile", value: "5" },
 ];
+
 const DropdownTypeComponent = ({ Item, setItem, currentPet }) => {
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
 
-  // useEffect(() => {
-  //   if (currentTitle) {
-  //     console.log("in dropdown " + currentTitle);
-  //   }
-  // }, [currentTitle]);
-
   return (
     <View style={styles.container}>
-      
       <Dropdown
-        style={[styles.dropdown, isFocus && { borderColor: 'black' }]}
+        style={[styles.dropdown, isFocus && { borderColor: "black" }]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
@@ -34,17 +28,23 @@ const DropdownTypeComponent = ({ Item, setItem, currentPet }) => {
         maxHeight={300}
         labelField="name"
         valueField="value"
-        placeholder={currentPet || 'Select an Type'}
+        placeholder={currentPet || "Select a Type"}
         searchPlaceholder="Search..."
         value={value}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
-        onChange={item => {
-          setItem({ ...Item, type: item.type})
+        onChange={(item) => {
+          setItem({ ...Item, type: item.name });
+          setValue(item.value);
           setIsFocus(false);
         }}
         renderLeftIcon={() => (
-            <Icon name="search" size={20} style={{marginLeft:5}} color="black"/>
+          <Icon
+            name="search"
+            size={20}
+            style={{ marginLeft: 5 }}
+            color="black"
+          />
         )}
       />
     </View>
@@ -55,12 +55,13 @@ export default DropdownTypeComponent;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 8,
+    marginBottom: 10,
   },
   dropdown: {
     height: 50,
-    borderColor: 'black',
+    borderColor: "black",
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 8,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useCallback} from "react";
 import {
   View,
   StyleSheet,
@@ -11,11 +11,11 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { MyStyles } from "../styles/MyStyle";
 import { getAllPet } from "../composable/getAllPet";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Home({ navigation }) {
   const [items, setItems] = useState([]);
 
-  useEffect(() => {
     const getPets = async () => {
       try {
         const pets = await getAllPet();
@@ -25,17 +25,17 @@ export default function Home({ navigation }) {
         console.error("Failed to fetch pets in component:", error);
       }
     };
-    getPets();
-  }, []);
 
-  // const [data, addPet] = useState([
-  //   // { id: 1, name: "Fur", age: "2 Years and 1 Month", gender: "male", image: "https://via.placeholder.com/80" },
-  //   // { id: 2, name: "Snow", age: "1 Year and 6 Months", gender: "female", image: "https://via.placeholder.com/80" },
-
-  // ]);
+    useFocusEffect(
+      useCallback(() => {
+        getPets();
+      }, [])
+    );
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity>
+    <TouchableOpacity
+      onPress={() => navigation.navigate("ViewPet", { pet: item }) }
+    >
       <View style={MyStyles.petItem}>
         <Image
           style={styles.image}
@@ -58,7 +58,7 @@ export default function Home({ navigation }) {
         <View style={MyStyles.header}>
           <TouchableOpacity
             style={{ marginRight: 12 }}
-            onPress={() => addPet(true)}
+            onPress={() => navigation.navigate("NewPet")}
           >
             <Ionicons name="add-circle-outline" size={45} color="black" />
           </TouchableOpacity>
@@ -83,7 +83,7 @@ export default function Home({ navigation }) {
           </Text>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate("NewPet")}
+            onPress={() => navigation.navigate("AddPet")}
           >
             <Text style={styles.buttonText}>ADD YOUR PET</Text>
           </TouchableOpacity>

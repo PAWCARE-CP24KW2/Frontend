@@ -72,7 +72,7 @@ export default function AddAgenda({
           id: agendaId,
           time: selectedTime,
         });
-        showToast("success");
+        
         return updatedItems;
       });
       setNewItem({ title: "", message: "", time: "" });
