@@ -11,6 +11,7 @@ import { showDelToast } from "../composable/showToast.js";
 import { fetchAgendas } from "../composable/getAllAgendas.js";
 import { deleteAgenda } from "../composable/deleteAgenda.js";
 import { logProfileData } from "react-native-calendars/src/Profiler.js";
+import { cancelNotification } from "../composable/notificationService.js";
 
 export default function MyCalendar() {
 
@@ -40,15 +41,19 @@ export default function MyCalendar() {
   const [editDate, setEditDate] = useState("");
   const [currentTitle, setCurrentTitle] = useState(null);
 
-  const deleteData = useCallback( async (id, date, title) => {
+  const deleteData = useCallback(async (id, date, title) => {
     try {
-      
       await deleteAgenda(id);
 
       setItems((prevItems) => {
         const updatedItems = { ...prevItems };
         if (updatedItems[date]) {
-          showDelToast(title); 
+          showDelToast(title);
+          const itemToDelete = updatedItems[date].find((item) => item.id === id);
+          if (itemToDelete && itemToDelete.notificationId) {
+            cancelNotification(itemToDelete.notificationId);
+            console.log('Notification cancelled:', itemToDelete.notificationId);
+          }
           updatedItems[date] = updatedItems[date].filter((item) => item.id !== id);
 
           // If the array becomes empty after filtering, delete the key
@@ -56,7 +61,7 @@ export default function MyCalendar() {
             delete updatedItems[date];
           }
         }
-        
+
         return updatedItems;
       });
     } catch (error) {

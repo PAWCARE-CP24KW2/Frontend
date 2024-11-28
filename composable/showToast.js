@@ -28,6 +28,6 @@ export function showUpdateToast(name) {
     Toast.show({
         type: 'info',
         text1: `Update agenda.`,
-        text2: 'Your agenda Updated successfully. 🗑️'
+        text2: 'Your agenda Updated successfully. 🔄'
     });
 }

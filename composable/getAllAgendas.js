@@ -7,6 +7,10 @@ export const fetchAgendas = async () => {
     const response = await axios.get(`${baseUrl}/api/agendas/pet/1`);
     const agendas = response.data;
 
+    if (!Array.isArray(agendas) || agendas.length === 0) {
+      return {}; 
+    }
+
     const transformedAgendas = {};
     agendas.forEach(agenda => {
       const date = agenda.appointment.split('T')[0];
@@ -25,6 +29,10 @@ export const fetchAgendas = async () => {
     
     return transformedAgendas;
   } catch (err) {
+    if (err.response && err.response.status === 404) {
+      console.warn('No agendas found. Returning an empty object.');
+      return {}; // Handle the 404 error specifically by returning an empty object
+    }
     console.error('Error fetching data:', err);
     throw err
   }
