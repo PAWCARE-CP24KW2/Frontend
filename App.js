@@ -13,6 +13,7 @@ import { toastConfig } from './composable/toastConfig';
 import NewPet from './pages/NewPet';
 import Addpet from './pages/Addpet';
 import ViewPet from './pages/ViewPet';
+import ImportPet from './pages/ImportPet';
 import UpdatePetData from './components/UpdatePetData';
 
 const Tab = createBottomTabNavigator();
@@ -23,6 +24,7 @@ function HomeStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="AddPet" component={Addpet} />
+      <Stack.Screen name="ImportPet" component={ImportPet} />
       <Stack.Screen name="NewPet" component={NewPet} />
       <Stack.Screen name="ViewPet" component={ViewPet} />
       <Stack.Screen name="UpdatePetData" component={UpdatePetData} />

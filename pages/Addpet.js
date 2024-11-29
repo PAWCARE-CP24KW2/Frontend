@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -19,8 +20,12 @@ export default function AddPet({ navigation }) {
     name: "",
     breed: "",
     type: "",
+    color: "",
     weight: "",
+    environment: null,
+    neutered: null,
     gender: null,
+
   });
 
   const [show, setShow] = useState(false);
@@ -38,6 +43,13 @@ export default function AddPet({ navigation }) {
     setShow(false); // Hide the picker after selection
   };
 
+  const handleWeightChange = (text) => {
+    // Allow only numeric input
+    if (/^\d*\.?\d*$/.test(text)) {
+      setItem({ ...Item, weight: text });
+    }
+  };
+
   const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);
@@ -49,15 +61,28 @@ export default function AddPet({ navigation }) {
         ...Item,
         weight: parseFloat(Item.weight), // Convert weight to a number
       };
+      if (!Item.name) {
+        Alert.alert('Error', 'Please fill Pet Name');
+        return;
+      }else if (!Item.weight) {
+        Alert.alert('Error', 'Please fill Weight');
+        return;
+      }else if (!selectedDate) {
+        Alert.alert('Error', 'Please fill Date of Birth');
+        return;
+      }
       const response = await addPet(petData, selectedDate);
       console.log('Pet added successfully:', response.pet_id);
       // Reset the form
       setItem({
-        name: '',
-        breed: '',
-        type: '',
-        weight: '',
-        gender: null,
+      name: "",
+      breed: "",
+      type: "",
+      color: "",
+      weight: "",
+      environment: null,
+      neutered: null,
+      gender: null,
       });
       setSelectedDate(null);
       
@@ -98,34 +123,13 @@ export default function AddPet({ navigation }) {
         value={Item.color}
         onChangeText={(text) => setItem({ ...Item, color: text })}
       />
-      <View style={styles.genderContainer}>
-        <TouchableOpacity
-          style={[
-            styles.genderButton,
-            Item.gender === "male" && styles.selectedGender,
-          ]}
-          onPress={() => setItem({ ...Item, gender: "male" })}
-        >
-          <Text style={styles.genderText}>Male</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.genderButton,
-            Item.gender === "female" && styles.selectedGender,
-          ]}
-          onPress={() => setItem({ ...Item, gender: "female" })}
-        >
-          <Text style={styles.genderText}>Female</Text>
-        </TouchableOpacity>
-      </View>
       <TextInput
         style={styles.input}
         placeholder="Weight"
         value={Item.weight}
         keyboardType="numeric"
-        onChangeText={(text) => setItem({ ...Item, weight: text })}
+        onChangeText={handleWeightChange}
       />
-      
       <TouchableOpacity
         style={MyStyles.dateContainer}
         onPress={() => showMode("date")}
@@ -149,10 +153,73 @@ export default function AddPet({ navigation }) {
         />
 
       )}
+      <Text style={styles.sectionTitle}>Gender:</Text>
+      <View style={styles.radioContainer}>
+        <TouchableOpacity
+          style={[
+            styles.genderButton,
+            Item.gender === "male" && styles.selectedGender,
+          ]}
+          onPress={() => setItem({ ...Item, gender: "male" })}
+        >
+          <Text style={styles.genderText}>Male</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.genderButton,
+            Item.gender === "female" && styles.selectedGender,
+          ]}
+          onPress={() => setItem({ ...Item, gender: "female" })}
+        >
+          <Text style={styles.genderText}>Female</Text>
+        </TouchableOpacity>
+      </View>
+      <Text style={styles.sectionTitle}>Living Environment:</Text>
+      <View style={styles.radioContainer}>
+        <TouchableOpacity
+          style={[
+            styles.radioButton,
+            Item.environment === "outdoor" && styles.selectedRadio,
+          ]}
+          onPress={() => setItem({ ...Item, environment: "outdoor" })}
+        >
+          <Text style={styles.radioText}>Outdoor</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.radioButton,
+            Item.environment === "indoor" && styles.selectedRadio,
+          ]}
+          onPress={() => setItem({ ...Item, environment: "indoor" })}
+        >
+          <Text style={styles.radioText}>Indoor</Text>
+        </TouchableOpacity>
+      </View>
+      <Text style={styles.sectionTitle}>Has your animal been neutered?</Text>
+      <View style={styles.radioContainer}>
+        <TouchableOpacity
+          style={[
+            styles.radioButton,
+            Item.neutered === true && styles.selectedRadio,
+          ]}
+          onPress={() => setItem({ ...Item, neutered: true })}
+        >
+          <Text style={styles.radioText}>Yes</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.radioButton,
+            Item.neutered === false && styles.selectedRadio,
+          ]}
+          onPress={() => setItem({ ...Item, neutered: false })}
+        >
+          <Text style={styles.radioText}>No</Text>
+        </TouchableOpacity>
+      </View>
       <TouchableOpacity
         style={styles.button}
         onPress={handleAddPet}
-        >
+        >      
         <Text style={styles.buttonText}>Add</Text>
       </TouchableOpacity>
     </View>
@@ -198,6 +265,36 @@ const styles = StyleSheet.create({
   },
   selectedGender: {
     backgroundColor: "#B6917B",
+  },
+  radioContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  radioButton: {
+    flex: 1,
+    
+    alignItems: "center",
+    padding: 10,
+    marginHorizontal: 5,
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: "#B6917B",
+  },
+  selectedRadio: {
+    backgroundColor: "#B6917B",
+  },
+  radioText: {
+    marginLeft: 10,
+    color: "#4A4A4A",
+    fontWeight: "bold",
+  },
+  sectionTitle: {
+    marginBottom: 5,
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#4A4A4A",
   },
   genderText: {
     color: "#4A4A4A",

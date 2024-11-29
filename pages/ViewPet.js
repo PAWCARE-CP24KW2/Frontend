@@ -34,17 +34,29 @@ export default function ViewPet({ route,navigation }) {
   const handleDelete = async () => {
     try {
       console.log("Pet data:", pet); // Log the pet data
-      if (!pet.pet_id) {
-        throw new Error("Pet ID is undefined");
-      }
       await deletePet(pet.pet_id);
-      Alert.alert("Success", "Pet deleted successfully", [
-        { text: "OK", onPress: () => navigation.navigate("Home") },
-      ]);
+      Alert.alert("Success", "Pet deleted successfully");
+      navigation.goBack();
     } catch (error) {
-      console.error("Error deleting pet:", error);
+      console.error("Failed to delete pet:", error);
       Alert.alert("Error", "Failed to delete pet");
     }
+  };
+
+  const confirmDelete = () => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this pet?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "Delete", onPress: handleDelete }
+      ],
+      { cancelable: false }
+    );
   };
 
   const handleEdit = () => {
@@ -82,7 +94,7 @@ export default function ViewPet({ route,navigation }) {
           <TouchableOpacity>
             <Ionicons name="download-outline" size={30} color="black" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleDelete}>
+          <TouchableOpacity onPress={confirmDelete}>
             <Ionicons name="trash-outline" size={30} color="black" />
           </TouchableOpacity>
         </View>

@@ -9,6 +9,10 @@ export const addPet = async (Item, selectedDate) => {
     pet_name: Item.name,
     pet_breed: Item.breed,
     pet_type: Item.type,
+    pet_color: Item.color,
+    pet_gender: Item.gender,
+    pet_space: Item.environment,
+    pet_neutered: Item.neutered,
     weight: parseFloat(Item.weight),
     date_of_birth: selectedDate,
   };

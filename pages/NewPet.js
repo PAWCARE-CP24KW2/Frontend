@@ -51,7 +51,10 @@ export default function NewPet({ navigation }) {
         />
 
         <Text style={styles.title}>Import a pet</Text>
-        <TouchableOpacity style={styles.actionButton}>
+        <TouchableOpacity 
+        style={styles.actionButton}
+        onPress={() => navigation.navigate('ImportPet')}
+        >
           <Text style={styles.actionText}>IMPORT</Text>
         </TouchableOpacity>
       </View>

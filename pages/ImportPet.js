@@ -3,7 +3,7 @@ import { View, StyleSheet, FlatList, Text, Image, TouchableOpacity , TextInput }
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
-import NewPet from "./NewPet";
+
 
 export default function ImportPet({navigation}) {
   return (
@@ -11,13 +11,13 @@ export default function ImportPet({navigation}) {
       {/* Top Navigation Bar */}
       <SafeAreaView style={styles.topNavBar}>
         <View style={MyStyles.header}>
-        <TouchableOpacity
-          style={{marginRight: 12}}
-          onPress={() => addPet(true)}
-        >
-          <Ionicons name="add-circle-outline" size={45} color="black" />
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            style={{ marginRight: 12 }}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="arrow-back" size={45} color="black" />
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
 
       {/* Main Content */}
