@@ -95,6 +95,10 @@ export default function UpdateAgenda({
     const eventStart = `${newItem.date}T${newItem.time}:00Z`;
     const status = newItem.status 
     
+    if (!eventTitle || !eventDescription) {
+      showUpdateToast('error');
+      return;
+    }
     try {
       await putAgenda(agendaId, eventTitle, eventDescription, eventStart, status);
       
@@ -148,7 +152,7 @@ export default function UpdateAgenda({
 
       // const agendas = await fetchAgendas();
       // setItems(agendas); 
-      showUpdateToast()
+      showUpdateToast('success');
     } catch (error) {
       console.log(error)
     }

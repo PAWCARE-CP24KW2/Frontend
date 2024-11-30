@@ -151,7 +151,6 @@ export default function AddPet({ navigation }) {
           display="default"
           onChange={onChange}
         />
-
       )}
       <Text style={styles.sectionTitle}>Gender:</Text>
       <View style={styles.radioContainer}>

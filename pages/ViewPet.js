@@ -22,7 +22,7 @@ export default function ViewPet({ route,navigation }) {
     const getPets = async () => {
       try {
         const pets = await getAllPet();
-        console.log("Response data:", pets);
+        // console.log("Response data:", pets);
         setItems(pets);
       } catch (error) {
         console.error("Failed to fetch pets in component:", error);
@@ -33,7 +33,7 @@ export default function ViewPet({ route,navigation }) {
   
   const handleDelete = async () => {
     try {
-      console.log("Pet data:", pet); // Log the pet data
+      // console.log("Pet data:", pet); // Log the pet data
       await deletePet(pet.pet_id);
       Alert.alert("Success", "Pet deleted successfully");
       navigation.goBack();
@@ -60,8 +60,11 @@ export default function ViewPet({ route,navigation }) {
   };
 
   const handleEdit = () => {
+    console.log("Edit pet data:", pet);
+    
     navigation.navigate("UpdatePetData", { pet });
   };
+
 
   return (
     <View style={styles.container}>

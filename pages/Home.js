@@ -19,7 +19,7 @@ export default function Home({ navigation }) {
     const getPets = async () => {
       try {
         const pets = await getAllPet();
-        console.log("Response data:", pets);
+        // console.log("Response data:", pets);
         setItems(pets);
       } catch (error) {
         console.error("Failed to fetch pets in component:", error);
@@ -34,7 +34,7 @@ export default function Home({ navigation }) {
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
-      onPress={() => navigation.navigate("ViewPet", { pet: item }) }
+      onPress={() => navigation.navigate("ViewPet", { pet: item },  ) }
     >
       <View style={MyStyles.petItem}>
         <Image
@@ -46,6 +46,7 @@ export default function Home({ navigation }) {
           <Text style={styles.age}>Breed: {item.pet_breed}</Text>
           <Text style={styles.age}>Type: {item.pet_type}</Text>
           <Text style={styles.age}>Weight: {item.weight} kg</Text>
+          <Text style={styles.age}>date_of_birth: {item.date_of_birth.split('T')[0]} </Text>
         </View>
       </View>
     </TouchableOpacity>

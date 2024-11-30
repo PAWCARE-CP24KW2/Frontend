@@ -1,18 +1,9 @@
 {
-  "cli": {
-    "version": ">= 13.4.2",
-    "appVersionSource": "remote"
-  },
   "build": {
     "preview": {
       "android": {
         "buildType": "apk"
       }
-    },
-    "development-simulator": {
-      "developmentClient": true,
-      "distribution":"internal"
-    
     },
     "preview2": {
       "android": {

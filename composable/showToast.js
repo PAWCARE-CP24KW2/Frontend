@@ -24,10 +24,20 @@ export function showDelToast(name) {
     });
 }
 
-export function showUpdateToast(name) {
-    Toast.show({
-        type: 'info',
-        text1: `Update agenda.`,
-        text2: 'Your agenda Updated successfully. 🔄'
-    });
+export function showUpdateToast(status) {
+
+    if (status == 'success') {
+        Toast.show({
+            type: 'info',
+            text1: `Update agenda.`,
+            text2: 'Your agenda Updated successfully. 🔄'
+        });
+    }else if (status == 'error') {
+        Toast.show({
+            type: 'error',
+            text1: "Can't update Agenda.",
+            text2: "Fields should not be empty. ❌"
+        });
+    }
+    
 }
