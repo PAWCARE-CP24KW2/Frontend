@@ -89,19 +89,22 @@ export default function UpdateAgenda({
   }, [transformedAgenda]);
   
   const updateAgenda = async () => {
+    console.log('updateAgenda called');
     const agendaId = selectedItem.id;
     const eventTitle = newItem.title;
     const eventDescription = newItem.message;
     const eventStart = `${newItem.date}T${newItem.time}:00Z`;
-    const status = newItem.status 
-    
+    const status = newItem.status;
+
+    // Validation checks
     if (!eventTitle || !eventDescription) {
-      showUpdateToast('error');
+      showToast('error', 'Title and message cannot be empty');
       return;
     }
+
     try {
       await putAgenda(agendaId, eventTitle, eventDescription, eventStart, status);
-      
+
       // Cancel the existing notification
       if (selectedItem.notificationId) {
         await cancelNotification(selectedItem.notificationId);
@@ -116,11 +119,26 @@ export default function UpdateAgenda({
         notificationDate
       );
 
+      // Update the items state
       setItems((prevItems) => {
         const updatedItems = { ...prevItems };
 
+        // Ensure the new date key exists
         if (!updatedItems[newItem.date]) {
           updatedItems[newItem.date] = [];
+        }
+
+        // Remove the item from the old date if it exists
+        if (newItem.date !== transformedAgenda.date) {
+          console.log(transformedAgenda.date)
+          updatedItems[transformedAgenda.date] = updatedItems[transformedAgenda.date].filter(
+            (item) => item.id !== agendaId
+          );
+
+          // If the array becomes empty after filtering, delete the key
+          if (updatedItems[transformedAgenda.date].length === 0) {
+            delete updatedItems[transformedAgenda.date];
+          }
         }
 
         // Update the specific agenda item or add it if it doesn't exist
@@ -146,15 +164,20 @@ export default function UpdateAgenda({
             notificationId, // Store the new notification ID
           });
         }
-        console.log(updatedItems);
+
+        console.log('Items updated:', updatedItems);
         return updatedItems;
       });
+      setTransformedAgenda((prevAgenda) => ({
+        ...prevAgenda,
+        date: newItem.date,
+      }));
 
-      // const agendas = await fetchAgendas();
-      // setItems(agendas); 
       showUpdateToast('success');
+      console.log('updateAgenda success');
     } catch (error) {
-      console.log(error)
+      showToast('Failed to update agenda');
+      console.log('updateAgenda error:', error);
     }
   };
   

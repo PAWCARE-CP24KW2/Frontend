@@ -16,7 +16,7 @@ export const putAgenda = async (agendaId, eventTitle, eventDescription, eventSta
     );
 
     if (response.status === 200) {
-      console.log('Agenda updated successfully:', response.data);
+      // console.log('Agenda updated successfully:', response.data);
     } else {
       console.error('Failed to update agenda:', response.data.error);
     }

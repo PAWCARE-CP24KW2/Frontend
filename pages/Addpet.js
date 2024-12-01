@@ -88,7 +88,7 @@ export default function AddPet({ navigation }) {
       });
       setSelectedDate(null);
       
-      navigation.navigate('Home', { pet: { ...petData, id: response.pet_id } });
+      navigation.navigate('HomeScreen', { pet: { ...petData, id: response.pet_id } });
     } catch (error) {
       console.error('Error adding pet:', error);
       Alert.alert('Error', 'Failed to add pet');
@@ -210,9 +210,9 @@ export default function AddPet({ navigation }) {
         <TouchableOpacity
           style={[
             styles.radioButton,
-            Item.neutered === false && styles.selectedRadio,
+            Item.neutered === "No" && styles.selectedRadio,
           ]}
-          onPress={() => setItem({ ...Item, neutered: false })}
+          onPress={() => setItem({ ...Item, neutered: "No" })}
         >
           <Text style={styles.radioText}>No</Text>
         </TouchableOpacity>
