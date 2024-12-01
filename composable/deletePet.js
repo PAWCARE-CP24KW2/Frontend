@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const baseUrl = "http://192.168.1.139:8080";
+// const baseUrl = "http://10.0.2.2:8080";
+const baseUrl = "http://capstone24.sit.kmutt.ac.th:8080/kw2";
 
 export const deletePet = async (id) => {
   try {

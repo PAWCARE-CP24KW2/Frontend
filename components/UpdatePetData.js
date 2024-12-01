@@ -13,6 +13,7 @@ import { editPet } from '../composable/putPetData';
 import DropdownTypeComponent from '../components/DropdownTypePet';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MyStyles } from '../styles/MyStyle';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function UpdatePetData({ route, navigation }) {
   const { pet } = route.params;
@@ -141,6 +142,7 @@ export default function UpdatePetData({ route, navigation }) {
         style={MyStyles.dateContainer}
         onPress={() => showMode("date")}
       >
+        <Icon name="calendar" size={20} color="black" style={MyStyles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Date of Birth"
@@ -331,7 +333,7 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#B6917B",
     padding: 10,
     marginBottom: 10,
     borderRadius: 5,

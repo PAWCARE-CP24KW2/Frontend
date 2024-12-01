@@ -1,10 +1,11 @@
 import axios from 'axios';
 
-const baseUrl = 'http://192.168.1.139:8080'
+// const baseUrl = "http://10.0.2.2:8080";
+const baseUrl = "http://capstone24.sit.kmutt.ac.th:8080/kw2";
 
 export const fetchAgendas = async () => {
   try {
-    const response = await axios.get(`${baseUrl}/api/agendas/pet/1`);
+    const response = await axios.get(`${baseUrl}/api/agendas`);
     const agendas = response.data;
 
     if (!Array.isArray(agendas) || agendas.length === 0) {

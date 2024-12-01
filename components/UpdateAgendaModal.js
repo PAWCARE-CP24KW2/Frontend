@@ -173,10 +173,12 @@ export default function UpdateAgenda({
       if (mode === "date") {
         const currentDate = selectedValue || new Date(transformedAgenda.date);
         setDate(currentDate);
-        setSelectedDate(currentDate.toISOString().split("T")[0]); // Format and store the date
+        const formattedDate = new Date(currentDate.getTime() - (currentDate.getTimezoneOffset() * 60000))
+          .toISOString().split('T')[0];
+        setSelectedDate(formattedDate);
         setNewItem((prevNewItem) => ({
           ...prevNewItem,
-          date: currentDate.toISOString().split("T")[0],
+          date: formattedDate
         }));
       } else if (mode === "time") {
         const currentTime = selectedValue || new Date(`1970-01-01T${transformedAgenda.time}:00`);

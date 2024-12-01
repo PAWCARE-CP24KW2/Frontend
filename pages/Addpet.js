@@ -32,16 +32,18 @@ export default function AddPet({ navigation }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
+
   const onChange = (event, selectedValue) => {
     if (event.type === "set") {
-      if (mode === "date") {
-        const currentDate = selectedValue || date;
-        setDate(currentDate);
-        setSelectedDate(currentDate.toISOString().split("T")[0]); // Format and store the date
-      }
+      const currentDate = selectedValue || date;
+      setDate(currentDate);
+      // Format the date without timezone offset
+      const formattedDate = new Date(currentDate.getTime() - (currentDate.getTimezoneOffset() * 60000))
+        .toISOString().split('T')[0];
+      setSelectedDate(formattedDate); // Format and store the date
     }
     setShow(false); // Hide the picker after selection
-  };
+  };;
 
   const handleWeightChange = (text) => {
     // Allow only numeric input

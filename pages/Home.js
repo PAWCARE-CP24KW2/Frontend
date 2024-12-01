@@ -46,7 +46,6 @@ export default function Home({ navigation }) {
           <Text style={styles.age}>Breed: {item.pet_breed}</Text>
           <Text style={styles.age}>Type: {item.pet_type}</Text>
           <Text style={styles.age}>Weight: {item.weight} kg</Text>
-          <Text style={styles.age}>date_of_birth: {item.date_of_birth.split('T')[0]} </Text>
         </View>
       </View>
     </TouchableOpacity>

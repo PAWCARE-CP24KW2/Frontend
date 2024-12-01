@@ -42,7 +42,10 @@ export default function AddAgendaModal({
       if (mode === "date") {
         const currentDate = selectedValue || date;
         setDate(currentDate);
-        setSelectedDate(currentDate.toISOString().split("T")[0]); // Format and store the date
+        // Format the date without timezone offset
+        const formattedDate = new Date(currentDate.getTime() - (currentDate.getTimezoneOffset() * 60000))
+          .toISOString().split('T')[0];
+        setSelectedDate(formattedDate);
       } else if (mode === "time") {
         const currentTime = selectedValue || time;
         setTime(currentTime);

@@ -22,7 +22,7 @@ const Stack = createStackNavigator();
 function HomeStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="HomeScreen" component={Home} />
       <Stack.Screen name="AddPet" component={Addpet} />
       <Stack.Screen name="ImportPet" component={ImportPet} />
       <Stack.Screen name="NewPet" component={NewPet} />
@@ -31,15 +31,6 @@ function HomeStack() {
     </Stack.Navigator>
   );
 }
-
-// function PetStack() {
-//   return (
-//     <Stack.Navigator screenOptions={{ headerShown: false }}>
-//       <Stack.Screen name="NewPet" component={NewPet} />
-//       <Stack.Screen name="AddPet" component={Addpet} />
-//     </Stack.Navigator>
-//   );
-// }
 
 export default function App() {
   return (
