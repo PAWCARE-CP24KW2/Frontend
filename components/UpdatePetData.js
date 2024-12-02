@@ -32,22 +32,26 @@ export default function UpdatePetData({ route, navigation }) {
   const [date, setDate] = useState(new Date(pet.date_of_birth));
   const [mode, setMode] = useState("date")
 
-  const onChange = (event, selectedValue) => {
-    if (event.type === "set") {
-      const currentDate = selectedValue || date;
-      setDate(currentDate.date_of_birth);
-      // Format the date without timezone offset
-      const formattedDate = new Date(currentDate.getTime() - (currentDate.getTimezoneOffset() * 60000))
-        .toISOString()
-        .split('T')[0];
-      setSelectedDate(formattedDate); // Format and store the date
-    }
-    setShow(false); // Hide the picker after selection
-  };
-
   const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);
+  };
+
+  const onChange = (event, selectedValue) => {
+    if (event.type === "set") {
+      if (mode === "date") {
+        const currentDate = selectedValue || new Date(transformedAgenda.date);
+        setDate(currentDate);
+        const formattedDate = new Date(currentDate.getTime() - (currentDate.getTimezoneOffset() * 60000))
+          .toISOString().split('T')[0];
+        setSelectedDate(formattedDate);
+        setNewItem((prevNewItem) => ({
+          ...prevNewItem,
+          date: formattedDate
+        }));
+      }
+    }
+    setShow(false);
   };
 
   const handleSave = async () => {
@@ -75,7 +79,7 @@ export default function UpdatePetData({ route, navigation }) {
       }
       console.log('Sending updated pet data:', selectedDate);
       await editPet(pet.pet_id, updatedPetData);
-      Alert.alert('Success', 'Pet updated successfully', [{ text: 'OK', onPress: () => navigation.navigate("Home") }]);
+      Alert.alert('Success', 'Pet updated successfully', [{ text: 'OK', onPress: () => navigation.navigate("HomeScreen") }]);
     } catch (error) {
       console.error('Error updating pet:', error);
       Alert.alert('Error', 'Failed to update pet');

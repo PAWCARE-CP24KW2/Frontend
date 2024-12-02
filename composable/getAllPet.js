@@ -7,14 +7,26 @@ export const getAllPet = async () => {
   try {
     const url = `${baseUrl}/api/pet/pets`;
     const response = await axios.get(url);
-    // console.log('Response data:', response.data);
     const pets = response.data.map(pet => ({
       ...pet,
       date_of_birth: formatDate(new Date(pet.date_of_birth))
     }));
     return pets;
   } catch (err) {
-    console.error('Error fetching data: ', err);
+    if (err.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error('Error response data:', err.response.data);
+      console.error('Error response status:', err.response.status);
+      console.error('Error response headers:', err.response.headers);
+    } else if (err.request) {
+      // The request was made but no response was received
+      console.error('Error request data:', err.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error('Error message:', err.message);
+    }
+    console.error('Error:', err.config);
     throw err;
   }
 };
