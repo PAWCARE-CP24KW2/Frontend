@@ -8,6 +8,7 @@ import {
   StyleSheet,
   SafeAreaView,
   Alert,
+  ScrollView
 } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -97,6 +98,7 @@ export default function AddPet({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <SafeAreaView style={styles.topNavBar}>
         <View style={MyStyles.header}></View>
       </SafeAreaView>
@@ -223,6 +225,7 @@ export default function AddPet({ navigation }) {
         >      
         <Text style={styles.buttonText}>Add</Text>
       </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 }
@@ -233,6 +236,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F5E4D8",
     padding: 20,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
   },
   header: {
     fontSize: 24,

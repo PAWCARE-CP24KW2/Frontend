@@ -8,6 +8,7 @@ import {
   Alert,
   Image,
   SafeAreaView,
+  ScrollView
 } from 'react-native';
 import { editPet } from '../composable/putPetData';
 import DropdownTypeComponent from '../components/DropdownTypePet';
@@ -95,6 +96,7 @@ export default function UpdatePetData({ route, navigation }) {
 
   return (
     <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <SafeAreaView style={styles.topNavBar}>
         <View style={MyStyles.header}></View>
       </SafeAreaView>
@@ -242,6 +244,7 @@ export default function UpdatePetData({ route, navigation }) {
           <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
+      </ScrollView>
     </View>
   );
 }
@@ -252,6 +255,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
     backgroundColor: '#F2E5E1',
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
   },
   image: {
     width: 100,
