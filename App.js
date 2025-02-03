@@ -15,6 +15,9 @@ import Addpet from './pages/Addpet';
 import ViewPet from './pages/ViewPet';
 import ImportPet from './pages/ImportPet';
 import UpdatePetData from './components/UpdatePetData';
+import FirstPage from './pages/FirstPage';
+import Login from './pages/Login';
+import NewAccount from './pages/NewAccount';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -28,6 +31,19 @@ function HomeStack() {
       <Stack.Screen name="NewPet" component={NewPet} />
       <Stack.Screen name="ViewPet" component={ViewPet} />
       <Stack.Screen name="UpdatePetData" component={UpdatePetData} />
+      <Stack.Screen name="FirstPage" component={FirstPage} />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="NewAccount" component={NewAccount} />
+    </Stack.Navigator>
+  );
+}
+
+function AuthStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="FirstPage" component={FirstPage} />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="NewAccount" component={NewAccount} />
     </Stack.Navigator>
   );
 }
@@ -63,6 +79,7 @@ export default function App() {
         })}
       >
         <Tab.Screen name="Home" component={HomeStack} />
+        <Tab.Screen name="auth" component={AuthStack} />
         <Tab.Screen name="Calendar" component={Calendar} />
         <Tab.Screen name="Webboard" component={Webboard} />
         <Tab.Screen name="Settings" component={Settings} />

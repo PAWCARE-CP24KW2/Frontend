@@ -54,7 +54,7 @@ export default function Home({ navigation }) {
   return (
     <View style={styles.container}>
       {/* Top Navigation Bar */}
-      <SafeAreaView style={styles.topNavBar}>
+      <SafeAreaView  style={[styles.topNavBar, { backgroundColor: "#B6917B" }]}>
         <View style={MyStyles.header}>
           <TouchableOpacity
             style={{ marginRight: 12 }}
