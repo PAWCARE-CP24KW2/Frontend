@@ -18,19 +18,21 @@ import UpdatePetData from './components/UpdatePetData';
 import FirstPage from './pages/FirstPage';
 import Login from './pages/Login';
 import NewAccount from './pages/NewAccount';
+import Documents from './pages/Documents';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 function HomeStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="FirstPage">
       <Stack.Screen name="HomeScreen" component={Home} />
       <Stack.Screen name="AddPet" component={Addpet} />
       <Stack.Screen name="ImportPet" component={ImportPet} />
       <Stack.Screen name="NewPet" component={NewPet} />
       <Stack.Screen name="ViewPet" component={ViewPet} />
       <Stack.Screen name="UpdatePetData" component={UpdatePetData} />
+      <Stack.Screen name="Documents" component={Documents} />
       <Stack.Screen name="FirstPage" component={FirstPage} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="NewAccount" component={NewAccount} />
@@ -38,20 +40,12 @@ function HomeStack() {
   );
 }
 
-function AuthStack() {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="FirstPage" component={FirstPage} />
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="NewAccount" component={NewAccount} />
-    </Stack.Navigator>
-  );
-}
 
 export default function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator
+      
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
@@ -79,7 +73,6 @@ export default function App() {
         })}
       >
         <Tab.Screen name="Home" component={HomeStack} />
-        <Tab.Screen name="auth" component={AuthStack} />
         <Tab.Screen name="Calendar" component={Calendar} />
         <Tab.Screen name="Webboard" component={Webboard} />
         <Tab.Screen name="Settings" component={Settings} />

@@ -12,6 +12,7 @@ import { fetchAgendas } from "../composable/getAllAgendas.js";
 import { deleteAgenda } from "../composable/deleteAgenda.js";
 import { logProfileData } from "react-native-calendars/src/Profiler.js";
 import { cancelNotification } from "../composable/notificationService.js";
+import ConfirmModal from "./ConfirmModal.js";
 
 export default function MyCalendar() {
 
@@ -127,7 +128,7 @@ export default function MyCalendar() {
       <Text style={MyStyles.itemText}>{item.message}</Text>
       <Text style={MyStyles.itemTime}>{item.time}</Text>
       <TouchableOpacity
-        onPress={() => deleteData(item.id, selectedDate, item.title)}
+        onPress={() => handleDeletePress(item)}
         style={MyStyles.deleteButton}
       >
         <AntDesign name="delete" size={20} color="black" />
@@ -138,6 +139,22 @@ export default function MyCalendar() {
   const [isAddModalVisible, setisAddModalVisible] = useState(false);
   const [isEditModalVisible, setisEditModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleDeletePress = (item) => {
+    setSelectedItem(item);
+    setModalVisible(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedItem) {
+      deleteData(selectedItem.id, selectedDate, selectedItem.title);
+      setModalVisible(false);
+      setSelectedItem(null);
+    }
+  };
+
   return (
     <SafeAreaView style={MyStyles.container}>
       <View style={MyStyles.header}>
@@ -177,6 +194,13 @@ export default function MyCalendar() {
         setSelectedTime={setSelectedTime}
         setItems={setItems}
         currentTitle={currentTitle}
+      />
+
+      <ConfirmModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onConfirm={handleConfirmDelete}
+        message={`Are you sure you want to delete ${selectedItem ? selectedItem.title : ''} ?`}
       />
     </SafeAreaView>
   );
