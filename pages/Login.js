@@ -29,7 +29,7 @@ export default function LoginScreen({ navigation }) {
     try {
       const response = await postLoginUser(userData);
       Alert.alert("Success", "Login successful", [
-        { text: "OK", onPress: () => navigation.navigate('HomeScreen') }
+        { text: "OK", onPress: () => navigation.navigate('Main') }
       ]);
     } catch (error) {
       Alert.alert("Error", "Invalid username or password");
