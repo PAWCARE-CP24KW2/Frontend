@@ -174,13 +174,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#4A4A4A",
+    color: "#493628",
     marginBottom: 20,
   },
   label: {
     alignSelf: "flex-start",
     fontSize: 14,
-    color: "#4A4A4A",
+    color: "#493628",
+    fontWeight: "bold",
     marginBottom: 5,
   },
   input: {
@@ -221,7 +222,7 @@ const styles = StyleSheet.create({
   loginText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#FFF",
+    color: "#493628",
   },
   linkText: {
     fontSize: 14,

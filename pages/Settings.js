@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import jwt_decode from 'jwt-decode'; // Ensure this import is correct
+
+function parseJWT(token) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload);
+}
 
 export default function Settings({ navigation }) {
   const [firstName, setFirstName] = useState('');
@@ -11,7 +20,7 @@ export default function Settings({ navigation }) {
       try {
         const token = await AsyncStorage.getItem('userToken');
         if (token) {
-          const decodedToken = jwt_decode(token);
+          const decodedToken = parseJWT(token);
           console.log('Decoded Token:', decodedToken); // Log the decoded token
           setFirstName(decodedToken.user_firstname); // Assuming the token contains a 'user_firstname' field
         }

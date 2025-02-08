@@ -10,16 +10,16 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { MyStyles } from "../styles/MyStyle";
-import { getAllPet } from "../composable/getAllPet";
+import { getPetsByUserId } from '../composable/getPetFromId';
 import { useFocusEffect } from "@react-navigation/native";
+
 
 export default function Home({ navigation }) {
   const [items, setItems] = useState([]);
 
     const getPets = async () => {
       try {
-        const pets = await getAllPet();
-        // console.log("Response data:", pets);
+        const pets = await getPetsByUserId();
         setItems(pets);
       } catch (error) {
         console.error("Failed to fetch pets in component:", error);

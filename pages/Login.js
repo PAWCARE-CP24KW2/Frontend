@@ -73,6 +73,12 @@ export default function LoginScreen({ navigation }) {
           />
         </TouchableOpacity>
       </View>
+      <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.navigate('NewAccount')}
+            >
+              <Text style={styles.linkText}>OR HAVE NO ACCOUNT ?</Text>
+            </TouchableOpacity>
 
       <TouchableOpacity 
         style={styles.loginButton}
@@ -142,6 +148,11 @@ const styles = StyleSheet.create({
   loginText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#FFF",
+    color: "#493628",
+  },
+  linkText: {
+    fontSize: 14,
+    color: "#4A4A4A",
+    marginBottom: 10,
   },
 });

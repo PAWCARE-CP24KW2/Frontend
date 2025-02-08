@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 export default function FirstPage({ navigation }) {
   return (
     <View style={styles.container}>
-      {/* <Image source={require("./paw-logo.png")} style={styles.logo} /> */}
+      <Image source={require('../assets/Logo_PawCare.png')} style={styles.logo} />
       <Text style={styles.title}>Paw Care</Text>
 
       <TouchableOpacity 
@@ -32,14 +32,13 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
+    width: 250,
+    height: 250,
+    marginBottom: 0,
   },
   title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#4A4A4A",
+    fontSize: 46,
+    color: "#493628",
     marginBottom: 40,
   },
   button: {
@@ -54,7 +53,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#FFF",
+    color: "#493628",
   },
   linkText: {
     fontSize: 14,

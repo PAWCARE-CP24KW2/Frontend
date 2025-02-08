@@ -1,14 +1,13 @@
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const baseUrl = "http://192.168.1.139:8080";
-// const baseUrl = "http://capstone24.sit.kmutt.ac.th:8080/kw2";
+const baseUrl = "http://192.168.1.139:8080"; // Replace with your actual base URL
 
 export const addPet = async (Item, selectedDate) => {
   console.log('hello');
   
   // Prepare the data to be sent to the backend
   const postData = {
-    pet_export : 1,
     pet_name: Item.name,
     pet_breed: Item.breed,
     pet_type: Item.type,
@@ -23,24 +22,24 @@ export const addPet = async (Item, selectedDate) => {
   console.log('Sending data to backend:', postData); // Log the data being sent
 
   try {
-    const response = await axios.post(`${baseUrl}/api/pet/addPet`, postData);
+    const token = await AsyncStorage.getItem('userToken'); // Retrieve the token from AsyncStorage
+    const response = await axios.post(`${baseUrl}/api/pet/addPet`, postData, {
+      headers: {
+        Authorization: `Bearer ${token}` // Include the token in the request headers
+      }
+    });
     console.log('Pet added to backend:', response.data);
     return response.data; // Return the response from the backend if needed
   } catch (error) {
     if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error('Error adding Pet:', error.response.data);
-      console.error('Status code:', error.response.status);
-      console.error('Headers:', error.response.headers);
+      console.error('Error response data:', error.response.data);
+      console.error('Error response status:', error.response.status);
+      console.error('Error response headers:', error.response.headers);
     } else if (error.request) {
-      // The request was made but no response was received
-      console.error('No response received:', error.request);
+      console.error('Error request data:', error.request);
     } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error('Error setting up request:', error.message);
+      console.error('Error message:', error.message);
     }
-    throw error; 
+    throw error;
   }
 };
-
