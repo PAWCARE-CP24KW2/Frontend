@@ -102,7 +102,7 @@ export default function Home({ navigation }) {
           </Text>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate("NewPet")}
+            onPress={() => navigation.navigate("AddPet")}
           >
             <Text style={styles.buttonText}>ADD YOUR PET</Text>
           </TouchableOpacity>

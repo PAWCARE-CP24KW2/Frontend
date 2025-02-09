@@ -1,7 +1,6 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const baseUrl = "http://192.168.1.139:8080"; // Replace with your actual base URL
+import { BASE_URL } from '@env';
 
 export const editPet = async (id, updatedPetData) => {
   try {
@@ -10,7 +9,7 @@ export const editPet = async (id, updatedPetData) => {
       throw new Error('No token found');
     }
 
-    const response = await axios.put(`${baseUrl}/api/pet/${id}`, updatedPetData, {
+    const response = await axios.put(`${BASE_URL}/api/pet/${id}`, updatedPetData, {
       headers: {
         Authorization: `Bearer ${token}` // Include the token in the request headers
       }

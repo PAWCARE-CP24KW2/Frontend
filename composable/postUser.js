@@ -1,10 +1,9 @@
 import axios from 'axios';
-
-const baseUrl = "http://192.168.1.139:8080"; // Replace with your actual base URL
+import { BASE_URL } from '@env';
 
 export const postUser = async (userData) => {
   try {
-    const response = await axios.post(`${baseUrl}/api/user/register`, userData);
+    const response = await axios.post(`${BASE_URL}/api/user/register`, userData);
     return response.data;
   } catch (error) {
     if (error.response) {

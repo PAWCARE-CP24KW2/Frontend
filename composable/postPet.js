@@ -1,10 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const baseUrl = "http://192.168.1.139:8080"; // Replace with your actual base URL
+import { BASE_URL } from '@env';
 
 export const addPet = async (Item, selectedDate) => {
-  console.log('hello');
   
   // Prepare the data to be sent to the backend
   const postData = {
@@ -23,7 +21,7 @@ export const addPet = async (Item, selectedDate) => {
 
   try {
     const token = await AsyncStorage.getItem('userToken'); // Retrieve the token from AsyncStorage
-    const response = await axios.post(`${baseUrl}/api/pet/addPet`, postData, {
+    const response = await axios.post(`${BASE_URL}/api/pet/addPet`, postData, {
       headers: {
         Authorization: `Bearer ${token}` // Include the token in the request headers
       }

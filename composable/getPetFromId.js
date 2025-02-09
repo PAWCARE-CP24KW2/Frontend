@@ -1,7 +1,6 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const baseUrl = "http://192.168.1.139:8080"; // Replace with your actual base URL
+import { BASE_URL } from '@env';
 
 function parseJWT(token) {
   const base64Url = token.split('.')[1];
@@ -24,7 +23,7 @@ export const getPetsByUserId = async () => {
     console.log('decodedToken:', decodedToken);
     const userId = decodedToken.userId; // Assuming the token contains a 'user_id' field
 
-    const response = await axios.get(`${baseUrl}/api/pet/my`, {
+    const response = await axios.get(`${BASE_URL}/api/pet/myPet`, {
       headers: {
         Authorization: `Bearer ${token}` // Include the token in the request headers
       },

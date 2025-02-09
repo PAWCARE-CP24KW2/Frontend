@@ -1,7 +1,5 @@
 import axios from 'axios';
-
-const baseUrl = "http://192.168.1.139:8080";
-// const baseUrl = "http://capstone24.sit.kmutt.ac.th:8080/kw2";
+import { BASE_URL } from '@env';
 
 export const postAgenda = async (newItem, selectedDate, selectedTime) => {
   // Prepare the data to be sent to the backend
@@ -13,7 +11,7 @@ export const postAgenda = async (newItem, selectedDate, selectedTime) => {
   };
 
   try {
-    const response = await axios.post(`${baseUrl}/api/agendas/1/agendas`, postData);
+    const response = await axios.post(`${BASE_URL}/api/agendas/1/agendas`, postData);
     // console.log('Agenda added to backend:', response.data);
     return response.data; // Return the response from the backend if needed
   } catch (error) {

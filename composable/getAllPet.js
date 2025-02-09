@@ -1,11 +1,9 @@
 import axios from 'axios';
-
-const baseUrl = "http://192.168.1.139:8080";
-// const baseUrl = "http://capstone24.sit.kmutt.ac.th:8080/kw2";
+import { BASE_URL } from '@env'; 
 
 export const getAllPet = async () => {
   try {
-    const url = `${baseUrl}/api/pet/`;
+    const url = `${BASE_URL}/api/pet/`;
     const response = await axios.get(url);
     const pets = response.data.map(pet => ({
       ...pet,
