@@ -1,21 +1,21 @@
-import axios from "axios";
+import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const baseUrl = "http://192.168.1.139:8080"; // Replace with your actual base URL
 
-export const deletePet = async (id) => {
+export const getPetByPetId = async (id) => {
   try {
     const token = await AsyncStorage.getItem('userToken'); // Retrieve the token from AsyncStorage
     if (!token) {
       throw new Error('No token found');
     }
 
-    const response = await axios.delete(`${baseUrl}/api/pet/${id}`, {
+    const response = await axios.get(`${baseUrl}/api/pet/${id}`, {
       headers: {
         Authorization: `Bearer ${token}` // Include the token in the request headers
       }
     });
-    console.log("Deleted pet from backend:", response.data);
+    console.log("Fetched pet from backend:", response.data);
     return response.data;
   } catch (error) {
     if (error.response) {

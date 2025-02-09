@@ -32,8 +32,12 @@ export default function LoginScreen({ navigation }) {
         { text: "OK", onPress: () => navigation.navigate('Main') }
       ]);
     } catch (error) {
-      Alert.alert("Error", "Invalid username or password");
-    }finally {
+      if (error.response && error.response.status === 401) {
+        Alert.alert("Error", "Invalid username or password");
+      } else {
+        Alert.alert("Error", "Failed to login");
+      }
+    } finally {
       setUsername("");
       setPassword(""); // Clear the password field
     }
@@ -74,11 +78,11 @@ export default function LoginScreen({ navigation }) {
         </TouchableOpacity>
       </View>
       <TouchableOpacity
-              style={styles.button}
-              onPress={() => navigation.navigate('NewAccount')}
-            >
-              <Text style={styles.linkText}>OR HAVE NO ACCOUNT ?</Text>
-            </TouchableOpacity>
+        style={styles.button}
+        onPress={() => navigation.navigate('NewAccount')}
+      >
+        <Text style={styles.linkText}>OR HAVE NO ACCOUNT ?</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity 
         style={styles.loginButton}

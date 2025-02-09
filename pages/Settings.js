@@ -14,7 +14,6 @@ function parseJWT(token) {
 
 export default function Settings({ navigation }) {
   const [firstName, setFirstName] = useState('');
-
   useEffect(() => {
     const getTokenData = async () => {
       try {
@@ -36,7 +35,7 @@ export default function Settings({ navigation }) {
     try {
       await AsyncStorage.removeItem('userToken'); // Clear the token
       Alert.alert("Success", "Logged out successfully", [
-        { text: "OK", onPress: () => navigation.navigate('Home', { screen: 'FirstPage' }) }
+        { text: "OK", onPress: () => navigation.navigate('Auth', { screen: 'FirstPage' }) }
       ]);
     } catch (error) {
       console.error('Error logging out:', error);
@@ -47,20 +46,6 @@ export default function Settings({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Welcome to the Settings Screen, {firstName}</Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Home', { screen: 'Documents' })}
-      >
-        <Text style={styles.buttonText}>Documents Page</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Home', { screen: 'ViewPet' })}
-      >
-        <Text style={styles.buttonText}>ViewPet Page</Text>
-      </TouchableOpacity>
-
       <TouchableOpacity
         style={styles.button}
         onPress={handleLogout}

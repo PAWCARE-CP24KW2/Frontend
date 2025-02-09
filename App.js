@@ -9,7 +9,6 @@ import Login from './pages/Login';
 import NewAccount from './pages/NewAccount';
 import Addpet from './pages/Addpet';
 import ViewPet from './pages/ViewPet';
-import ImportPet from './pages/ImportPet';
 import UpdatePetData from './components/UpdatePetData';
 import Calendar from './pages/Calendar';
 import Webboard from './pages/Webboard';
@@ -17,7 +16,6 @@ import Settings from './pages/Settings';
 import Documents from './pages/Documents';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from './composable/toastConfig';
-import NewPet from './pages/NewPet';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -27,8 +25,6 @@ function HomeStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="HomeScreen" component={Home} />
       <Stack.Screen name="AddPet" component={Addpet} />
-      <Stack.Screen name="ImportPet" component={ImportPet} />
-      <Stack.Screen name="NewPet" component={NewPet} />
       <Stack.Screen name="ViewPet" component={ViewPet} />
       <Stack.Screen name="UpdatePetData" component={UpdatePetData} />
       <Stack.Screen name="Documents" component={Documents} />

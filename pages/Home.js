@@ -12,12 +12,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { MyStyles } from "../styles/MyStyle";
 import { getPetsByUserId } from '../composable/getPetFromId';
 import { useFocusEffect } from "@react-navigation/native";
+import petplaceholder from '../assets/petplaceholder.png';
 
 
 export default function Home({ navigation }) {
   const [items, setItems] = useState([]);
+  const [image, setImage] = useState();
 
     const getPets = async () => {
+      console.log("item", items);
       try {
         const pets = await getPetsByUserId();
         setItems(pets);
@@ -32,21 +35,37 @@ export default function Home({ navigation }) {
       }, [])
     );
 
+    const calculateAge = (birthdate) => {
+      const birthDate = new Date(birthdate);
+      const today = new Date();
+  
+      let years = today.getFullYear() - birthDate.getFullYear();
+      let months = today.getMonth() - birthDate.getMonth();
+      let days = today.getDate() - birthDate.getDate();
+  
+      if (days < 0) {
+        months--;
+        days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+      }
+  
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+  
+      return `${years} year${years > 1 ? 's' : ''} ${months} month${months !== 1 ? 's' : ''} ${days} day${days !== 1 ? 's' : ''}`;
+    };
+
   const renderItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => navigation.navigate("ViewPet", { pet: item },  ) }
     >
-      <View style={MyStyles.petItem}>
-        <Image
-          style={styles.image}
-          source={{ uri: "https://via.placeholder.com/80" }} // คุณสามารถเพิ่ม URL รูปภาพจริงแทน placeholder ได้
+      <View style={styles.petCard}>
+        <Image style={[styles.petImage, image && styles.imageWithBorder]}
+               source={image ? { uri: image } : petplaceholder}
         />
-        <View style={styles.infoContainer}>
-          <Text style={styles.gender}>{item.pet_name}</Text>
-          <Text style={styles.age}>Breed: {item.pet_breed}</Text>
-          <Text style={styles.age}>Type: {item.pet_type}</Text>
-          <Text style={styles.age}>Weight: {item.weight} kg</Text>
-        </View>
+        <Text style={styles.petName}>{item.pet_name}</Text>
+        <Text style={styles.petAge}>{calculateAge(item.date_of_birth)} old</Text>
       </View>
     </TouchableOpacity>
   );
@@ -58,7 +77,7 @@ export default function Home({ navigation }) {
         <View style={MyStyles.header}>
           <TouchableOpacity
             style={{ marginRight: 12 }}
-            onPress={() => navigation.navigate("NewPet")}
+            onPress={() => navigation.navigate("AddPet")}
           >
             <Ionicons name="add-circle-outline" size={45} color="black" />
           </TouchableOpacity>
@@ -129,7 +148,7 @@ const styles = StyleSheet.create({
   },
   age: {
     fontSize: 14,
-    color: "#7B7B7B",
+    color: "black",
   },
   noPetsContainer: {
     flex: 1,
@@ -164,6 +183,29 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     color: "#FFF",
+    fontWeight: "bold",
+  },
+  petCard: {
+    backgroundColor: "#B6917B",
+    borderRadius: 15,
+    margin: 15,
+    padding: 15,
+    alignItems: "center",
+  },
+  petImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
+  petName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 10,
+    color: "black",
+  },
+  petAge: {
+    fontSize: 14,
+    color: "black",
     fontWeight: "bold",
   },
 });

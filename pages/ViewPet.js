@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { MyStyles } from "../styles/MyStyle";
-import { getAllPet } from "../composable/getAllPet";
+import { getPetByPetId } from "../composable/getPetByPetId";
 import { deletePet } from "../composable/deletePet";
 import petplaceholder from '../assets/petplaceholder.png';
 import UploadModal from "../components/UploadModal";
@@ -30,8 +30,7 @@ export default function ViewPet({ route,navigation }) {
   useEffect(() => {
     const getPets = async () => {
       try {
-        const pets = await getAllPet();
-        // console.log("Response data:", pets);
+        const pets = await getPetByPetId(pet);
         setItems(pets);
       } catch (error) {
         console.error("Failed to fetch pets in component:", error);
@@ -172,9 +171,6 @@ export default function ViewPet({ route,navigation }) {
             <TouchableOpacity onPress={handleEdit}>
               <Ionicons name="pencil-outline" size={30} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity>
-              <Ionicons name="download-outline" size={30} color="black" />
-            </TouchableOpacity>
             <TouchableOpacity onPress={confirmDelete}>
               <Ionicons name="trash-outline" size={30} color="black" />
             </TouchableOpacity>
@@ -187,10 +183,6 @@ export default function ViewPet({ route,navigation }) {
             <Text style={styles.gridText}>Calendar</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.gridItem}>
-            <Ionicons name="people-outline" size={40} color="black" />
-            <Text style={styles.gridText}>Users</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.gridItem}>
             <Ionicons name="document-text-outline" size={40} color="black" />
             <Text style={styles.gridText}>Records</Text>
           </TouchableOpacity>
@@ -198,7 +190,9 @@ export default function ViewPet({ route,navigation }) {
             <Ionicons name="images-outline" size={40} color="black" />
             <Text style={styles.gridText}>Gallery</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.gridItem}>
+          <TouchableOpacity style={styles.gridItem}
+          onPress={() => navigation.navigate('Home', { screen: 'Documents' })}
+        >
             <Ionicons name="folder-outline" size={40} color="black" />
             <Text style={styles.gridText}>Documents</Text>
           </TouchableOpacity>

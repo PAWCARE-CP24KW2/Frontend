@@ -41,15 +41,11 @@ export default function UpdatePetData({ route, navigation }) {
   const onChange = (event, selectedValue) => {
     if (event.type === "set") {
       if (mode === "date") {
-        const currentDate = selectedValue || new Date(transformedAgenda.date);
+        const currentDate = selectedValue || new Date(pet.date_of_birth);
         setDate(currentDate);
         const formattedDate = new Date(currentDate.getTime() - (currentDate.getTimezoneOffset() * 60000))
           .toISOString().split('T')[0];
         setSelectedDate(formattedDate);
-        setNewItem((prevNewItem) => ({
-          ...prevNewItem,
-          date: formattedDate
-        }));
       }
     }
     setShow(false);
@@ -75,7 +71,7 @@ export default function UpdatePetData({ route, navigation }) {
         pet_space: environment,
         pet_neutered: neutered,
         weight: parseFloat(weight),
-        date_of_birth: selectedDate.split('T')[0],
+        date_of_birth: selectedDate,
         image,
       }
       console.log('Sending updated pet data:', selectedDate);
@@ -227,9 +223,9 @@ export default function UpdatePetData({ route, navigation }) {
         <TouchableOpacity
           style={[
             styles.radioButton,
-            neutered === false && styles.selectedRadio,
+            neutered === "No" && styles.selectedRadio,
           ]}
-          onPress={() => setNeutered(false)}
+          onPress={() => setNeutered("No")}
           value={neutered}
         >
           <Text style={styles.radioText}>No</Text>
