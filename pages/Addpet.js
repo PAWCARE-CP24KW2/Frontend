@@ -203,18 +203,18 @@ export default function AddPet({ navigation }) {
         <TouchableOpacity
           style={[
             styles.radioButton,
-            Item.neutered === true && styles.selectedRadio,
+            Item.neutered === "yes" && styles.selectedRadio,
           ]}
-          onPress={() => setItem({ ...Item, neutered: true })}
+          onPress={() => setItem({ ...Item, neutered: "yes" })}
         >
           <Text style={styles.radioText}>Yes</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.radioButton,
-            Item.neutered === "No" && styles.selectedRadio,
+            Item.neutered === "no" && styles.selectedRadio,
           ]}
-          onPress={() => setItem({ ...Item, neutered: "No" })}
+          onPress={() => setItem({ ...Item, neutered: "no" })}
         >
           <Text style={styles.radioText}>No</Text>
         </TouchableOpacity>
@@ -234,7 +234,7 @@ export default function AddPet({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5E4D8",
+    backgroundColor: "#EACEBE",
     padding: 20,
   },
   scrollViewContent: {
@@ -269,6 +269,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     borderColor: "#B6917B",
+    backgroundColor: "#F5E4D8",
     alignItems: "center",
   },
   selectedGender: {
@@ -281,13 +282,13 @@ const styles = StyleSheet.create({
   },
   radioButton: {
     flex: 1,
-    
     alignItems: "center",
     padding: 10,
     marginHorizontal: 5,
     borderWidth: 1,
     borderRadius: 10,
     borderColor: "#B6917B",
+    backgroundColor: "#F5E4D8",
   },
   selectedRadio: {
     backgroundColor: "#B6917B",

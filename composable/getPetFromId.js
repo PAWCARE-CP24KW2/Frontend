@@ -24,7 +24,7 @@ export const getPetsByUserId = async () => {
     console.log('decodedToken:', decodedToken);
     const userId = decodedToken.userId; // Assuming the token contains a 'user_id' field
 
-    const response = await axios.get(`${baseUrl}/api/pet/my`, {
+    const response = await axios.get(`${baseUrl}/api/pet/myPet`, {
       headers: {
         Authorization: `Bearer ${token}` // Include the token in the request headers
       },

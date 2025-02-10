@@ -16,6 +16,14 @@ export function showToast(status) {
     }
 }
 
+export function showDelPetToast(pet) {
+    Toast.show({
+        type: 'info',
+        text1: `Delete "${pet}" `,
+        text2: 'Your pet deleted successfully. 🗑️'
+    });
+}
+
 export function showDelToast(name) {
     Toast.show({
         type: 'info',
