@@ -20,7 +20,7 @@ export default function Home({ navigation }) {
   const [image, setImage] = useState();
 
     const getPets = async () => {
-      console.log("item", items);
+      // console.log("item", items);
       try {
         const pets = await getPetsByUserId();
         setItems(pets);

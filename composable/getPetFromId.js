@@ -20,7 +20,7 @@ export const getPetsByUserId = async () => {
     }
 
     const decodedToken = parseJWT(token); // Decode the token to get user_id
-    console.log('decodedToken:', decodedToken);
+    // console.log('decodedToken:', decodedToken);
     const userId = decodedToken.userId; // Assuming the token contains a 'user_id' field
 
     const response = await axios.get(`${BASE_URL}/api/pet/myPet`, {

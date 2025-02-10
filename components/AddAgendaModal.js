@@ -13,9 +13,12 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import TopBar from "./Topbar.js";
 import Icon from "react-native-vector-icons/Ionicons";
 import { showToast } from "../composable/showToast.js";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import DropdownComponent from "./Dropdown.js";
 import { postAgenda } from "../composable/postAgenda.js";
 import { scheduleNotification } from '../composable/notificationService.js';
+import DropdownSelectPet from "./DropdownSelectPet.js";
+import LoadingScreen from "./LoadingScreen.js";
 
 export default function AddAgendaModal({
   isAddModalVisible,
@@ -37,6 +40,8 @@ export default function AddAgendaModal({
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
   const [mode, setMode] = useState("date");
+  const [petId, setPetId] = useState(null);
+
   const onChange = (event, selectedValue) => {
     if (event.type === "set") {
       if (mode === "date") {
@@ -49,19 +54,19 @@ export default function AddAgendaModal({
       } else if (mode === "time") {
         const currentTime = selectedValue || time;
         setTime(currentTime);
-        setSelectedTime(formatTime(currentTime)); // Format and store the time
+        setSelectedTime(formatTime(currentTime));
       }
     }
     setShow(false);
   };
 
   const addItemToAgenda = async () => {
-    if (!newItem.title || !newItem.message || !selectedDate) {
+    if (!newItem.title || !newItem.message || !selectedDate ) {
       showToast('error');
       return;
     }
     try {
-      const response = await postAgenda(newItem, selectedDate, selectedTime);
+      const response = await postAgenda(newItem, selectedDate, selectedTime, petId);
       const agendaId = response.agenda_id;
 
       // Schedule the notification
@@ -87,7 +92,6 @@ export default function AddAgendaModal({
           notificationId,
         });
         setNewItem({ title: "", message: "", time: "" });
-        // console.log(updatedItems);
         
         return updatedItems;
       });
@@ -201,6 +205,9 @@ export default function AddAgendaModal({
                 onChange={onChange}
               />
             )}
+
+            <Text style={MyStyles.label}>Schedule for ?</Text>
+            <DropdownSelectPet newItem={newItem} setPetId={setPetId}/>
 
             <TouchableOpacity
               style={MyStyles.button}

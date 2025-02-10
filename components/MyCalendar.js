@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
 import React, { useState, useEffect, useCallback } from "react";
+import { useFocusEffect } from '@react-navigation/native';
 import { Agenda } from "react-native-calendars";
 import { calendarTheme } from "react-native-calendars";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -13,22 +14,11 @@ import { deleteAgenda } from "../composable/deleteAgenda.js";
 import { logProfileData } from "react-native-calendars/src/Profiler.js";
 import { cancelNotification } from "../composable/notificationService.js";
 import ConfirmModal from "./ConfirmModal.js";
+import DontHavePetModal from "./DontHavePetModal.js";
+import { getPetsByUserId } from "../composable/getPetFromId.js";
+import LoadingScreen from "./LoadingScreen.js";
 
-export default function MyCalendar() {
-
-  useEffect(() => {
-     const getAgendas = async () => {
-      try {
-        const agendas = await fetchAgendas();
-        setItems(agendas); 
-        // console.log('Transformed Agenda:', agendas);
-      } catch (error) {
-        console.error('Failed to fetch agendas in component:', error);
-      }
-    };
-    getAgendas();
-  }, []);
-
+export default function MyCalendar({ navigation }) {
   const getCurrentTime = () => {
     const date = new Date();
     const hours = String(date.getHours()).padStart(2, "0");
@@ -41,6 +31,44 @@ export default function MyCalendar() {
   const [selectedTime, setSelectedTime] = useState(getCurrentTime());
   const [editDate, setEditDate] = useState("");
   const [currentTitle, setCurrentTitle] = useState(null);
+  const [isAddModalVisible, setisAddModalVisible] = useState(false);
+  const [isEditModalVisible, setisEditModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalDontHasPet, setModalDontHasPet] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getAgendas = async () => {
+      try {
+        const agendas = await fetchAgendas();
+        setItems(agendas);
+      } catch (error) {
+        console.error('Failed to fetch agendas in component:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getAgendas();
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const getPets = async () => {
+        try {
+          const pets = await getPetsByUserId();
+          if (pets.length === 0) {
+            setModalDontHasPet(true);
+            return;
+          }
+          setModalDontHasPet(false);
+        } catch (error) {
+          console.error('Failed to fetch pets in component:', error);
+        }
+      };
+      getPets();
+    }, [])
+  );
 
   const deleteData = useCallback(async (id, date, title) => {
     try {
@@ -136,12 +164,6 @@ export default function MyCalendar() {
     </TouchableOpacity>
   ));
 
-  const [isAddModalVisible, setisAddModalVisible] = useState(false);
-  const [isEditModalVisible, setisEditModalVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-
-  const [modalVisible, setModalVisible] = useState(false);
-
   const handleDeletePress = (item) => {
     setSelectedItem(item);
     setModalVisible(true);
@@ -154,6 +176,27 @@ export default function MyCalendar() {
       setSelectedItem(null);
     }
   };
+
+  const handleNavigate = () => {
+    setModalDontHasPet(false)
+    navigation.navigate("Home");
+  }
+
+  if (loading) {
+    return (
+      <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.header}>
+          <TouchableOpacity
+            style={{ marginRight: 12 }}
+            onPress={() => setisAddModalVisible(true)}
+          >
+            <Ionicons name="add-circle-outline" size={45} color="black" />
+          </TouchableOpacity>
+        </View>
+        <LoadingScreen />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={MyStyles.container}>
@@ -202,6 +245,13 @@ export default function MyCalendar() {
         onConfirm={handleConfirmDelete}
         message={`Are you sure you want to delete ${selectedItem ? selectedItem.title : ''} ?`}
       />
+
+      <DontHavePetModal
+        visible={modalDontHasPet}
+        onConfirm={() => handleNavigate()}
+        message={`You need to create pet's profile to add activity.`}
+      />
+
     </SafeAreaView>
   );
 }

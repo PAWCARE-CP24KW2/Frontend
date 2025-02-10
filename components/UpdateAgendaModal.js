@@ -14,7 +14,7 @@ import TopBar from "./Topbar.js";
 import Icon from "react-native-vector-icons/Ionicons";
 import { showToast, showUpdateToast } from "../composable/showToast.js";
 import DropdownComponent from "./Dropdown.js";
-import { getAgendaFromId } from "../composable/getAgendaFromId.js";
+import { getAgendaFromId } from "../composable/getAgendaFromAgenId.js";
 import { putAgenda } from "../composable/putAgenda.js";
 import { fetchAgendas } from "../composable/getAllAgendas.js";
 import { cancelNotification, scheduleNotification } from '../composable/notificationService.js';
@@ -40,6 +40,10 @@ export default function UpdateAgenda({
   });
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(new Date());
+  const [mode, setMode] = useState("date");
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     const fetchAgendaData = async () => {
@@ -87,7 +91,7 @@ export default function UpdateAgenda({
       });
     }
   }, [transformedAgenda]);
-  
+
   const updateAgenda = async () => {
     console.log('updateAgenda called');
     const agendaId = selectedItem.id;
@@ -180,11 +184,6 @@ export default function UpdateAgenda({
       console.log('updateAgenda error:', error);
     }
   };
-  
-  const [date, setDate] = useState(new Date());
-  const [time, setTime] = useState(new Date());
-  const [mode, setMode] = useState("date");
-  const [show, setShow] = useState(false);
 
   const showMode = (currentMode) => {
     setShow(true);

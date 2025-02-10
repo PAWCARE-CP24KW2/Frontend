@@ -51,7 +51,7 @@ export const MyStyles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
-    marginTop: 5,
+    marginTop: 25,
   },
   buttonText: {
     color: "#FFFFFF",
@@ -64,7 +64,7 @@ export const MyStyles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
-    marginTop: 20,
+    marginTop: 10,
   },
   deleteButton: {
     position: "absolute",
@@ -153,7 +153,6 @@ export const MyStyles = StyleSheet.create({
     paddingVertical: 5,
     backgroundColor: '#FFF',
     marginTop: 10,
-    marginBottom: 20
   },
   petItem: {
   flexDirection: "row",

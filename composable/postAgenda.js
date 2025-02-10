@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { BASE_URL } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const postAgenda = async (newItem, selectedDate, selectedTime) => {
-  // Prepare the data to be sent to the backend
+export const postAgenda = async (newItem, selectedDate, selectedTime, petId) => {
   const postData = {
     event_title: newItem.title,
     event_description: newItem.message,
@@ -11,9 +11,13 @@ export const postAgenda = async (newItem, selectedDate, selectedTime) => {
   };
 
   try {
-    const response = await axios.post(`${BASE_URL}/api/agendas/1/agendas`, postData);
-    // console.log('Agenda added to backend:', response.data);
-    return response.data; // Return the response from the backend if needed
+    const token = await AsyncStorage.getItem('userToken');
+    const response = await axios.post(`${BASE_URL}/api/agendas/${petId}/agendas`, postData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data;
   } catch (error) {
     console.error('Error adding agenda:', error);
     throw error; 
