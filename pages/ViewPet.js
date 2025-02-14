@@ -69,7 +69,7 @@ export default function ViewPet({ route, navigation }) {
   };
 
   const handleEdit = () => {
-    console.log("Edit pet data:", pet);
+    // console.log("Edit pet data:", pet);
     navigation.navigate("UpdatePetData", { pet });
   };
 

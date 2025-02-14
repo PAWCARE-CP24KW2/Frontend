@@ -79,7 +79,7 @@ export default function UpdatePetData({ route, navigation }) {
         date_of_birth: selectedDate,
         image,
       };
-      console.log("Sending updated pet data:", selectedDate);
+      // console.log("Sending updated pet data:", selectedDate);
       await editPet(pet.pet_id, updatedPetData);
       Alert.alert("Success", "Pet updated successfully", [
         { text: "OK", onPress: () => navigation.navigate("HomeScreen") },

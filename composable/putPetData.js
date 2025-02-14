@@ -14,7 +14,7 @@ export const editPet = async (id, updatedPetData) => {
         Authorization: `Bearer ${token}` // Include the token in the request headers
       }
     });
-    console.log('Pet updated successfully:', response.data);
+    // console.log('Pet updated successfully:', response.data);
     return response.data;
   } catch (error) {
     if (error.response) {
