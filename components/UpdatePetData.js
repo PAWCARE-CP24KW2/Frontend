@@ -114,29 +114,34 @@ export default function UpdatePetData({ route, navigation }) {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <Text style={styles.sectionTitle}>Pet Name:</Text>
         <TextInput
           style={styles.input}
           placeholder="Pet Name"
           value={petName}
           onChangeText={setPetName}
         />
-        <DropdownTypeComponent
-          Item={{ type: petType }}
-          setItem={(item) => setPetType(item.type)}
-          currentPet={petType}
-        />
+        <Text style={styles.sectionTitle}>Pet Breed:</Text>
         <TextInput
           style={styles.input}
           placeholder="Pet Breed"
           value={petBreed}
           onChangeText={setPetBreed}
         />
+        <Text style={styles.sectionTitle}>Pet Type:</Text>
+        <DropdownTypeComponent
+          Item={{ type: petType }}
+          setItem={(item) => setPetType(item.type)}
+          currentPet={petType}
+        />
+        <Text style={styles.sectionTitle}>Pet Color:</Text>
         <TextInput
           style={styles.input}
           placeholder="Color"
           value={petColor}
           onChangeText={setPetColor}
         />
+        <Text style={styles.sectionTitle}>Pet Weight:</Text>
         <TextInput
           style={styles.input}
           placeholder="Weight"
@@ -144,8 +149,9 @@ export default function UpdatePetData({ route, navigation }) {
           onChangeText={handleWeightChange}
           keyboardType="numeric"
         />
+        <Text style={styles.sectionTitle}>Date of Birth:</Text>
         <TouchableOpacity
-          style={MyStyles.dateContainer}
+          style={styles.dateContainer}
           onPress={() => showMode("date")}
         >
           <Icon name="calendar" size={20} color="black" style={MyStyles.icon} />
@@ -166,7 +172,7 @@ export default function UpdatePetData({ route, navigation }) {
             onChange={onChange}
           />
         )}
-        <Text style={styles.sectionTitle}>Gender:</Text>
+        <Text style={styles.sectionTitle}>Pet Gender:</Text>
         <View style={styles.radioContainer}>
           <TouchableOpacity
             style={[
@@ -284,10 +290,21 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     marginBottom: 5,
-    marginTop: 10,
     fontSize: 16,
     fontWeight: "bold",
     color: "#4A4A4A",
+  },
+  dateContainer: {
+    height: 49,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginBottom: 5,
+    backgroundColor: '#FFF',
   },
   radioContainer: {
     flexDirection: "row",
@@ -355,8 +372,9 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: "#B6917B",
     borderWidth: 1,
-    borderRadius: 10,
-    marginBottom: 20,
+    borderRadius: 8,
+    borderColor: '#000',
+    marginBottom: 5,
     paddingHorizontal: 10,
     backgroundColor: "#FFF",
   },
@@ -426,7 +444,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     borderWidth: 1,
     borderColor: "#B6917B",
-    borderRadius: 10,
+    borderRadius: 8,
     alignItems: "center",
   },
   dateText: {

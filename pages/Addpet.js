@@ -227,31 +227,35 @@ export default function AddPet({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
-
+        <Text style={styles.sectionTitle}>Pet Name:</Text>
         <TextInput
           style={styles.input}
           placeholder="Name"
           value={Item.name}
           onChangeText={(text) => setItem({ ...Item, name: text })}
         />
+        <Text style={styles.sectionTitle}>Pet Breed:</Text>
         <TextInput
           style={styles.input}
           placeholder="Breed"
           value={Item.breed}
           onChangeText={(text) => setItem({ ...Item, breed: text })}
         />
+        <Text style={styles.sectionTitle}>Pet Type:</Text>
         <DropdownTypeComponent
           style={styles.DropdownType}
           type={Item.type}
           Item={Item}
           setItem={setItem}
         />
+        <Text style={styles.sectionTitle}>Pet Color:</Text>
         <TextInput
           style={styles.input}
           placeholder="Color"
           value={Item.color}
           onChangeText={(text) => setItem({ ...Item, color: text })}
         />
+        <Text style={styles.sectionTitle}>Pet Weight:</Text>
         <TextInput
           style={styles.input}
           placeholder="Weight"
@@ -259,8 +263,9 @@ export default function AddPet({ navigation }) {
           keyboardType="numeric"
           onChangeText={handleWeightChange}
         />
+        <Text style={styles.sectionTitle}>Date of Birth:</Text>
         <TouchableOpacity
-          style={MyStyles.dateContainer}
+          style={styles.dateContainer}
           onPress={() => showMode("date")}
         >
           <Icon name="calendar" size={20} color="black" style={MyStyles.icon} />
@@ -281,7 +286,7 @@ export default function AddPet({ navigation }) {
             onChange={onChange}
           />
         )}
-        <Text style={styles.sectionTitle}>Gender:</Text>
+        <Text style={styles.sectionTitle}>Pet Gender:</Text>
         <View style={styles.radioContainer}>
           <TouchableOpacity
             style={[
@@ -387,11 +392,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   input: {
-    height: 40,
+    height: 49,
     borderColor: "#B6917B",
     borderWidth: 1,
-    borderRadius: 10,
-    marginBottom: 20,
+    borderRadius: 8,
+    borderColor: '#000',
+    marginBottom: 5,
     paddingHorizontal: 10,
     backgroundColor: "#FFF",
   },
@@ -399,6 +405,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 20,
+  },
+  dateContainer: {
+    height: 49,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginBottom: 5,
+    backgroundColor: '#FFF',
   },
   genderButton: {
     flex: 1,
@@ -435,7 +453,6 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     marginBottom: 5,
-    marginTop: 10,
     fontSize: 16,
     fontWeight: "bold",
     color: "#4A4A4A",
@@ -450,7 +467,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     borderWidth: 1,
     borderColor: "#B6917B",
-    borderRadius: 10,
+    borderRadius: 8,
     alignItems: "center",
   },
   dateText: {
