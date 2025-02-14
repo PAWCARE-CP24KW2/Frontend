@@ -6,6 +6,7 @@ export const postLoginUser = async (userData) => {
   try {
     const response = await axios.post(`${BASE_URL}/api/user/auth/login`, userData);
     const { token, refreshToken} = response.data;
+    console.log('Login response token:', token);
     await AsyncStorage.setItem('userToken', token); // Store the token
     await AsyncStorage.setItem('refreshToken', refreshToken); // Store the refresh token
     return response.data;

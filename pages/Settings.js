@@ -21,7 +21,13 @@ export default function Settings({ navigation }) {
         if (token) {
           const decodedToken = parseJWT(token);
           console.log('Decoded Token:', decodedToken); // Log the decoded token
-          setFirstName(decodedToken.user_firstname); // Assuming the token contains a 'user_firstname' field
+          if (decodedToken.user_firstname) {
+            setFirstName(decodedToken.user_firstname); // Assuming the token contains a 'user_firstname' field
+          } else {
+            console.error('user_firstname not found in token');
+          }
+        } else {
+          console.error('No token found');
         }
       } catch (error) {
         console.error('Error decoding token:', error);

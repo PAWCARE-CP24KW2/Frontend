@@ -27,7 +27,6 @@ export default function UpdatePetData({ route, navigation }) {
   const [environment, setEnvironment] = useState(pet.pet_space);
   const [neutered, setNeutered] = useState(pet.pet_neutered);
   const [image, setImage] = useState(pet.image);
-
   const [selectedDate, setSelectedDate] = useState(pet.date_of_birth.split("T")[0]);
   const [show, setShow] = useState(false);
   const [date, setDate] = useState(new Date(pet.date_of_birth));
@@ -37,6 +36,9 @@ export default function UpdatePetData({ route, navigation }) {
     setShow(true);
     setMode(currentMode);
   };
+
+  console.log('Pet data:', pet);
+  
 
   const onChange = (event, selectedValue) => {
     if (event.type === "set") {
@@ -97,19 +99,6 @@ export default function UpdatePetData({ route, navigation }) {
         <View style={MyStyles.header}></View>
       </SafeAreaView>
       <Text style={styles.title}>Edit Pet Data</Text>
-      <TouchableOpacity
-      style={styles.imageContainer}
-      value={image}
-      onChangeText={setImage}
-      >
-       <Image
-          style={styles.image}
-          source={{
-            uri: pet.image || "https://via.placeholder.com/80",
-          }}
-        /> 
-      </TouchableOpacity>
-      
       <TextInput
         style={styles.input}
         placeholder="Pet Name"
@@ -146,7 +135,7 @@ export default function UpdatePetData({ route, navigation }) {
       >
         <Icon name="calendar" size={20} color="black" style={MyStyles.icon} />
         <TextInput
-          style={styles.input}
+          style={MyStyles.input}
           placeholder="Date of Birth"
           value={selectedDate}
           editable={false}
@@ -172,7 +161,7 @@ export default function UpdatePetData({ route, navigation }) {
           onPress={() => setGender("male")}
           value={gender}
         >
-          <Text style={styles.genderText}>Male</Text>
+          <Text style={styles.radioText}>Male</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -182,9 +171,10 @@ export default function UpdatePetData({ route, navigation }) {
           onPress={() => setGender("female")}
           value={gender}
         >
-          <Text style={styles.genderText}>Female</Text>
+          <Text style={styles.radioText}>Female</Text>
         </TouchableOpacity>
       </View>
+
       <Text style={styles.sectionTitle}>Living Environment:</Text>
       <View style={styles.radioContainer}>
         <TouchableOpacity
@@ -213,9 +203,9 @@ export default function UpdatePetData({ route, navigation }) {
         <TouchableOpacity
           style={[
             styles.radioButton,
-            neutered === true && styles.selectedRadio,
+            neutered === "yes" && styles.selectedRadio,
           ]}
-          onPress={() => setNeutered(true)}
+          onPress={() => setNeutered("yes")}
           value={neutered}
         >
           <Text style={styles.radioText}>Yes</Text>
@@ -223,9 +213,9 @@ export default function UpdatePetData({ route, navigation }) {
         <TouchableOpacity
           style={[
             styles.radioButton,
-            neutered === "No" && styles.selectedRadio,
+            neutered === "no" && styles.selectedRadio,
           ]}
-          onPress={() => setNeutered("No")}
+          onPress={() => setNeutered("no")}
           value={neutered}
         >
           <Text style={styles.radioText}>No</Text>
@@ -248,9 +238,8 @@ export default function UpdatePetData({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#F2E5E1',
+    backgroundColor: "#EACEBE",
   },
   scrollViewContent: {
     flexGrow: 1,
@@ -290,6 +279,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     borderColor: "#B6917B",
+    backgroundColor: "#F5E4D8",
   },
   selectedRadio: {
     backgroundColor: "#B6917B",
@@ -298,6 +288,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     color: "#4A4A4A",
     fontWeight: "bold",
+    alignItems: "center",
   },
   genderButton: {
     flex: 1,
@@ -307,6 +298,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: "#B6917B",
     alignItems: "center",
+    backgroundColor: "#F5E4D8",
   },
   genderText: {
     color: "#4A4A4A",
@@ -339,12 +331,12 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderWidth: 1,
     borderColor: "#B6917B",
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
-    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderRadius: 10,
+    marginBottom: 20,
+    paddingHorizontal: 10,
+    backgroundColor: "#FFF",
   },
   dropdownContainer: {
     borderWidth: 1,
@@ -396,7 +388,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   button: {
-    backgroundColor: '#B6917B',
+    backgroundColor: "#493628",
     padding: 10,
     paddingHorizontal: 20,
     borderRadius: 10,

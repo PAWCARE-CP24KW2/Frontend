@@ -8,6 +8,7 @@ export const postAgenda = async (newItem, selectedDate, selectedTime, petId) => 
     event_description: newItem.message,
     event_start: `${selectedDate}T${selectedTime}:00Z`,
     status: "Scheduled", // Adjust status if needed
+    agenda_category_id: newItem.category_id,
   };
 
   try {

@@ -18,7 +18,6 @@ import DropdownComponent from "./Dropdown.js";
 import { postAgenda } from "../composable/postAgenda.js";
 import { scheduleNotification } from '../composable/notificationService.js';
 import DropdownSelectPet from "./DropdownSelectPet.js";
-import LoadingScreen from "./LoadingScreen.js";
 
 export default function AddAgendaModal({
   isAddModalVisible,
@@ -36,6 +35,7 @@ export default function AddAgendaModal({
     title: "",
     message: "",
     time: "",
+    category_id: ""
   });
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());

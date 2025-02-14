@@ -234,7 +234,7 @@ export default function AddPet({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5E4D8",
+    backgroundColor: "#EACEBE",
     padding: 20,
   },
   scrollViewContent: {
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     color: "#4A4A4A",
   },
   button: {
-    backgroundColor: "#B6917B",
+    backgroundColor: "#493628",
     padding: 15,
     borderRadius: 10,
     marginTop: 20,
