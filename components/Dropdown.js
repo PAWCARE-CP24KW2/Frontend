@@ -2,23 +2,28 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { getCategories } from '../composable/getCategories';
 
-const data = [
-  { name: 'Appointment', value: '1' },
-  { name: 'Vaccine', value: '2' },
-  { name: 'Bath', value: '3' },
-  { name: 'Exercise', value: '4' },
-  { name: 'Grooming', value: '5' }
-];
 const DropdownComponent = ({ newItem, setNewItem, currentTitle }) => {
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
-
-  // useEffect(() => {
-  //   if (currentTitle) {
-  //     console.log("in dropdown " + currentTitle);
-  //   }
-  // }, [currentTitle]);
+  const [categories, setCategories] = useState([]);
+  
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategories();
+        const formattedCategories = data.map(category => ({
+          name: category.category_name,
+          value: category.agenda_category_id,
+        }));
+        setCategories(formattedCategories);
+      } catch (error) {
+        console.error('Failed to fetch categories in component:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -29,7 +34,7 @@ const DropdownComponent = ({ newItem, setNewItem, currentTitle }) => {
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        data={data}
+        data={categories}
         search
         maxHeight={300}
         labelField="name"
@@ -40,7 +45,7 @@ const DropdownComponent = ({ newItem, setNewItem, currentTitle }) => {
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={item => {
-          setNewItem({ ...newItem, title: item.name})
+          setNewItem({ ...newItem, title: item.name, category_id: item.value });
           setIsFocus(false);
         }}
         renderLeftIcon={() => (

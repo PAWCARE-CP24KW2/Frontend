@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -8,13 +8,14 @@ import {
   Alert,
   Image,
   SafeAreaView,
-  ScrollView
-} from 'react-native';
-import { editPet } from '../composable/putPetData';
-import DropdownTypeComponent from '../components/DropdownTypePet';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { MyStyles } from '../styles/MyStyle';
-import Icon from 'react-native-vector-icons/Ionicons';
+  ScrollView,
+} from "react-native";
+import { editPet } from "../composable/putPetData";
+import DropdownTypeComponent from "../components/DropdownTypePet";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { MyStyles } from "../styles/MyStyle";
+import Icon from "react-native-vector-icons/Ionicons";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function UpdatePetData({ route, navigation }) {
   const { pet } = route.params;
@@ -27,11 +28,12 @@ export default function UpdatePetData({ route, navigation }) {
   const [environment, setEnvironment] = useState(pet.pet_space);
   const [neutered, setNeutered] = useState(pet.pet_neutered);
   const [image, setImage] = useState(pet.image);
-
-  const [selectedDate, setSelectedDate] = useState(pet.date_of_birth.split("T")[0]);
+  const [selectedDate, setSelectedDate] = useState(
+    pet.date_of_birth.split("T")[0]
+  );
   const [show, setShow] = useState(false);
   const [date, setDate] = useState(new Date(pet.date_of_birth));
-  const [mode, setMode] = useState("date")
+  const [mode, setMode] = useState("date");
 
   const showMode = (currentMode) => {
     setShow(true);
@@ -43,8 +45,11 @@ export default function UpdatePetData({ route, navigation }) {
       if (mode === "date") {
         const currentDate = selectedValue || new Date(pet.date_of_birth);
         setDate(currentDate);
-        const formattedDate = new Date(currentDate.getTime() - (currentDate.getTimezoneOffset() * 60000))
-          .toISOString().split('T')[0];
+        const formattedDate = new Date(
+          currentDate.getTime() - currentDate.getTimezoneOffset() * 60000
+        )
+          .toISOString()
+          .split("T")[0];
         setSelectedDate(formattedDate);
       }
     }
@@ -56,10 +61,10 @@ export default function UpdatePetData({ route, navigation }) {
       if (!pet.pet_id) {
         throw new Error("Pet ID is undefined");
       } else if (!petName) {
-        Alert.alert('Error', 'Pet Name Cannot be Empty');
+        Alert.alert("Error", "Pet Name Cannot be Empty");
         return;
       } else if (!weight) {
-        Alert.alert('Error', 'Weight Cannot be Empty');
+        Alert.alert("Error", "Weight Cannot be Empty");
         return;
       }
       const updatedPetData = {
@@ -73,13 +78,15 @@ export default function UpdatePetData({ route, navigation }) {
         weight: parseFloat(weight),
         date_of_birth: selectedDate,
         image,
-      }
-      console.log('Sending updated pet data:', selectedDate);
+      };
+      console.log("Sending updated pet data:", selectedDate);
       await editPet(pet.pet_id, updatedPetData);
-      Alert.alert('Success', 'Pet updated successfully', [{ text: 'OK', onPress: () => navigation.navigate("HomeScreen") }]);
+      Alert.alert("Success", "Pet updated successfully", [
+        { text: "OK", onPress: () => navigation.navigate("HomeScreen") },
+      ]);
     } catch (error) {
-      console.error('Error updating pet:', error);
-      Alert.alert('Error', 'Failed to update pet');
+      console.error("Error updating pet:", error);
+      Alert.alert("Error", "Failed to update pet");
     }
   };
 
@@ -91,184 +98,189 @@ export default function UpdatePetData({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-      <SafeAreaView style={styles.topNavBar}>
-        <View style={MyStyles.header}></View>
-      </SafeAreaView>
-      <Text style={styles.title}>Edit Pet Data</Text>
-      <TouchableOpacity
-      style={styles.imageContainer}
-      value={image}
-      onChangeText={setImage}
-      >
-       <Image
-          style={styles.image}
-          source={{
-            uri: pet.image || "https://via.placeholder.com/80",
-          }}
-        /> 
-      </TouchableOpacity>
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Pet Name"
-        value={petName}
-        onChangeText={setPetName}
-      />
-      <DropdownTypeComponent
-        Item={{ type: petType }}
-        setItem={(item) => setPetType(item.type)}
-        currentPet={petType}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Pet Breed"
-        value={petBreed}
-        onChangeText={setPetBreed}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Color"
-        value={petColor}
-        onChangeText={setPetColor}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Weight"
-        value={weight}
-        onChangeText={handleWeightChange}
-        keyboardType="numeric"
-      />
-      <TouchableOpacity
-        style={MyStyles.dateContainer}
-        onPress={() => showMode("date")}
-      >
-        <Icon name="calendar" size={20} color="black" style={MyStyles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="Date of Birth"
-          value={selectedDate}
-          editable={false}
-        />
-      </TouchableOpacity>
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={date}
-          mode={mode}
-          is24Hour={true}
-          display="default"
-          onChange={onChange}
-        />
-      )}
-      <Text style={styles.sectionTitle}>Gender:</Text>
-      <View style={styles.radioContainer}>
+    <SafeAreaView style={MyStyles.container}>
+
+      <View style={MyStyles.arrowHeader}>
         <TouchableOpacity
-          style={[
-            styles.genderButton,
-            gender === "male" && styles.selectedGender,
-          ]}
-          onPress={() => setGender("male")}
-          value={gender}
+          style={{ marginLeft: 10, paddingVertical: 5 }}
+          onPress={() => navigation.goBack()}
         >
-          <Text style={styles.genderText}>Male</Text>
+          <Ionicons name="arrow-back-outline" size={35} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.genderButton,
-            gender === "female" && styles.selectedGender,
-          ]}
-          onPress={() => setGender("female")}
-          value={gender}
-        >
-          <Text style={styles.genderText}>Female</Text>
-        </TouchableOpacity>
-      </View>
-      <Text style={styles.sectionTitle}>Living Environment:</Text>
-      <View style={styles.radioContainer}>
-        <TouchableOpacity
-          style={[
-            styles.radioButton,
-            environment === "outdoor" && styles.selectedRadio,
-          ]}
-          onPress={() => setEnvironment("outdoor")}
-          value={environment}
-        >
-          <Text style={styles.radioText}>Outdoor</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.radioButton,
-            environment === "indoor" && styles.selectedRadio,
-          ]}
-          onPress={() => setEnvironment("indoor")}
-          value={environment}
-        >
-          <Text style={styles.radioText}>Indoor</Text>
-        </TouchableOpacity>
-      </View>
-      <Text style={styles.sectionTitle}>Has your animal been neutered?</Text>
-      <View style={styles.radioContainer}>
-        <TouchableOpacity
-          style={[
-            styles.radioButton,
-            neutered === true && styles.selectedRadio,
-          ]}
-          onPress={() => setNeutered(true)}
-          value={neutered}
-        >
-          <Text style={styles.radioText}>Yes</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.radioButton,
-            neutered === "No" && styles.selectedRadio,
-          ]}
-          onPress={() => setNeutered("No")}
-          value={neutered}
-        >
-          <Text style={styles.radioText}>No</Text>
-        </TouchableOpacity>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <Text style={styles.header}>Edit Pet Data</Text>
+        </View>
+        <View style={{ width: 35 }} />
       </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleSave}>
-          <Text style={styles.buttonText}>Save</Text>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <TextInput
+          style={styles.input}
+          placeholder="Pet Name"
+          value={petName}
+          onChangeText={setPetName}
+        />
+        <DropdownTypeComponent
+          Item={{ type: petType }}
+          setItem={(item) => setPetType(item.type)}
+          currentPet={petType}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Pet Breed"
+          value={petBreed}
+          onChangeText={setPetBreed}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Color"
+          value={petColor}
+          onChangeText={setPetColor}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Weight"
+          value={weight}
+          onChangeText={handleWeightChange}
+          keyboardType="numeric"
+        />
+        <TouchableOpacity
+          style={MyStyles.dateContainer}
+          onPress={() => showMode("date")}
+        >
+          <Icon name="calendar" size={20} color="black" style={MyStyles.icon} />
+          <TextInput
+            style={MyStyles.input}
+            placeholder="Date of Birth"
+            value={selectedDate}
+            editable={false}
+          />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-          <Text style={styles.buttonText}>Cancel</Text>
-        </TouchableOpacity>
-      </View>
+        {show && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            mode={mode}
+            is24Hour={true}
+            display="default"
+            onChange={onChange}
+          />
+        )}
+        <Text style={styles.sectionTitle}>Gender:</Text>
+        <View style={styles.radioContainer}>
+          <TouchableOpacity
+            style={[
+              styles.genderButton,
+              gender === "male" && styles.selectedRadio,
+            ]}
+            onPress={() => setGender("male")}
+            value={gender}
+          >
+            <Text style={styles.radioText}>Male</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.genderButton,
+              gender === "female" && styles.selectedRadio,
+            ]}
+            onPress={() => setGender("female")}
+            value={gender}
+          >
+            <Text style={styles.radioText}>Female</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.sectionTitle}>Living Environment:</Text>
+        <View style={styles.radioContainer}>
+          <TouchableOpacity
+            style={[
+              styles.radioButton,
+              environment === "outdoor" && styles.selectedRadio,
+            ]}
+            onPress={() => setEnvironment("outdoor")}
+            value={environment}
+          >
+            <Text style={styles.radioText}>Outdoor</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.radioButton,
+              environment === "indoor" && styles.selectedRadio,
+            ]}
+            onPress={() => setEnvironment("indoor")}
+            value={environment}
+          >
+            <Text style={styles.radioText}>Indoor</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.sectionTitle}>Has your animal been neutered?</Text>
+        <View style={styles.radioContainer}>
+          <TouchableOpacity
+            style={[
+              styles.radioButton,
+              neutered === "yes" && styles.selectedRadio,
+            ]}
+            onPress={() => setNeutered("yes")}
+            value={neutered}
+          >
+            <Text style={styles.radioText}>Yes</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.radioButton,
+              neutered === "no" && styles.selectedRadio,
+            ]}
+            onPress={() => setNeutered("no")}
+            value={neutered}
+          >
+            <Text style={styles.radioText}>No</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleSave}>
+            <Text style={styles.buttonText}>Save</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.buttonText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#F2E5E1',
+    backgroundColor: "#EACEBE",
   },
   scrollViewContent: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
+    padding: 25,
+  },
+  header: {
+    fontSize: 24,
+    justifyContent: "space-around",
+    color: "black",
+    textAlign: "center",
   },
   image: {
     width: 100,
     height: 100,
     borderRadius: 50,
     marginRight: 10,
-    alignItems: 'center',
-
+    alignItems: "center",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   sectionTitle: {
     marginBottom: 5,
@@ -290,14 +302,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     borderColor: "#B6917B",
+    backgroundColor: "#F5E4D8",
   },
   selectedRadio: {
     backgroundColor: "#B6917B",
+    borderWidth: 1,
+    borderColor: "black",
   },
   radioText: {
     marginLeft: 10,
-    color: "#4A4A4A",
+    color: "black",
     fontWeight: "bold",
+    alignItems: "center",
   },
   genderButton: {
     flex: 1,
@@ -307,16 +323,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: "#B6917B",
     alignItems: "center",
+    backgroundColor: "#F5E4D8",
   },
   genderText: {
     color: "#4A4A4A",
     fontWeight: "bold",
   },
-  selectedGender: {
-    backgroundColor: "#B6917B",
-  },
   imageContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
   },
   petImage: {
@@ -325,62 +339,62 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   editImageButton: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     right: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 15,
     padding: 5,
     elevation: 3,
   },
   editImageText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   input: {
     height: 40,
-    borderWidth: 1,
     borderColor: "#B6917B",
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
-    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderRadius: 10,
+    marginBottom: 20,
+    paddingHorizontal: 10,
+    backgroundColor: "#FFF",
   },
   dropdownContainer: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
     marginBottom: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   dropdown: {
     height: 40,
-    width: '100%',
+    width: "100%",
   },
   genderContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 10,
   },
   genderOption: {
     flex: 1,
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
     marginHorizontal: 5,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   genderSelected: {
-    backgroundColor: '#B6917B',
+    backgroundColor: "#B6917B",
   },
   genderText: {
-    color: '#000',
+    color: "#000",
   },
   weightContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
   },
   weightInput: {
@@ -389,22 +403,22 @@ const styles = StyleSheet.create({
   },
   weightUnit: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
   button: {
-    backgroundColor: '#B6917B',
+    backgroundColor: "#493628",
     padding: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
   },
   buttonText: {
     fontSize: 16,
-    color: '#FFF',
-    fontWeight: 'bold',
+    color: "#FFF",
+    fontWeight: "bold",
   },
   datePicker: {
     marginBottom: 20,

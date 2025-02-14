@@ -48,6 +48,7 @@ export const fetchAgendas = async () => {
         message: agenda.agenda_message,
         status: agenda.status,
         time: time,
+        petid: agenda.pet_id,
       });
     });
     

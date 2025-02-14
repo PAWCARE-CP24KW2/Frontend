@@ -13,19 +13,21 @@ import { MyStyles } from "../styles/MyStyle";
 import { getPetsByUserId } from '../composable/getPetFromId';
 import { useFocusEffect } from "@react-navigation/native";
 import petplaceholder from '../assets/petplaceholder.png';
-
+import LoadingScreen from "../components/LoadingScreen";
 
 export default function Home({ navigation }) {
   const [items, setItems] = useState([]);
-  const [image, setImage] = useState();
+  const [loading, setLoading] = useState(true);
 
     const getPets = async () => {
-      // console.log("item", items);
       try {
         const pets = await getPetsByUserId();
         setItems(pets);
       } catch (error) {
         console.error("Failed to fetch pets in component:", error);
+      }
+      finally {
+        setLoading(false);
       }
     };
 
@@ -61,8 +63,8 @@ export default function Home({ navigation }) {
       onPress={() => navigation.navigate("ViewPet", { pet: item },  ) }
     >
       <View style={styles.petCard}>
-        <Image style={[styles.petImage, image && styles.imageWithBorder]}
-               source={image ? { uri: image } : petplaceholder}
+        <Image style={[styles.petImage, item && styles.imageWithBorder]}
+          source={item && item.profile_path ? { uri: item.profile_path } : petplaceholder}
         />
         <Text style={styles.petName}>{item.pet_name}</Text>
         <Text style={styles.petAge}>{calculateAge(item.date_of_birth)} old</Text>
@@ -70,19 +72,31 @@ export default function Home({ navigation }) {
     </TouchableOpacity>
   );
 
-  return (
-    <View style={styles.container}>
-      {/* Top Navigation Bar */}
-      <SafeAreaView  style={[styles.topNavBar, { backgroundColor: "#B6917B" }]}>
+  if (loading) {
+    return (
+      <SafeAreaView style={MyStyles.container}>
         <View style={MyStyles.header}>
           <TouchableOpacity
-            style={{ marginRight: 12 }}
-            onPress={() => navigation.navigate("AddPet")}
+            style={{ marginRight: 15 }}
           >
             <Ionicons name="add-circle-outline" size={45} color="black" />
           </TouchableOpacity>
         </View>
+        <LoadingScreen />
       </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={MyStyles.container}>
+      <View style={MyStyles.header}>
+        <TouchableOpacity
+          style={{ marginRight: 15 }}
+          onPress={() => navigation.navigate("AddPet")}
+        >
+          <Ionicons name="add-circle-outline" size={45} color="black" />
+        </TouchableOpacity>
+      </View>
 
       {/* Main Content */}
       {items.length > 0 ? (
@@ -108,7 +122,7 @@ export default function Home({ navigation }) {
           </TouchableOpacity>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -188,7 +202,9 @@ const styles = StyleSheet.create({
   petCard: {
     backgroundColor: "#B6917B",
     borderRadius: 15,
-    margin: 15,
+    marginHorizontal: 20,
+    marginVertical: 8,
+    marginTop: 10,
     padding: 15,
     alignItems: "center",
   },
@@ -208,4 +224,8 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight: "bold",
   },
+  imageWithBorder: {
+    borderWidth: 1.5,
+    borderColor: 'black',
+  }
 });

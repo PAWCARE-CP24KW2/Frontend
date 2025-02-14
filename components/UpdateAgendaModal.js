@@ -93,7 +93,6 @@ export default function UpdateAgenda({
   }, [transformedAgenda]);
 
   const updateAgenda = async () => {
-    console.log('updateAgenda called');
     const agendaId = selectedItem.id;
     const eventTitle = newItem.title;
     const eventDescription = newItem.message;
@@ -134,7 +133,7 @@ export default function UpdateAgenda({
 
         // Remove the item from the old date if it exists
         if (newItem.date !== transformedAgenda.date) {
-          console.log(transformedAgenda.date)
+          // console.log(transformedAgenda.date)
           updatedItems[transformedAgenda.date] = updatedItems[transformedAgenda.date].filter(
             (item) => item.id !== agendaId
           );
@@ -169,7 +168,7 @@ export default function UpdateAgenda({
           });
         }
 
-        console.log('Items updated:', updatedItems);
+        // console.log('Items updated:', updatedItems);
         return updatedItems;
       });
       setTransformedAgenda((prevAgenda) => ({
@@ -178,7 +177,6 @@ export default function UpdateAgenda({
       }));
 
       showUpdateToast('success');
-      console.log('updateAgenda success');
     } catch (error) {
       showToast('Failed to update agenda');
       console.log('updateAgenda error:', error);

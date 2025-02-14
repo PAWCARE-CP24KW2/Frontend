@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
+import { View, Text, TouchableOpacity, SafeAreaView, Image } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
 import React, { useState, useEffect, useCallback } from "react";
 import { useFocusEffect } from '@react-navigation/native';
@@ -17,6 +17,8 @@ import ConfirmModal from "./ConfirmModal.js";
 import DontHavePetModal from "./DontHavePetModal.js";
 import { getPetsByUserId } from "../composable/getPetFromId.js";
 import LoadingScreen from "./LoadingScreen.js";
+import { getPetByPetId } from "../composable/getPetByPetId.js";
+import petplaceholder from "../assets/petplaceholder.png";
 
 export default function MyCalendar({ navigation }) {
   const getCurrentTime = () => {
@@ -37,6 +39,7 @@ export default function MyCalendar({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalDontHasPet, setModalDontHasPet] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [petImages, setPetImages] = useState({});
 
   useEffect(() => {
     const getAgendas = async () => {
@@ -62,6 +65,14 @@ export default function MyCalendar({ navigation }) {
             return;
           }
           setModalDontHasPet(false);
+
+          // Fetch pet images
+          const petImages = {};
+          for (const pet of pets) {
+            const petData = await getPetByPetId(pet.pet_id);
+            petImages[pet.pet_id] = petData.profile_path;
+          }
+          setPetImages(petImages);
         } catch (error) {
           console.error('Failed to fetch pets in component:', error);
         }
@@ -142,27 +153,47 @@ export default function MyCalendar({ navigation }) {
     reservationsBackgroundColor: "#EACEBE", //Agenda list backgroundColor
   };
 
-  const RenderAgendaItem = React.memo(({ item, date }) => (
-    <TouchableOpacity
-      style={MyStyles.item}
-      onPress={() => {
-        setSelectedItem(item); // Store the selected item
-        setEditDate(date);
-        setisEditModalVisible(true); // Open the modal
-        setCurrentTitle(item.title);
-      }}
-    >
-      <Text style={MyStyles.itemHeader}>{item.title}</Text>
-      <Text style={MyStyles.itemText}>{item.message}</Text>
-      <Text style={MyStyles.itemTime}>{item.time}</Text>
+  const RenderAgendaItem = React.memo(({ item, date }) => {
+    const [petImage, setPetImage] = useState(null);
+
+    useEffect(() => {
+      const fetchPetImage = async () => {
+        try {
+          const petData = await getPetByPetId(item.petid);
+          setPetImage(petData.profile_path);
+        } catch (error) {
+          console.error('Failed to fetch pet image:', error);
+        }
+      };
+      fetchPetImage();
+    }, [item.petid]);
+
+    return (
       <TouchableOpacity
-        onPress={() => handleDeletePress(item)}
-        style={MyStyles.deleteButton}
+        style={MyStyles.item}
+        onPress={() => {
+          setSelectedItem(item); // Store the selected item
+          setEditDate(date);
+          setisEditModalVisible(true); // Open the modal
+          setCurrentTitle(item.title);
+        }}
       >
-        <AntDesign name="delete" size={20} color="black" />
+        <Image
+          source={petImage ? { uri: petImage } : petplaceholder}
+          style={[styles.petImage, item && styles.imageWithBorder]}
+        />
+        <Text style={MyStyles.itemHeader}>{item.title}</Text>
+        <Text style={MyStyles.itemText}>{item.message}</Text>
+        <Text style={MyStyles.itemTime}>{item.time}</Text>
+        <TouchableOpacity
+          onPress={() => handleDeletePress(item)}
+          style={MyStyles.deleteButton}
+        >
+          <AntDesign name="delete" size={20} color="black" />
+        </TouchableOpacity>
       </TouchableOpacity>
-    </TouchableOpacity>
-  ));
+    );
+  });
 
   const handleDeletePress = (item) => {
     setSelectedItem(item);
@@ -187,8 +218,7 @@ export default function MyCalendar({ navigation }) {
       <SafeAreaView style={MyStyles.container}>
         <View style={MyStyles.header}>
           <TouchableOpacity
-            style={{ marginRight: 12 }}
-            onPress={() => setisAddModalVisible(true)}
+            style={{ marginRight: 15 }}
           >
             <Ionicons name="add-circle-outline" size={45} color="black" />
           </TouchableOpacity>
@@ -202,7 +232,7 @@ export default function MyCalendar({ navigation }) {
     <SafeAreaView style={MyStyles.container}>
       <View style={MyStyles.header}>
         <TouchableOpacity
-          style={{ marginRight: 12 }}
+          style={{ marginRight: 15 }}
           onPress={() => setisAddModalVisible(true)}
         >
           <Ionicons name="add-circle-outline" size={45} color="black" />
@@ -255,3 +285,16 @@ export default function MyCalendar({ navigation }) {
     </SafeAreaView>
   );
 }
+
+const styles = {
+  petImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+  },
+  imageWithBorder: {
+    borderWidth: 1,
+    borderColor: "black",
+  },
+};

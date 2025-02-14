@@ -7,12 +7,21 @@ export const MyStyles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    backgroundColor: "#EACEBE",
   },
   header: {
     flexDirection: "row",
     justifyContent: "flex-end",
     marginTop: 45,
-    marginBottom: 15,
+    paddingVertical: 19,
+    backgroundColor: "#B6917B",
+  },
+  arrowHeader: {
+    flexDirection: "row",
+    alignItems: 'center',
+    marginTop:45,
+    paddingVertical: 19,
+    backgroundColor: "#B6917B",
   },
   textHeader: {
     fontSize: 30,

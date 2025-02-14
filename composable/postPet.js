@@ -2,32 +2,16 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '@env';
 
-export const addPet = async (Item, selectedDate) => {
-  
-  // Prepare the data to be sent to the backend
-  const postData = {
-    pet_name: Item.name,
-    pet_breed: Item.breed,
-    pet_type: Item.type,
-    pet_color: Item.color,
-    pet_gender: Item.gender,
-    pet_space: Item.environment,
-    pet_neutered: Item.neutered,
-    weight: parseFloat(Item.weight),
-    date_of_birth: selectedDate,
-  };
-  
-  console.log('Sending data to backend:', postData); // Log the data being sent
-
+export const addPet = async (formData) => {
   try {
-    const token = await AsyncStorage.getItem('userToken'); // Retrieve the token from AsyncStorage
-    const response = await axios.post(`${BASE_URL}/api/pet/addPet`, postData, {
+    const token = await AsyncStorage.getItem('userToken');
+    const response = await axios.post(`${BASE_URL}/api/pet/addPet`, formData, {
       headers: {
-        Authorization: `Bearer ${token}` // Include the token in the request headers
-      }
+        Authorization: `Bearer ${token}`, 
+        'Content-Type': 'multipart/form-data',
+      },
     });
-    console.log('Pet added to backend:', response.data);
-    return response.data; // Return the response from the backend if needed
+    return response.data;
   } catch (error) {
     if (error.response) {
       console.error('Error response data:', error.response.data);

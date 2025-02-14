@@ -14,7 +14,7 @@ export const getPetByPetId = async (id) => {
         Authorization: `Bearer ${token}` // Include the token in the request headers
       }
     });
-    console.log("Fetched pet from backend:", response.data);
+    // console.log("Fetched pet from backend:", response.data);
     return response.data;
   } catch (error) {
     if (error.response) {

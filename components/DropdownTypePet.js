@@ -7,8 +7,16 @@ const data = [
   { name: "Dog", value: "1" },
   { name: "Cat", value: "2" },
   { name: "Hamster", value: "3" },
-  { name: "Horse", value: "4" },
-  { name: "Crocodile", value: "5" },
+  { name: "Spider", value: "4" },
+  { name: "Bird", value: "5" },
+  { name: "Rabbit", value: "6" },
+  { name: "Hedgehog", value: "7" },
+  { name: "fish", value: "8" },
+  { name: "Turtle", value: "9" },
+  { name: "Snake", value: "10" },
+  { name: "Monkey", value: "11" },
+  { name: "Crayfish", value: "12" },
+  { name: "Gecko", value: "13" },
 ];
 
 const DropdownTypeComponent = ({ Item, setItem, currentPet }) => {
