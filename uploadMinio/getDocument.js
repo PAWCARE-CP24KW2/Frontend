@@ -10,18 +10,15 @@ export const getDocument = async (petId, fileType) => {
         'Authorization': `Bearer ${token}`,
       },
     });
-
     return response.data;
   } catch (error) {
-    if (error.response) {
+    if(error.response.status === 404) {
+      return null;
+    } else {
       console.error('Error response data:', error.response.data);
       console.error('Error response status:', error.response.status);
       console.error('Error response headers:', error.response.headers);
-    } else if (error.request) {
-      console.error('Error request data:', error.request);
-    } else {
-      console.error('Error message:', error.message);
-    }
+    } 
     throw error;
   }
 };

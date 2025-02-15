@@ -33,21 +33,32 @@ export default function Documents({ navigation, route }) {
   const [passportImage, setPassportImage] = useState(null);
 
   const fetchDocuments = async () => {
-    console.log(!registrationImage);
     try {
       if (!registrationImage) {
         const registrationResponse = await getDocument(petId, 'registration');
-        setRegistrationImage(registrationResponse.file_path);
+        if (registrationResponse && registrationResponse.file_path) {
+          setRegistrationImage(registrationResponse.file_path);
+        } else {
+          setRegistrationImage(null);
+        }
       }
-
+  
       if (!medicalBookImage) {
         const medicalBookResponse = await getDocument(petId, 'medicalbook');
-        setMedicalBookImage(medicalBookResponse.file_path);
+        if (medicalBookResponse && medicalBookResponse.file_path) {
+          setMedicalBookImage(medicalBookResponse.file_path);
+        } else {
+          setMedicalBookImage(null);
+        }
       }
-
+  
       if (!passportImage) {
         const passportResponse = await getDocument(petId, 'passportno');
-        setPassportImage(passportResponse.file_path);
+        if (passportResponse && passportResponse.file_path) {
+          setPassportImage(passportResponse.file_path);
+        } else {
+          setPassportImage(null);
+        }
       }
     } catch (error) {
       console.error('Failed to fetch documents:', error);
