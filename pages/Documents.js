@@ -20,6 +20,7 @@ import { uploadPassport } from "../uploadMinio/uploadPassport";
 import { deleteDocument } from "../uploadMinio/deleteDocument";
 import { getDocument } from "../uploadMinio/getDocument";
 import { useFocusEffect } from "@react-navigation/native";
+import LoadingScreen from "../components/LoadingScreen";
 
 export default function Documents({ navigation, route }) {
   const { petId } = route.params;
@@ -31,6 +32,7 @@ export default function Documents({ navigation, route }) {
   const [registrationImage, setRegistrationImage] = useState(null);
   const [medicalBookImage, setMedicalBookImage] = useState(null);
   const [passportImage, setPassportImage] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchDocuments = async () => {
     try {
@@ -62,6 +64,9 @@ export default function Documents({ navigation, route }) {
       }
     } catch (error) {
       console.error('Failed to fetch documents:', error);
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -175,6 +180,19 @@ export default function Documents({ navigation, route }) {
     }
     setModalDeleteVisible(false);
   };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={MyStyles.container}>
+        <SafeAreaView style={styles.topBar}>
+        <TouchableOpacity style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+      </SafeAreaView>
+        <LoadingScreen />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: "#EACEBE" }}>
