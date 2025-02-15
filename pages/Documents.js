@@ -15,8 +15,13 @@ import * as ImagePicker from "expo-image-picker";
 import ShowDocumentModal from "../components/ShowDocumentModal";
 import ConfirmModal from "../components/ConfirmModal";
 import { showUploadDocToast } from "../composable/showToast";
+import { uploadRegistration } from "../uploadMinio/uploadRegistration";
+import { uploadMedicalBook } from "../uploadMinio/uploadMedicalBook";
+import { uploadPassport } from "../uploadMinio/uploadPassport";
+import { deleteDocument } from "../uploadMinio/deleteDocument";
 
-export default function Documents({ navigation }) {
+export default function Documents({ navigation, route }) {
+  const { petId } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -25,7 +30,7 @@ export default function Documents({ navigation }) {
   const [registrationImage, setRegistrationImage] = useState(null);
   const [medicalBookImage, setMedicalBookImage] = useState(null);
   const [passportImage, setPassportImage] = useState(null);
-
+  
   const uploadImage = async (setImage, mode) => {
     try {
       let result = {};
@@ -58,15 +63,20 @@ export default function Documents({ navigation }) {
   };
 
   const saveImage = async (uri, setImage) => {
+    let response;
     try {
       if (setImage === setRegistrationImage) {
-        setRegistrationImage(uri);
+        response = await uploadRegistration(petId, uri);
+        setRegistrationImage(response.file.url);
         showUploadDocToast("Registration No.", 'upload');
       } else if (setImage === setMedicalBookImage) {
-        setMedicalBookImage(uri);
+        response = await uploadMedicalBook(petId, uri);
+        setMedicalBookImage(response.file.url);
         showUploadDocToast("Medical book", 'upload');
       } else if (setImage === setPassportImage) {
-        setPassportImage(uri);
+        // setPassportImage(uri);
+        response = await uploadPassport(petId, uri);
+        setPassportImage(response.file.url);
         showUploadDocToast("Passport No.", 'upload');
       }
       setModalVisible(false);
@@ -79,12 +89,15 @@ export default function Documents({ navigation }) {
     try {
       if (setImage === setRegistrationImage) {
         setRegistrationImage(null);
+        await deleteDocument(petId, "registration");
         showUploadDocToast("Registration No.", 'delete');
       } else if (setImage === setMedicalBookImage) {
         setMedicalBookImage(null);
+        await deleteDocument(petId, "medicalbook");
         showUploadDocToast("Medical book", 'delete');
       } else if (setImage === setPassportImage) {
         setPassportImage(null);
+        await deleteDocument(petId, "passportno");
         showUploadDocToast("Passport No.", 'delete');
       }
       setModalVisible(false);
@@ -94,7 +107,8 @@ export default function Documents({ navigation }) {
     }
   };
 
-  const handleDeletePress = () => {
+  const handleDeletePress = (message) => {
+    setModalMessage(message);
     setModalDeleteVisible(true);
   };
 
@@ -157,8 +171,8 @@ export default function Documents({ navigation }) {
             Registration No.
           </Text>
           {registrationImage ? (
-            <TouchableOpacity style={styles.addButton} onPress={() => handleOpenModal("Edit Registration No.")}>
-              <Ionicons name="ellipsis-horizontal" size={24} color="white" />
+            <TouchableOpacity style={styles.addButton} onPress={() => handleDeletePress("Registration No.")}>
+              <Ionicons name="trash-outline" size={24} color="white" />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity style={styles.addButton} onPress={() => handleOpenModal("Upload Registration No.")}>
@@ -173,8 +187,8 @@ export default function Documents({ navigation }) {
             Medical Book
           </Text>
           {medicalBookImage ? (
-            <TouchableOpacity style={styles.addButton} onPress={() => handleOpenModal("Edit Medical Book")}>
-              <Ionicons name="ellipsis-horizontal" size={24} color="white" />
+            <TouchableOpacity style={styles.addButton} onPress={() => handleDeletePress("Medical Book")}>
+              <Ionicons name="trash-outline" size={24} color="white" />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity style={styles.addButton} onPress={() => handleOpenModal("Upload Medical Book")}>
@@ -189,8 +203,8 @@ export default function Documents({ navigation }) {
             Passport No.
           </Text>
           {passportImage ? (
-            <TouchableOpacity style={styles.addButton} onPress={() => handleOpenModal("Edit Passport No.")}>
-              <Ionicons name="ellipsis-horizontal" size={24} color="white" />
+            <TouchableOpacity style={styles.addButton} onPress={() => handleDeletePress("Passport No.")}>
+              <Ionicons name="trash-outline" size={24} color="white" />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity style={styles.addButton} onPress={() => handleOpenModal("Upload Passport No.")}>
@@ -246,7 +260,7 @@ export default function Documents({ navigation }) {
             visible={modalDeleteVisible}
             onClose={() => setModalDeleteVisible(false)}
             onConfirm={handleConfirmDelete}
-            message={`Are you sure you want to deleted ?`}
+            message={`Are you sure you want to deleted ${modalMessage}?`}
           />
         </View>
       </View>

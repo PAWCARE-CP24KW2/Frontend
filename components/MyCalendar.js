@@ -51,38 +51,35 @@ export default function MyCalendar({ navigation }) {
     }
   };
 
-  useEffect(() => {
-    getAgendas();
-  }, []);
+  const getPets = async () => {
+    try {
+      const pets = await getPetsByUserId();
+      if (pets.length === 0) {
+        setModalDontHasPet(true);
+        return;
+      }
+      setModalDontHasPet(false);
+
+      // Fetch pet images
+      const petImages = {};
+      for (const pet of pets) {
+        if (pet.pet_id) {
+          try {
+            const petData = await getPetByPetId(pet.pet_id);
+            petImages[pet.pet_id] = petData.profile_path;
+          } catch (error) {
+            console.error(`Failed to fetch pet image for pet_id ${pet.pet_id}:`, error);
+          }
+        }
+      }
+      setPetImages(petImages);
+    } catch (error) {
+      console.error('Failed to fetch pets in component:', error);
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
-      const getPets = async () => {
-        try {
-          const pets = await getPetsByUserId();
-          if (pets.length === 0) {
-            setModalDontHasPet(true);
-            return;
-          }
-          setModalDontHasPet(false);
-
-          // Fetch pet images
-          // const petImages = {};
-          // for (const pet of pets) {
-          //   if (pet.pet_id) {
-          //     try {
-          //       const petData = await getPetByPetId(pet.pet_id);
-          //       petImages[pet.pet_id] = petData.profile_path;
-          //     } catch (error) {
-          //       console.error(`Failed to fetch pet image for pet_id ${pet.pet_id}:`, error);
-          //     }
-          //   }
-          // }
-          // setPetImages(petImages);
-        } catch (error) {
-          console.error('Failed to fetch pets in component:', error);
-        }
-      };
       getPets();
       getAgendas();
     }, [])
@@ -162,18 +159,19 @@ export default function MyCalendar({ navigation }) {
   const RenderAgendaItem = React.memo(({ item, date }) => {
     const [petImage, setPetImage] = useState(null);
 
-    // useEffect(() => {
-    //   const fetchPetImage = async () => {
-    //     try {
-    //       const petData = await getPetByPetId(item.petid);
-    //       setPetImage(petData.profile_path);
-    //       console.log(`Fetched pet image for pet_id ${item.petid}: ${petData.profile_path}`);
-    //     } catch (error) {
-    //       console.error(`Failed to fetch pet image for pet_id ${item.petid}:`, error);
-    //     }
-    //   };
-    //   fetchPetImage();
-    // }, [item.petid]);
+    useEffect(() => {
+      const fetchPetImage = async () => {
+        try {
+          const petData = await getPetByPetId(item.petid);
+          setPetImage(petData.profile_path);
+          console.log(`Fetched pet image for pet_id ${item.petid}: ${petData.profile_path}`);
+          console.log("-------------------------");
+        } catch (error) {
+          console.error(`Failed to fetch pet image for pet_id ${item.petid}:`, error);
+        }
+      };
+      fetchPetImage();
+    }, [item.petid]);
 
     return (
       <TouchableOpacity
@@ -185,13 +183,17 @@ export default function MyCalendar({ navigation }) {
           setCurrentTitle(item.title);
         }}
       >
-        {/* <Image
-          source={petImage ? { uri: petImage } : petplaceholder}
-          style={[styles.petImage, item && styles.imageWithBorder]}
-        /> */}
-        <Text style={MyStyles.itemHeader}>{item.title}</Text>
-        <Text style={MyStyles.itemText}>{item.message}</Text>
-        <Text style={MyStyles.itemTime}>{item.time}</Text>
+        <View style={styles.itemContainer}>
+          <Image
+            source={petImage ? { uri: petImage } : petplaceholder}
+            style={[styles.petImage, item && styles.imageWithBorder]}
+          />
+          <View style={styles.textContainer}>
+            <Text style={MyStyles.itemHeader}>{item.title}</Text>
+            <Text style={MyStyles.itemText}>{item.message}</Text>
+            <Text style={MyStyles.itemTime}>{item.time}</Text>
+          </View>
+        </View>
         <TouchableOpacity
           onPress={() => handleDeletePress(item)}
           style={MyStyles.deleteButton}
@@ -292,6 +294,15 @@ export default function MyCalendar({ navigation }) {
 }
 
 const styles = {
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundcColor: 'white',
+  },
+  textContainer: {
+    flex: 1,
+    marginLeft: 10,
+  },
   petImage: {
     width: 50,
     height: 50,

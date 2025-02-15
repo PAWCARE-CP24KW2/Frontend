@@ -208,7 +208,7 @@ export default function ViewPet({ route, navigation }) {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.gridItem}
-            onPress={() => navigation.navigate("Home", { screen: "Documents" })}
+            onPress={() => navigation.navigate("Home", { screen: "Documents", params: {petId: pet.pet_id} })}
           >
             <Ionicons name="folder-outline" size={40} color="black" />
             <Text style={styles.gridText}>Documents</Text>
