@@ -14,7 +14,7 @@ export const deletePet = async (id) => {
         Authorization: `Bearer ${token}` // Include the token in the request headers
       }
     });
-    console.log("Deleted pet from backend:", response.data);
+    // console.log("Deleted pet from backend:", response.data);
     return response.data;
   } catch (error) {
     if (error.response) {

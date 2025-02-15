@@ -11,7 +11,6 @@ import UpdateAgenda from "./UpdateAgendaModal.js";
 import { showDelToast } from "../composable/showToast.js";
 import { fetchAgendas } from "../composable/getAllAgendas.js";
 import { deleteAgenda } from "../composable/deleteAgenda.js";
-import { logProfileData } from "react-native-calendars/src/Profiler.js";
 import { cancelNotification } from "../composable/notificationService.js";
 import ConfirmModal from "./ConfirmModal.js";
 import DontHavePetModal from "./DontHavePetModal.js";
@@ -41,22 +40,23 @@ export default function MyCalendar({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [petImages, setPetImages] = useState({});
 
+  const getAgendas = async () => {
+    try {
+      const agendas = await fetchAgendas();
+      setItems(agendas);
+    } catch (error) {
+      console.error('Failed to fetch agendas in component:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const getAgendas = async () => {
-      try {
-        const agendas = await fetchAgendas();
-        setItems(agendas);
-      } catch (error) {
-        console.error('Failed to fetch agendas in component:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     getAgendas();
   }, []);
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       const getPets = async () => {
         try {
           const pets = await getPetsByUserId();
@@ -67,17 +67,24 @@ export default function MyCalendar({ navigation }) {
           setModalDontHasPet(false);
 
           // Fetch pet images
-          const petImages = {};
-          for (const pet of pets) {
-            const petData = await getPetByPetId(pet.pet_id);
-            petImages[pet.pet_id] = petData.profile_path;
-          }
-          setPetImages(petImages);
+          // const petImages = {};
+          // for (const pet of pets) {
+          //   if (pet.pet_id) {
+          //     try {
+          //       const petData = await getPetByPetId(pet.pet_id);
+          //       petImages[pet.pet_id] = petData.profile_path;
+          //     } catch (error) {
+          //       console.error(`Failed to fetch pet image for pet_id ${pet.pet_id}:`, error);
+          //     }
+          //   }
+          // }
+          // setPetImages(petImages);
         } catch (error) {
           console.error('Failed to fetch pets in component:', error);
         }
       };
       getPets();
+      getAgendas();
     }, [])
   );
 
@@ -92,7 +99,7 @@ export default function MyCalendar({ navigation }) {
           const itemToDelete = updatedItems[date].find((item) => item.id === id);
           if (itemToDelete && itemToDelete.notificationId) {
             cancelNotification(itemToDelete.notificationId);
-            console.log('Notification cancelled:', itemToDelete.notificationId);
+            // console.log('Notification cancelled:', itemToDelete.notificationId);
           }
           updatedItems[date] = updatedItems[date].filter((item) => item.id !== id);
 
@@ -108,7 +115,6 @@ export default function MyCalendar({ navigation }) {
       console.error('Error deleting agenda:', error);
     }
   }, []);
-
 
   const renderEmptyData = () => {
     return (
@@ -156,17 +162,18 @@ export default function MyCalendar({ navigation }) {
   const RenderAgendaItem = React.memo(({ item, date }) => {
     const [petImage, setPetImage] = useState(null);
 
-    useEffect(() => {
-      const fetchPetImage = async () => {
-        try {
-          const petData = await getPetByPetId(item.petid);
-          setPetImage(petData.profile_path);
-        } catch (error) {
-          console.error('Failed to fetch pet image:', error);
-        }
-      };
-      fetchPetImage();
-    }, [item.petid]);
+    // useEffect(() => {
+    //   const fetchPetImage = async () => {
+    //     try {
+    //       const petData = await getPetByPetId(item.petid);
+    //       setPetImage(petData.profile_path);
+    //       console.log(`Fetched pet image for pet_id ${item.petid}: ${petData.profile_path}`);
+    //     } catch (error) {
+    //       console.error(`Failed to fetch pet image for pet_id ${item.petid}:`, error);
+    //     }
+    //   };
+    //   fetchPetImage();
+    // }, [item.petid]);
 
     return (
       <TouchableOpacity
@@ -178,10 +185,10 @@ export default function MyCalendar({ navigation }) {
           setCurrentTitle(item.title);
         }}
       >
-        <Image
+        {/* <Image
           source={petImage ? { uri: petImage } : petplaceholder}
           style={[styles.petImage, item && styles.imageWithBorder]}
-        />
+        /> */}
         <Text style={MyStyles.itemHeader}>{item.title}</Text>
         <Text style={MyStyles.itemText}>{item.message}</Text>
         <Text style={MyStyles.itemTime}>{item.time}</Text>
@@ -217,13 +224,11 @@ export default function MyCalendar({ navigation }) {
     return (
       <SafeAreaView style={MyStyles.container}>
         <View style={MyStyles.header}>
-          <TouchableOpacity
-            style={{ marginRight: 15 }}
-          >
+          <TouchableOpacity style={{ marginRight: 15 }}>
             <Ionicons name="add-circle-outline" size={45} color="black" />
           </TouchableOpacity>
         </View>
-        <LoadingScreen />
+        <LoadingScreen/>
       </SafeAreaView>
     );
   }

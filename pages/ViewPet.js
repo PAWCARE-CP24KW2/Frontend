@@ -18,6 +18,7 @@ import ConfirmModal from "../components/ConfirmModal";
 import * as ImagePicker from "expo-image-picker";
 import { showUploadProToast } from "../composable/showToast";
 import { updatePetProfile } from "../composable/updatePetProfile";
+import { deletePetProfile } from "../composable/deletePetProfile";
 
 export default function ViewPet({ route, navigation }) {
   const FormData = global.FormData;
@@ -59,7 +60,7 @@ export default function ViewPet({ route, navigation }) {
       [
         {
           text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
+          // onPress: () => console.log("Cancel Pressed"),
           style: "cancel",
         },
         { text: "Delete", onPress: handleDelete },
@@ -121,6 +122,7 @@ export default function ViewPet({ route, navigation }) {
     try {
       setImage(null);
       setModalVisible(false);
+      deletePetProfile(pet.pet_id);
       showUploadProToast("Pet profile picture", "delete");
     } catch ({ message }) {
       alert(message);
@@ -141,7 +143,6 @@ export default function ViewPet({ route, navigation }) {
         name: `file.${fileType}`,
         type: `image/${fileType}`,
       });
-      console.log(formData);
       await updatePetProfile(pet.pet_id, formData);
 
       showUploadProToast("Pet profile picture", "upload");

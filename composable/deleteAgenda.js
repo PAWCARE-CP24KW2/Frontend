@@ -14,7 +14,7 @@ export const deleteAgenda = async (id) => {
         Authorization: `Bearer ${token}`
       }
     });
-    console.log("Deleted agenda from backend:", response.data);
+    // console.log("Deleted agenda from backend:", response.data);
     return response.data; 
   } catch (error) {
     console.error("Error deleting agenda:", error);
