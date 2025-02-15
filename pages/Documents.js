@@ -185,10 +185,10 @@ export default function Documents({ navigation, route }) {
     return (
       <SafeAreaView style={MyStyles.container}>
         <SafeAreaView style={styles.topBar}>
-        <TouchableOpacity style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
-      </SafeAreaView>
+          <TouchableOpacity style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="black" />
+          </TouchableOpacity>
+        </SafeAreaView>
         <LoadingScreen />
       </SafeAreaView>
     );
