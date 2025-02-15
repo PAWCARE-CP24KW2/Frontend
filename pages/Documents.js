@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
-  TextInput,
   Image,
 } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
@@ -19,6 +18,8 @@ import { uploadRegistration } from "../uploadMinio/uploadRegistration";
 import { uploadMedicalBook } from "../uploadMinio/uploadMedicalBook";
 import { uploadPassport } from "../uploadMinio/uploadPassport";
 import { deleteDocument } from "../uploadMinio/deleteDocument";
+import { getDocument } from "../uploadMinio/getDocument";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Documents({ navigation, route }) {
   const { petId } = route.params;
@@ -30,7 +31,35 @@ export default function Documents({ navigation, route }) {
   const [registrationImage, setRegistrationImage] = useState(null);
   const [medicalBookImage, setMedicalBookImage] = useState(null);
   const [passportImage, setPassportImage] = useState(null);
-  
+
+  const fetchDocuments = async () => {
+    console.log(!registrationImage);
+    try {
+      if (!registrationImage) {
+        const registrationResponse = await getDocument(petId, 'registration');
+        setRegistrationImage(registrationResponse.file_path);
+      }
+
+      if (!medicalBookImage) {
+        const medicalBookResponse = await getDocument(petId, 'medicalbook');
+        setMedicalBookImage(medicalBookResponse.file_path);
+      }
+
+      if (!passportImage) {
+        const passportResponse = await getDocument(petId, 'passportno');
+        setPassportImage(passportResponse.file_path);
+      }
+    } catch (error) {
+      console.error('Failed to fetch documents:', error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchDocuments();
+    }, [petId])
+  );
+
   const uploadImage = async (setImage, mode) => {
     try {
       let result = {};
@@ -40,7 +69,6 @@ export default function Documents({ navigation, route }) {
         result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ["images"],
           allowsEditing: true,
-          // aspect: [4, 3],
           quality: 1,
         });
       } else if (mode === "camera") {
@@ -48,7 +76,6 @@ export default function Documents({ navigation, route }) {
         result = await ImagePicker.launchCameraAsync({
           cameraType: ImagePicker.CameraType.back,
           allowsEditing: true,
-          // aspect: [3, 4],
           quality: 1,
         });
       }
@@ -74,7 +101,6 @@ export default function Documents({ navigation, route }) {
         setMedicalBookImage(response.file.url);
         showUploadDocToast("Medical book", 'upload');
       } else if (setImage === setPassportImage) {
-        // setPassportImage(uri);
         response = await uploadPassport(petId, uri);
         setPassportImage(response.file.url);
         showUploadDocToast("Passport No.", 'upload');
