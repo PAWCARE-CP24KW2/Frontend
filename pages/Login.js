@@ -105,13 +105,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#4A4A4A",
+    color: "black",
     marginBottom: 20,
   },
   label: {
     alignSelf: "flex-start",
     fontSize: 14,
-    color: "#4A4A4A",
+    color: "black",
     marginBottom: 5,
   },
   input: {
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   loginButton: {
-    backgroundColor: "#B6917B",
+    backgroundColor: "#493628",
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
@@ -152,11 +152,11 @@ const styles = StyleSheet.create({
   loginText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#493628",
+    color: "#fff",
   },
   linkText: {
     fontSize: 14,
-    color: "#4A4A4A",
+    color: "black",
     marginBottom: 10,
   },
 });

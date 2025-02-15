@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   button: {
-    backgroundColor: "#B6917B",
+    backgroundColor: "#493628",
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
@@ -53,10 +53,10 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#493628",
+    color: "#fff",
   },
   linkText: {
     fontSize: 14,
-    color: "#4A4A4A",
+    color: "black",
   },
 });
