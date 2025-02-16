@@ -1,73 +1,88 @@
-import React, { useState, useEffect , useCallback} from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   StyleSheet,
   FlatList,
   Text,
-  Image,
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { MyStyles } from "../styles/MyStyle";
-import { getPetsByUserId } from '../composable/getPetFromId';
+import { getPetsByUserId } from "../composable/getPetFromId";
 import { useFocusEffect } from "@react-navigation/native";
-import petplaceholder from '../assets/petplaceholder.png';
+import petplaceholder from "../assets/petplaceholder.png";
 import LoadingScreen from "../components/LoadingScreen";
+import { Image } from "expo-image";
 
 export default function Home({ navigation }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-    const getPets = async () => {
-      try {
-        const pets = await getPetsByUserId();
-        setItems(pets);
-      } catch (error) {
-        console.error("Failed to fetch pets in component:", error);
-      }
-      finally {
-        setLoading(false);
-      }
-    };
+  const getPets = async () => {
+    try {
+      const pets = await getPetsByUserId();
+      setItems(pets);
+    } catch (error) {
+      console.error("Failed to fetch pets in component:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    useFocusEffect(
-      useCallback(() => {
-        getPets();
-      }, [])
-    );
+  useFocusEffect(
+    useCallback(() => {
+      getPets();
+    }, [])
+  );
 
-    const calculateAge = (birthdate) => {
-      const birthDate = new Date(birthdate);
-      const today = new Date();
-  
-      let years = today.getFullYear() - birthDate.getFullYear();
-      let months = today.getMonth() - birthDate.getMonth();
-      let days = today.getDate() - birthDate.getDate();
-  
-      if (days < 0) {
-        months--;
-        days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
-      }
-  
-      if (months < 0) {
-        years--;
-        months += 12;
-      }
-  
-      return `${years} year${years > 1 ? 's' : ''} ${months} month${months !== 1 ? 's' : ''} ${days} day${days !== 1 ? 's' : ''}`;
-    };
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  const calculateAge = (birthdate) => {
+    const birthDate = new Date(birthdate);
+    const today = new Date();
+
+    let years = today.getFullYear() - birthDate.getFullYear();
+    let months = today.getMonth() - birthDate.getMonth();
+    let days = today.getDate() - birthDate.getDate();
+
+    if (days < 0) {
+      months--;
+      days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+    }
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    return `${years} year${years > 1 ? "s" : ""} ${months} month${
+      months !== 1 ? "s" : ""
+    } ${days} day${days !== 1 ? "s" : ""}`;
+  };
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
-      onPress={() => navigation.navigate("ViewPet", { pet: item },  ) }
+      onPress={() => navigation.navigate("ViewPet", { pet: item })}
     >
       <View style={styles.petCard}>
-        <Image style={[styles.petImage, item && styles.imageWithBorder]}
-          source={item && item.profile_path ? { uri: item.profile_path } : petplaceholder}
+        <Image
+          style={[
+            styles.petImage,
+            item?.profile_path && styles.imageWithBorder,
+          ]}
+          source={item?.profile_path || petplaceholder}
+          contentFit="cover"
+          transition={500}
         />
-        <Text style={styles.petName}>{capitalizeFirstLetter(item.pet_name)}</Text>
-        <Text style={styles.petAge}>{calculateAge(item.date_of_birth)} old</Text>
+        <Text style={styles.petName}>
+          {capitalizeFirstLetter(item.pet_name)}
+        </Text>
+        <Text style={styles.petAge}>
+          {calculateAge(item.date_of_birth)} old
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -85,16 +100,10 @@ export default function Home({ navigation }) {
     );
   }
 
-  const capitalizeFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
-
   return (
     <SafeAreaView style={MyStyles.container}>
       <View style={MyStyles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("AddPet")}
-        >
+        <TouchableOpacity onPress={() => navigation.navigate("AddPet")}>
           <Ionicons name="add-circle-outline" size={45} color="black" />
         </TouchableOpacity>
       </View>
@@ -227,6 +236,6 @@ const styles = StyleSheet.create({
   },
   imageWithBorder: {
     borderWidth: 1.5,
-    borderColor: 'black',
-  }
+    borderColor: "black",
+  },
 });
