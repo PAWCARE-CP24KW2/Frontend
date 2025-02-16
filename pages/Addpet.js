@@ -202,10 +202,10 @@ export default function AddPet({ navigation }) {
 
       <View style={MyStyles.arrowHeader}>
         <TouchableOpacity
-          style={{ marginLeft: 10, paddingVertical: 5 }}
+          style={MyStyles.arrowIcon}
           onPress={() => navigation.goBack()}
         >
-          <Ionicons name="arrow-back-outline" size={35} color="black" />
+          <Ionicons name="arrow-back-outline" size={30} color="black" />
         </TouchableOpacity>
         <View style={{ flex: 1, alignItems: "center" }}>
           <Text style={styles.header}>Add your pet</Text>
@@ -375,11 +375,6 @@ export default function AddPet({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#EACEBE",
-    padding: 20,
-  },
   scrollViewContent: {
     flexGrow: 1,
     justifyContent: "center",
@@ -491,7 +486,6 @@ const styles = StyleSheet.create({
   imageContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
     position: 'relative',
   },
   image: {

@@ -12,16 +12,19 @@ export const MyStyles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    marginTop: 45,
-    paddingVertical: 19,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     backgroundColor: "#B6917B",
   },
   arrowHeader: {
     flexDirection: "row",
     alignItems: 'center',
-    marginTop:45,
-    paddingVertical: 19,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     backgroundColor: "#B6917B",
+  },
+  arrowIcon: {
+    paddingVertical: 8
   },
   textHeader: {
     fontSize: 30,

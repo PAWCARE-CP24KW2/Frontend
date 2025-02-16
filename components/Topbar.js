@@ -8,8 +8,8 @@ const TopBar = ({ title, onClose }) => {
 
   return (
     <View style={styles.topBar}>
-      <TouchableOpacity onPress={onClose} style={styles.backButton}>
-        <Ionicons name="arrow-back" size={25} color="black" />
+      <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+        <Ionicons name="close" size={28} color="white" />
       </TouchableOpacity>
       <Text style={styles.title}>{title}</Text>
     </View>
@@ -21,16 +21,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#B6917B',
-    elevation: 4,  // Adds shadow for Android
+    backgroundColor: '#493628',
+    elevation: 4,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
-    borderBottomLeftRadius: 14,
-    borderBottomRightRadius: 14,
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
   },
-  backButton: {
-    marginRight: 16,
+  closeButton: {
+    marginLeft: 'auto',
   },
   title: {
     fontSize: 18,

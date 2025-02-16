@@ -46,7 +46,8 @@ export default function MyCalendar({ navigation }) {
       setItems(agendas);
     } catch (error) {
       console.error('Failed to fetch agendas in component:', error);
-    } finally {
+    } 
+    finally {
       setLoading(false);
     }
   };
@@ -226,7 +227,7 @@ export default function MyCalendar({ navigation }) {
     return (
       <SafeAreaView style={MyStyles.container}>
         <View style={MyStyles.header}>
-          <TouchableOpacity style={{ marginRight: 15 }}>
+          <TouchableOpacity>
             <Ionicons name="add-circle-outline" size={45} color="black" />
           </TouchableOpacity>
         </View>
@@ -238,10 +239,7 @@ export default function MyCalendar({ navigation }) {
   return (
     <SafeAreaView style={MyStyles.container}>
       <View style={MyStyles.header}>
-        <TouchableOpacity
-          style={{ marginRight: 15 }}
-          onPress={() => setisAddModalVisible(true)}
-        >
+        <TouchableOpacity onPress={() => setisAddModalVisible(true)}>
           <Ionicons name="add-circle-outline" size={45} color="black" />
         </TouchableOpacity>
       </View>

@@ -152,23 +152,25 @@ export default function ViewPet({ route, navigation }) {
     }
   };
 
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   return (
     <SafeAreaView style={MyStyles.container}>
       <View style={MyStyles.arrowHeader}>
         <TouchableOpacity
-          style={{ marginLeft: 10, paddingVertical: 5 }}
+          style={MyStyles.arrowIcon}
           onPress={() => navigation.goBack()}
         >
-          <Ionicons name="arrow-back-outline" size={35} color="black" />
+          <Ionicons name="arrow-back-outline" size={30} color="black" />
         </TouchableOpacity>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <Text style={styles.header}>{pet.pet_name || "Pet Name"}</Text>
-        </View>
-        <View style={{ width: 35 }} />
       </View>
 
       <SafeAreaView style={styles.container}>
-        {/* Header */}
+
+        <Text style={styles.header}>{capitalizeFirstLetter(pet.pet_name) || "Pet Name"}</Text>
+
         <View style={styles.profile}>
           <View style={styles.imageContainer}>
             <TouchableOpacity onPress={handleOpenModal}>
@@ -259,6 +261,7 @@ const styles = StyleSheet.create({
   },
   profile: {
     alignItems: "center",
+    marginVertical: 5,
   },
   imageContainer: {
     position: "relative",
@@ -304,9 +307,11 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
+    fontWeight: "bold",
     justifyContent: "space-around",
     color: "black",
     textAlign: "center",
+    marginBottom: 10,
   },
   title: {
     fontSize: 24,

@@ -66,7 +66,7 @@ export default function Home({ navigation }) {
         <Image style={[styles.petImage, item && styles.imageWithBorder]}
           source={item && item.profile_path ? { uri: item.profile_path } : petplaceholder}
         />
-        <Text style={styles.petName}>{item.pet_name}</Text>
+        <Text style={styles.petName}>{capitalizeFirstLetter(item.pet_name)}</Text>
         <Text style={styles.petAge}>{calculateAge(item.date_of_birth)} old</Text>
       </View>
     </TouchableOpacity>
@@ -76,9 +76,7 @@ export default function Home({ navigation }) {
     return (
       <SafeAreaView style={MyStyles.container}>
         <View style={MyStyles.header}>
-          <TouchableOpacity
-            style={{ marginRight: 15 }}
-          >
+          <TouchableOpacity>
             <Ionicons name="add-circle-outline" size={45} color="black" />
           </TouchableOpacity>
         </View>
@@ -87,11 +85,14 @@ export default function Home({ navigation }) {
     );
   }
 
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   return (
     <SafeAreaView style={MyStyles.container}>
       <View style={MyStyles.header}>
         <TouchableOpacity
-          style={{ marginRight: 15 }}
           onPress={() => navigation.navigate("AddPet")}
         >
           <Ionicons name="add-circle-outline" size={45} color="black" />

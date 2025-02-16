@@ -102,10 +102,10 @@ export default function UpdatePetData({ route, navigation }) {
 
       <View style={MyStyles.arrowHeader}>
         <TouchableOpacity
-          style={{ marginLeft: 10, paddingVertical: 5 }}
+          style={MyStyles.arrowIcon}
           onPress={() => navigation.goBack()}
         >
-          <Ionicons name="arrow-back-outline" size={35} color="black" />
+          <Ionicons name="arrow-back-outline" size={30} color="black" />
         </TouchableOpacity>
         <View style={{ flex: 1, alignItems: "center" }}>
           <Text style={styles.header}>Edit Pet Data</Text>
@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   input: {
-    height: 40,
+    height: 49,
     borderColor: "#B6917B",
     borderWidth: 1,
     borderRadius: 8,
