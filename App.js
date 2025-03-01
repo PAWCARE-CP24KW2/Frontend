@@ -9,13 +9,13 @@ import Login from './pages/Login';
 import NewAccount from './pages/NewAccount';
 import Addpet from './pages/Addpet';
 import ViewPet from './pages/ViewPet';
-import UpdatePetData from './components/UpdatePetData';
+import UpdatePetData from './pages/UpdatePetData';
 import Calendar from './pages/Calendar';
 import Webboard from './pages/Webboard';
 import Settings from './pages/Settings';
 import Documents from './pages/Documents';
 import Toast from 'react-native-toast-message';
-import { toastConfig } from './composable/toastConfig';
+import { toastConfig } from './services/toastConfig';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();

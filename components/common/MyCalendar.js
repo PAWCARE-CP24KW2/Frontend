@@ -1,23 +1,23 @@
 import { View, Text, TouchableOpacity, SafeAreaView, Image } from "react-native";
-import { MyStyles } from "../styles/MyStyle";
+import { MyStyles } from "../../styles/MyStyle.js";
 import React, { useState, useEffect, useCallback } from "react";
 import { useFocusEffect } from '@react-navigation/native';
 import { Agenda } from "react-native-calendars";
 import { calendarTheme } from "react-native-calendars";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import AddAgenda from "./AddAgendaModal.js";
-import UpdateAgenda from "./UpdateAgendaModal.js";
-import { showDelToast } from "../composable/showToast.js";
-import { fetchAgendas } from "../composable/getAllAgendas.js";
-import { deleteAgenda } from "../composable/deleteAgenda.js";
-import { cancelNotification } from "../composable/notificationService.js";
-import ConfirmModal from "./ConfirmModal.js";
-import DontHavePetModal from "./DontHavePetModal.js";
-import { getPetsByUserId } from "../composable/getPetFromId.js";
+import AddAgenda from "../modals/AddAgendaModal.js";
+import UpdateAgenda from "../modals/UpdateAgendaModal.js";
+import { showDelToast } from "../../services/showToast.js";
+import { fetchAgendas } from "../../api/agenda/getAllAgendas.js";
+import { deleteAgenda } from "../../api/agenda/deleteAgenda.js";
+import { cancelNotification } from "../../services/notificationService.js";
+import ConfirmModal from "../modals/ConfirmModal.js";
+import DontHavePetModal from "../modals/DontHavePetModal.js";
+import { getPetsByUserId } from "../../api/pet/getPetFromId.js";
 import LoadingScreen from "./LoadingScreen.js";
-import { getPetByPetId } from "../composable/getPetByPetId.js";
-import petplaceholder from "../assets/petplaceholder.png";
+import { getPetByPetId } from "../../api/pet/getPetByPetId.js";
+import petplaceholder from "../../assets/petplaceholder.png";
 
 export default function MyCalendar({ navigation }) {
   const getCurrentTime = () => {
@@ -39,6 +39,7 @@ export default function MyCalendar({ navigation }) {
   const [modalDontHasPet, setModalDontHasPet] = useState(false);
   const [loading, setLoading] = useState(true);
   const [petImages, setPetImages] = useState({});
+  const [itemsUpdated, setItemsUpdated] = useState(false); // New state to track if items are updated
 
   const getAgendas = async () => {
     try {
@@ -46,13 +47,8 @@ export default function MyCalendar({ navigation }) {
       setItems(agendas);
     } catch (error) {
       console.error('Failed to fetch agendas in component:', error);
-    } 
-    finally {
-      setLoading(false);
     }
-  };
 
-  const getPets = async () => {
     try {
       const pets = await getPetsByUserId();
       if (pets.length === 0) {
@@ -61,7 +57,6 @@ export default function MyCalendar({ navigation }) {
       }
       setModalDontHasPet(false);
 
-      // Fetch pet images
       const petImages = {};
       for (const pet of pets) {
         if (pet.pet_id) {
@@ -74,17 +69,34 @@ export default function MyCalendar({ navigation }) {
         }
       }
       setPetImages(petImages);
+
+      setItems((prevItems) => {
+        const updatedItems = {};
+        for (const date in prevItems) {
+          updatedItems[date] = prevItems[date].map((appointment) => ({
+            ...appointment,
+            petImage: petImages[appointment.petid] || null,
+          }));
+        }
+        return updatedItems;
+      });
+      setItemsUpdated(true);
     } catch (error) {
       console.error('Failed to fetch pets in component:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useFocusEffect(
     useCallback(() => {
-      getPets();
       getAgendas();
     }, [])
   );
+
+  useEffect(() => {
+    console.log(items);
+  }, [items]);
 
   const deleteData = useCallback(async (id, date, title) => {
     try {
@@ -97,11 +109,9 @@ export default function MyCalendar({ navigation }) {
           const itemToDelete = updatedItems[date].find((item) => item.id === id);
           if (itemToDelete && itemToDelete.notificationId) {
             cancelNotification(itemToDelete.notificationId);
-            // console.log('Notification cancelled:', itemToDelete.notificationId);
           }
           updatedItems[date] = updatedItems[date].filter((item) => item.id !== id);
 
-          // If the array becomes empty after filtering, delete the key
           if (updatedItems[date].length === 0) {
             delete updatedItems[date];
           }
@@ -144,49 +154,33 @@ export default function MyCalendar({ navigation }) {
   };
 
   const customTheme = {
-    ...calendarTheme, // Merge with default calendar theme
-    agendaDayTextColor: "black", // Custom color for agenda day text
-    agendaDayNumColor: "black", // Custom color for agenda day number
-    agendaTodayColor: "black", // Custom color for today's agenda
-    agendaKnobColor: "#B6917B", // Custom color for the agenda knob
+    ...calendarTheme,
+    agendaDayTextColor: "black",
+    agendaDayNumColor: "black",
+    agendaTodayColor: "black",
+    agendaKnobColor: "#B6917B",
     selectedDayBackgroundColor: "#B6917B",
     calendarBackground: "#FFE6D7",
     todayTextColor: "white",
     textMonthFontSize: 18,
     textSectionTitleColor: "black",
-    reservationsBackgroundColor: "#EACEBE", //Agenda list backgroundColor
+    reservationsBackgroundColor: "#EACEBE",
   };
 
   const RenderAgendaItem = React.memo(({ item, date }) => {
-    const [petImage, setPetImage] = useState(null);
-
-    useEffect(() => {
-      const fetchPetImage = async () => {
-        try {
-          const petData = await getPetByPetId(item.petid);
-          setPetImage(petData.profile_path);
-          console.log(`Fetched pet image for pet_id ${item.petid}: ${petData.profile_path}`);
-          console.log("-------------------------");
-        } catch (error) {
-          console.error(`Failed to fetch pet image for pet_id ${item.petid}:`, error);
-        }
-      };
-      fetchPetImage();
-    }, [item.petid]);
-
     return (
       <TouchableOpacity
         style={MyStyles.item}
         onPress={() => {
-          setSelectedItem(item); // Store the selected item
+          setSelectedItem(item);
           setEditDate(date);
-          setisEditModalVisible(true); // Open the modal
+          setisEditModalVisible(true);
           setCurrentTitle(item.title);
         }}
       >
         <View style={styles.itemContainer}>
           <Image
-            source={petImage ? { uri: petImage } : petplaceholder}
+            source={item.petImage ? { uri: item.petImage } : petplaceholder}
             style={[styles.petImage, item && styles.imageWithBorder]}
           />
           <View style={styles.textContainer}>
@@ -219,11 +213,11 @@ export default function MyCalendar({ navigation }) {
   };
 
   const handleNavigate = () => {
-    setModalDontHasPet(false)
+    setModalDontHasPet(false);
     navigation.navigate("Home");
-  }
+  };
 
-  if (loading) {
+  if (loading || !itemsUpdated) { // Wait for items to be updated before rendering
     return (
       <SafeAreaView style={MyStyles.container}>
         <View style={MyStyles.header}>
@@ -231,7 +225,7 @@ export default function MyCalendar({ navigation }) {
             <Ionicons name="add-circle-outline" size={45} color="black" />
           </TouchableOpacity>
         </View>
-        <LoadingScreen/>
+        <LoadingScreen />
       </SafeAreaView>
     );
   }
@@ -253,14 +247,15 @@ export default function MyCalendar({ navigation }) {
       />
 
       <AddAgenda
-        isAddModalVisible={isAddModalVisible} // Pass the visibility state
-        onClose={() => setisAddModalVisible(false)} // Close the modal
+        isAddModalVisible={isAddModalVisible}
+        onClose={() => setisAddModalVisible(false)}
         getCurrentTime={getCurrentTime}
         selectedDate={selectedDate}
         selectedTime={selectedTime}
         setSelectedDate={setSelectedDate}
         setSelectedTime={setSelectedTime}
         setItems={setItems}
+        getAgendas={getAgendas}
       />
 
       <UpdateAgenda
@@ -286,7 +281,6 @@ export default function MyCalendar({ navigation }) {
         onConfirm={() => handleNavigate()}
         message={`You need to create pet's profile to add activity.`}
       />
-
     </SafeAreaView>
   );
 }
@@ -295,7 +289,7 @@ const styles = {
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundcColor: 'white',
+    justifyContent: 'center',
   },
   textContainer: {
     flex: 1,

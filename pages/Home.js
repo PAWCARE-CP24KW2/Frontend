@@ -9,16 +9,15 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { MyStyles } from "../styles/MyStyle";
-import { getPetsByUserId } from "../composable/getPetFromId";
+import { getPetsByUserId } from "../api";
 import { useFocusEffect } from "@react-navigation/native";
 import petplaceholder from "../assets/petplaceholder.png";
-import LoadingScreen from "../components/LoadingScreen";
+import LoadingScreen from "../components/common/LoadingScreen";
 import { Image } from "expo-image";
 
 export default function Home({ navigation }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const getPets = async () => {
     try {
       const pets = await getPetsByUserId();
@@ -68,6 +67,7 @@ export default function Home({ navigation }) {
       onPress={() => navigation.navigate("ViewPet", { pet: item })}
     >
       <View style={styles.petCard}>
+        <View style={styles.colorBar} />
         <Image
           style={[
             styles.petImage,
@@ -77,9 +77,16 @@ export default function Home({ navigation }) {
           contentFit="cover"
           transition={500}
         />
-        <Text style={styles.petName}>
-          {capitalizeFirstLetter(item.pet_name)}
-        </Text>
+        <View style={styles.petNameContainer}>
+          <Text style={styles.petName}>
+            {capitalizeFirstLetter(item.pet_name)}
+          </Text>
+          {item.pet_gender === "male" ? (
+            <Ionicons name="male" size={28} color="black" style={styles.genderIcon} />
+          ) : (
+            <Ionicons name="female" size={28} color="black" style={styles.genderIcon} />
+          )}
+        </View>
         <Text style={styles.petAge}>
           {calculateAge(item.date_of_birth)} old
         </Text>
@@ -108,7 +115,6 @@ export default function Home({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* Main Content */}
       {items.length > 0 ? (
         <FlatList
           data={items}
@@ -210,32 +216,52 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   petCard: {
-    backgroundColor: "#B6917B",
+    backgroundColor: "#C3A68F",
     borderRadius: 15,
     marginHorizontal: 20,
     marginVertical: 8,
     marginTop: 10,
     padding: 15,
     alignItems: "center",
+    position: "relative",
+  },
+  colorBar: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 60,
+    backgroundColor: "#71543F", // Change this color as needed
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
   },
   petImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 90,
+    height: 90,
+    borderRadius: 100,
+  },
+  petNameContainer: {
+    position: "relative",
+    alignItems: "center",
+    marginTop: 10,
   },
   petName: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginTop: 10,
+    fontSize: 26,
     color: "black",
+  },
+  genderIcon: {
+    position: "absolute",
+    top: -5,
+    right: -28,
   },
   petAge: {
     fontSize: 14,
     color: "black",
     fontWeight: "bold",
+    opacity: 0.6,
   },
   imageWithBorder: {
     borderWidth: 1.5,
     borderColor: "black",
-  },
+  }
 });

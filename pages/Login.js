@@ -8,7 +8,7 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { postLoginUser } from '../composable/postLoginUser'; // Import the postLoginUser function
+import { postLoginUser } from "../api/user/postLoginUser";
 
 export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState("");

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { getPetsByUserId } from "../composable/getPetFromId.js";
+import { getPetsByUserId } from "../../api/pet/getPetFromId.js";
 
 const DropdownSelectPet = ({ currentPet, setPetId }) => {
   const [value, setValue] = useState(null);

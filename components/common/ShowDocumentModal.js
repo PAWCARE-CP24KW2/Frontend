@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Modal, Image } from 'react-native';
 import Ionicons from "@expo/vector-icons/Ionicons";
-import emptyholder from '../assets/emptyholder.png';
+import emptyholder from '../../assets/emptyholder.png';
 
 export default function ShowDocumentModal({ visible, onClose, uri }) {
   return (

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { getCategories } from '../composable/getCategories';
+import { getCategories } from '../../api/agenda/getCategories';
 
 const DropdownComponent = ({ newItem, setNewItem, currentTitle }) => {
   const [value, setValue] = useState(null);

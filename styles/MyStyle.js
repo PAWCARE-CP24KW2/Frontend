@@ -37,7 +37,6 @@ export const MyStyles = StyleSheet.create({
     padding: 10,
     marginRight: 10,
     marginTop: 25,
-    paddingBottom: 20,
   },
   itemHeader: {
     fontSize: 20,
@@ -49,8 +48,8 @@ export const MyStyles = StyleSheet.create({
   },
   itemTime: {
     position: "absolute",
-    right: 12,
-    top: 12
+    right: 0,
+    top: -2,
   },
   addInput: {
     backgroundColor: "white",
@@ -80,8 +79,8 @@ export const MyStyles = StyleSheet.create({
   },
   deleteButton: {
     position: "absolute",
-    bottom: 12, 
-    right: 12
+    bottom: 8, 
+    right: 8,
   },
   modal: {
     flex: 1,

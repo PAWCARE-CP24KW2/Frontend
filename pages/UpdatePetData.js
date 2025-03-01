@@ -6,16 +6,15 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  Image,
   SafeAreaView,
   ScrollView,
 } from "react-native";
-import { editPet } from "../composable/putPetData";
-import DropdownTypeComponent from "../components/DropdownTypePet";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { MyStyles } from "../styles/MyStyle";
-import Icon from "react-native-vector-icons/Ionicons";
 import { Ionicons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import Icon from "react-native-vector-icons/Ionicons";
+import { editPet } from "../api/pet/putPetData";
+import DropdownTypeComponent from "../components/dropdowns/DropdownTypePet.js";
+import { MyStyles } from "../styles/MyStyle";
 
 export default function UpdatePetData({ route, navigation }) {
   const { pet } = route.params;
@@ -79,7 +78,6 @@ export default function UpdatePetData({ route, navigation }) {
         date_of_birth: selectedDate,
         image,
       };
-      // console.log("Sending updated pet data:", selectedDate);
       await editPet(pet.pet_id, updatedPetData);
       Alert.alert("Success", "Pet updated successfully", [
         { text: "OK", onPress: () => navigation.navigate("HomeScreen") },
@@ -91,7 +89,6 @@ export default function UpdatePetData({ route, navigation }) {
   };
 
   const handleWeightChange = (text) => {
-    // Allow only numeric input
     if (/^\d*\.?\d*$/.test(text)) {
       setWeight(text);
     }
@@ -99,7 +96,6 @@ export default function UpdatePetData({ route, navigation }) {
 
   return (
     <SafeAreaView style={MyStyles.container}>
-
       <View style={MyStyles.arrowHeader}>
         <TouchableOpacity
           style={MyStyles.arrowIcon}

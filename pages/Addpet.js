@@ -14,12 +14,12 @@ import {
 import { MyStyles } from "../styles/MyStyle";
 import Icon from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import DropdownTypeComponent from "../components/DropdownTypePet";
-import { addPet } from "../composable/postPet";
+import DropdownTypeComponent from "../components/dropdowns/DropdownTypePet";
+import { addPet } from "../api/pet/postPet";
 import petplaceholder from "../assets/petplaceholder.png";
 import { Ionicons } from "@expo/vector-icons";
-import UploadModal from "../components/UploadModal";
-import ConfirmModal from "../components/ConfirmModal";
+import UploadModal from "../components/modals/UploadModal";
+import ConfirmModal from "../components/modals/ConfirmModal";
 import * as ImagePicker from "expo-image-picker";
 
 export default function AddPet({ navigation }) {

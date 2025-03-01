@@ -10,15 +10,15 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { MyStyles } from "../styles/MyStyle";
-import { getPetByPetId } from "../composable/getPetByPetId";
-import { deletePet } from "../composable/deletePet";
+import { getPetByPetId } from "../api/pet/getPetByPetId";
+import { deletePet } from "../api/pet/deletePet";
 import petplaceholder from "../assets/petplaceholder.png";
-import UploadModal from "../components/UploadModal";
-import ConfirmModal from "../components/ConfirmModal";
+import UploadModal from "../components/modals/UploadModal";
+import ConfirmModal from "../components/modals/ConfirmModal";
 import * as ImagePicker from "expo-image-picker";
-import { showUploadProToast } from "../composable/showToast";
-import { updatePetProfile } from "../composable/updatePetProfile";
-import { deletePetProfile } from "../composable/deletePetProfile";
+import { showUploadProToast } from "../services/showToast";
+import { updatePetProfile } from "../api/pet/updatePetProfile";
+import { deletePetProfile } from "../api/pet/deletePetProfile";
 
 export default function ViewPet({ route, navigation }) {
   const FormData = global.FormData;

@@ -9,18 +9,18 @@ import {
 } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import UploadModal from "../components/UploadModal";
+import UploadModal from "../components/modals/UploadModal";
 import * as ImagePicker from "expo-image-picker";
-import ShowDocumentModal from "../components/ShowDocumentModal";
-import ConfirmModal from "../components/ConfirmModal";
-import { showUploadDocToast } from "../composable/showToast";
-import { uploadRegistration } from "../uploadMinio/uploadRegistration";
-import { uploadMedicalBook } from "../uploadMinio/uploadMedicalBook";
-import { uploadPassport } from "../uploadMinio/uploadPassport";
-import { deleteDocument } from "../uploadMinio/deleteDocument";
-import { getDocument } from "../uploadMinio/getDocument";
+import ShowDocumentModal from "../components/common/ShowDocumentModal";
+import ConfirmModal from "../components/modals/ConfirmModal";
+import { showUploadDocToast } from "../services/showToast";
+import { uploadRegistration } from "../api/minio/uploadRegistration";
+import { uploadMedicalBook } from "../api/minio/uploadMedicalBook";
+import { uploadPassport } from "../api/minio/uploadPassport";
+import { deleteDocument } from "../api/minio/deleteDocument";
+import { getDocument } from "../api/minio/getDocument";
 import { useFocusEffect } from "@react-navigation/native";
-import LoadingScreen from "../components/LoadingScreen";
+import LoadingScreen from "../components/common/LoadingScreen";
 
 export default function Documents({ navigation, route }) {
   const { petId } = route.params;

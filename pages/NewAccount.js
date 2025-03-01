@@ -8,7 +8,7 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { postUser } from '../composable/postUser'; // Import the postUser function
+import { postUser } from "../api/user/postUser";
 
 export default function CreateAccountScreen({ navigation }) {
   const [email, setEmail] = useState("");

@@ -7,18 +7,18 @@ import {
   Modal,
   Platform,
 } from "react-native";
-import { MyStyles } from "../styles/MyStyle.js";
+import { MyStyles } from "../../styles/MyStyle.js";
 import React, { useState, useEffect, useCallback } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import TopBar from "./Topbar.js";
+import TopBar from "../common/Topbar.js";
 import Icon from "react-native-vector-icons/Ionicons";
-import { showToast } from "../composable/showToast.js";
+import { showToast } from "../../services/showToast.js";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import DropdownComponent from "./Dropdown.js";
-import { postAgenda } from "../composable/postAgenda.js";
-import { scheduleNotification } from '../composable/notificationService.js';
-import DropdownSelectPet from "./DropdownSelectPet.js";
-import { fetchAgendas } from "../composable/getAllAgendas.js";
+import DropdownComponent from "../dropdowns/Dropdown.js";
+import { postAgenda } from "../../api/agenda/postAgenda.js";
+import { scheduleNotification } from '../../services/notificationService.js';
+import DropdownSelectPet from "../dropdowns/DropdownSelectPet.js";
+import { fetchAgendas } from "../../api/agenda/getAllAgendas.js";
 
 export default function AddAgendaModal({
   isAddModalVisible,
@@ -29,6 +29,7 @@ export default function AddAgendaModal({
   setSelectedTime,
   setItems,
   getCurrentTime,
+  getAgendas,
 }) {
 
   const [show, setShow] = useState(false);
@@ -96,11 +97,11 @@ export default function AddAgendaModal({
         
         return updatedItems;
       });
-      const updateAgendas = await fetchAgendas();
-      setItems(updateAgendas);
 
+      await getAgendas();
       showToast('success');
       onClose();
+      
     } catch (error) {
       showToast('error');
       console.error('Failed to add agenda:', error);

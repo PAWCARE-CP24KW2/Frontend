@@ -7,17 +7,15 @@ import {
   Modal,
   Platform,
 } from "react-native";
-import { MyStyles } from "../styles/MyStyle.js";
+import { MyStyles } from "../../styles/MyStyle.js";
 import React, { useState, useEffect } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import TopBar from "./Topbar.js";
+import TopBar from "../common/Topbar.js";
 import Icon from "react-native-vector-icons/Ionicons";
-import { showToast, showUpdateToast } from "../composable/showToast.js";
-import DropdownComponent from "./Dropdown.js";
-import { getAgendaFromId } from "../composable/getAgendaFromAgenId.js";
-import { putAgenda } from "../composable/putAgenda.js";
-import { fetchAgendas } from "../composable/getAllAgendas.js";
-import { cancelNotification, scheduleNotification } from '../composable/notificationService.js';
+import { showToast, showUpdateToast } from "../../services/showToast.js";
+import DropdownComponent from "../dropdowns/Dropdown.js";
+import { getAgendaFromId, putAgenda } from "../../api/index.js";
+import { cancelNotification, scheduleNotification } from '../../services/notificationService.js';
 
 export default function UpdateAgenda({
   selectedItem,
