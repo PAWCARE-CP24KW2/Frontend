@@ -2,8 +2,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  SafeAreaView,
   Image,
+  RefreshControl,
 } from "react-native";
 import { MyStyles } from "../../styles/MyStyle.js";
 import React, { useState, useEffect, useCallback } from "react";
@@ -22,6 +22,7 @@ import ConfirmModal from "../modals/ConfirmModal.js";
 import DontHavePetModal from "../modals/DontHavePetModal.js";
 import { getPetsByUserId } from "../../api/pet/getPetFromId.js";
 import LoadingScreen from "./LoadingScreen.js";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getPetByPetId } from "../../api/pet/getPetByPetId.js";
 import petplaceholder from "../../assets/petplaceholder.png";
 
@@ -47,11 +48,12 @@ export default function MyCalendar({ navigation }) {
   const [modalDontHasPet, setModalDontHasPet] = useState(false);
   const [loading, setLoading] = useState(true);
   const [petImages, setPetImages] = useState({});
-  const [itemsUpdated, setItemsUpdated] = useState(false); // New state to track if items are updated
+  const [refreshing, setRefreshing] = useState(false);
 
   const getAgendas = async () => {
     const pets = await getPetsByUserId();
     if (pets.length === 0) {
+      setLoading(false);
       setModalDontHasPet(true);
       return;
     }
@@ -59,9 +61,6 @@ export default function MyCalendar({ navigation }) {
 
     try {
       const agendas = await fetchAgendas();
-      if (!agendas || Object.keys(agendas).length === 0) {
-        return;
-      }
       setItems(agendas);
     } catch (error) {
       console.error("Failed to fetch agendas in component:", error);
@@ -95,7 +94,7 @@ export default function MyCalendar({ navigation }) {
       }
       return updatedItems;
     });
-    setItemsUpdated(true);
+    
   };
 
   useFocusEffect(
@@ -104,9 +103,11 @@ export default function MyCalendar({ navigation }) {
     }, [])
   );
 
-  // useEffect(() => {
-  //   console.log(items);
-  // }, [items]);
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await getAgendas();
+    setRefreshing(false);
+  };
 
   const deleteData = useCallback(async (id, date, title) => {
     try {
@@ -231,18 +232,18 @@ export default function MyCalendar({ navigation }) {
     navigation.navigate("Home");
   };
 
-  // if (loading || !itemsUpdated) { // Wait for items to be updated before rendering
-  //   return (
-  //     <SafeAreaView style={MyStyles.container}>
-  //       <View style={MyStyles.header}>
-  //         <TouchableOpacity>
-  //           <Ionicons name="add-circle-outline" size={45} color="black" />
-  //         </TouchableOpacity>
-  //       </View>
-  //       <LoadingScreen />
-  //     </SafeAreaView>
-  //   );
-  // }
+  if (loading) { // Wait for items to be updated before rendering
+    return (
+      <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.header}>
+          <TouchableOpacity>
+            <Ionicons name="add-circle-outline" size={45} color="black" />
+          </TouchableOpacity>
+        </View>
+        <LoadingScreen />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={MyStyles.container}>
@@ -260,6 +261,9 @@ export default function MyCalendar({ navigation }) {
         renderItem={(item) => (
           <RenderAgendaItem item={item} date={selectedDate} />
         )}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
 
       <AddAgenda

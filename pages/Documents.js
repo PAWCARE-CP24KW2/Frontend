@@ -4,10 +4,10 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
   Image,
 } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from "@expo/vector-icons/Ionicons";
 import UploadModal from "../components/modals/UploadModal";
 import * as ImagePicker from "expo-image-picker";
@@ -392,7 +392,6 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     borderBottomLeftRadius: 14,
     borderBottomRightRadius: 14,
-    paddingTop: 50,
   },
   backButton: {
     marginRight: 16,

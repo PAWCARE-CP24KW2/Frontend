@@ -5,11 +5,11 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  SafeAreaView,
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { MyStyles } from "../styles/MyStyle";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getPetByPetId } from "../api/pet/getPetByPetId";
 import { deletePet } from "../api/pet/deletePet";
 import petplaceholder from "../assets/petplaceholder.png";
@@ -244,21 +244,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#EACEBE",
     padding: 25,
   },
-  topNavBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 10,
-    backgroundColor: "#B6917B",
-  },
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#d9c2b0",
-    borderRadius: 15,
-    padding: 10,
-    margin: 10,
-  },
   profile: {
     alignItems: "center",
     marginVertical: 5,
@@ -289,21 +274,6 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     flex: 1,
-  },
-  gender: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#4A4A4A",
-  },
-  age: {
-    fontSize: 14,
-    color: "#7B7B7B",
-  },
-  noPetsContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
   },
   header: {
     fontSize: 24,

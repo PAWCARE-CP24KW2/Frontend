@@ -5,7 +5,7 @@ import {
   FlatList,
   Text,
   TouchableOpacity,
-  SafeAreaView,
+  RefreshControl,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { MyStyles } from "../styles/MyStyle";
@@ -13,11 +13,14 @@ import { getPetsByUserId } from "../api";
 import { useFocusEffect } from "@react-navigation/native";
 import petplaceholder from "../assets/petplaceholder.png";
 import LoadingScreen from "../components/common/LoadingScreen";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image } from "expo-image";
 
 export default function Home({ navigation }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
   const getPets = async () => {
     try {
       const pets = await getPetsByUserId();
@@ -34,6 +37,12 @@ export default function Home({ navigation }) {
       getPets();
     }, [])
   );
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await getPets();
+    setRefreshing(false);
+  };
 
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -122,6 +131,9 @@ export default function Home({ navigation }) {
           keyExtractor={(item) =>
             item.id ? item.id.toString() : Math.random().toString()
           }
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
       ) : (
         <View style={styles.noPetsContainer}>
@@ -192,7 +204,6 @@ const styles = StyleSheet.create({
     color: "#333",
     marginBottom: 10,
   },
-
   subtitle: {
     fontSize: 16,
     color: "#555",
@@ -224,6 +235,11 @@ const styles = StyleSheet.create({
     padding: 15,
     alignItems: "center",
     position: "relative",
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   colorBar: {
     position: "absolute",
@@ -239,6 +255,11 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90,
     borderRadius: 100,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
   },
   petNameContainer: {
     position: "relative",

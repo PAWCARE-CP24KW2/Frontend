@@ -6,12 +6,12 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   Alert,
   ScrollView,
   Image,
 } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import DropdownTypeComponent from "../components/dropdowns/DropdownTypePet";

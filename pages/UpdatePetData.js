@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  SafeAreaView,
   ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -15,6 +14,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { editPet } from "../api/pet/putPetData";
 import DropdownTypeComponent from "../components/dropdowns/DropdownTypePet.js";
 import { MyStyles } from "../styles/MyStyle";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function UpdatePetData({ route, navigation }) {
   const { pet } = route.params;

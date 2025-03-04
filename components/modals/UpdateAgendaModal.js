@@ -2,12 +2,12 @@ import {
   View,
   Text,
   TouchableOpacity,
-  SafeAreaView,
   TextInput,
   Modal,
   Platform,
 } from "react-native";
 import { MyStyles } from "../../styles/MyStyle.js";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useEffect } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import TopBar from "../common/Topbar.js";

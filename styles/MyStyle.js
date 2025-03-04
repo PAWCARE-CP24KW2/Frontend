@@ -13,7 +13,8 @@ export const MyStyles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingVertical: 11,
+    height: 65,
     backgroundColor: "#B6917B",
   },
   arrowHeader: {
@@ -37,6 +38,11 @@ export const MyStyles = StyleSheet.create({
     padding: 10,
     marginRight: 10,
     marginTop: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   itemHeader: {
     fontSize: 20,
