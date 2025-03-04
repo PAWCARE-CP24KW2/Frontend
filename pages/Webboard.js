@@ -221,6 +221,11 @@ const styles = StyleSheet.create({
     bottom: 10,
     right: 10,
     zIndex: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   editIcon: {
     width: 35,
