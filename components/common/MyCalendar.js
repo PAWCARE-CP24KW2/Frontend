@@ -1,7 +1,13 @@
-import { View, Text, TouchableOpacity, SafeAreaView, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  Image,
+} from "react-native";
 import { MyStyles } from "../../styles/MyStyle.js";
 import React, { useState, useEffect, useCallback } from "react";
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from "@react-navigation/native";
 import { Agenda } from "react-native-calendars";
 import { calendarTheme } from "react-native-calendars";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -28,7 +34,9 @@ export default function MyCalendar({ navigation }) {
   };
 
   const [items, setItems] = useState({});
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [selectedTime, setSelectedTime] = useState(getCurrentTime());
   const [editDate, setEditDate] = useState("");
   const [currentTitle, setCurrentTitle] = useState(null);
@@ -42,50 +50,52 @@ export default function MyCalendar({ navigation }) {
   const [itemsUpdated, setItemsUpdated] = useState(false); // New state to track if items are updated
 
   const getAgendas = async () => {
+    const pets = await getPetsByUserId();
+    if (pets.length === 0) {
+      setModalDontHasPet(true);
+      return;
+    }
+    setModalDontHasPet(false);
+
     try {
       const agendas = await fetchAgendas();
-      setItems(agendas);
-    } catch (error) {
-      console.error('Failed to fetch agendas in component:', error);
-    }
-
-    try {
-      const pets = await getPetsByUserId();
-      if (pets.length === 0) {
-        setModalDontHasPet(true);
+      if (!agendas || Object.keys(agendas).length === 0) {
         return;
       }
-      setModalDontHasPet(false);
-
-      const petImages = {};
-      for (const pet of pets) {
-        if (pet.pet_id) {
-          try {
-            const petData = await getPetByPetId(pet.pet_id);
-            petImages[pet.pet_id] = petData.profile_path;
-          } catch (error) {
-            console.error(`Failed to fetch pet image for pet_id ${pet.pet_id}:`, error);
-          }
-        }
-      }
-      setPetImages(petImages);
-
-      setItems((prevItems) => {
-        const updatedItems = {};
-        for (const date in prevItems) {
-          updatedItems[date] = prevItems[date].map((appointment) => ({
-            ...appointment,
-            petImage: petImages[appointment.petid] || null,
-          }));
-        }
-        return updatedItems;
-      });
-      setItemsUpdated(true);
+      setItems(agendas);
     } catch (error) {
-      console.error('Failed to fetch pets in component:', error);
+      console.error("Failed to fetch agendas in component:", error);
     } finally {
       setLoading(false);
     }
+
+    const petImages = {};
+    for (const pet of pets) {
+      if (pet.pet_id) {
+        try {
+          const petData = await getPetByPetId(pet.pet_id);
+          petImages[pet.pet_id] = petData.profile_path;
+        } catch (error) {
+          console.error(
+            `Failed to fetch pet image for pet_id ${pet.pet_id}:`,
+            error
+          );
+        }
+      }
+    }
+    setPetImages(petImages);
+
+    setItems((prevItems) => {
+      const updatedItems = {};
+      for (const date in prevItems) {
+        updatedItems[date] = prevItems[date].map((appointment) => ({
+          ...appointment,
+          petImage: petImages[appointment.petid] || null,
+        }));
+      }
+      return updatedItems;
+    });
+    setItemsUpdated(true);
   };
 
   useFocusEffect(
@@ -94,9 +104,9 @@ export default function MyCalendar({ navigation }) {
     }, [])
   );
 
-  useEffect(() => {
-    console.log(items);
-  }, [items]);
+  // useEffect(() => {
+  //   console.log(items);
+  // }, [items]);
 
   const deleteData = useCallback(async (id, date, title) => {
     try {
@@ -106,11 +116,15 @@ export default function MyCalendar({ navigation }) {
         const updatedItems = { ...prevItems };
         if (updatedItems[date]) {
           showDelToast(title);
-          const itemToDelete = updatedItems[date].find((item) => item.id === id);
+          const itemToDelete = updatedItems[date].find(
+            (item) => item.id === id
+          );
           if (itemToDelete && itemToDelete.notificationId) {
             cancelNotification(itemToDelete.notificationId);
           }
-          updatedItems[date] = updatedItems[date].filter((item) => item.id !== id);
+          updatedItems[date] = updatedItems[date].filter(
+            (item) => item.id !== id
+          );
 
           if (updatedItems[date].length === 0) {
             delete updatedItems[date];
@@ -120,7 +134,7 @@ export default function MyCalendar({ navigation }) {
         return updatedItems;
       });
     } catch (error) {
-      console.error('Error deleting agenda:', error);
+      console.error("Error deleting agenda:", error);
     }
   }, []);
 
@@ -217,18 +231,18 @@ export default function MyCalendar({ navigation }) {
     navigation.navigate("Home");
   };
 
-  if (loading || !itemsUpdated) { // Wait for items to be updated before rendering
-    return (
-      <SafeAreaView style={MyStyles.container}>
-        <View style={MyStyles.header}>
-          <TouchableOpacity>
-            <Ionicons name="add-circle-outline" size={45} color="black" />
-          </TouchableOpacity>
-        </View>
-        <LoadingScreen />
-      </SafeAreaView>
-    );
-  }
+  // if (loading || !itemsUpdated) { // Wait for items to be updated before rendering
+  //   return (
+  //     <SafeAreaView style={MyStyles.container}>
+  //       <View style={MyStyles.header}>
+  //         <TouchableOpacity>
+  //           <Ionicons name="add-circle-outline" size={45} color="black" />
+  //         </TouchableOpacity>
+  //       </View>
+  //       <LoadingScreen />
+  //     </SafeAreaView>
+  //   );
+  // }
 
   return (
     <SafeAreaView style={MyStyles.container}>
@@ -243,7 +257,9 @@ export default function MyCalendar({ navigation }) {
         renderEmptyData={renderEmptyData}
         theme={customTheme}
         onDayPress={(day) => setSelectedDate(day.dateString)}
-        renderItem={(item) => <RenderAgendaItem item={item} date={selectedDate} />}
+        renderItem={(item) => (
+          <RenderAgendaItem item={item} date={selectedDate} />
+        )}
       />
 
       <AddAgenda
@@ -273,7 +289,9 @@ export default function MyCalendar({ navigation }) {
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onConfirm={handleConfirmDelete}
-        message={`Are you sure you want to delete ${selectedItem ? selectedItem.title : ''} ?`}
+        message={`Are you sure you want to delete ${
+          selectedItem ? selectedItem.title : ""
+        } ?`}
       />
 
       <DontHavePetModal
@@ -287,9 +305,9 @@ export default function MyCalendar({ navigation }) {
 
 const styles = {
   itemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   textContainer: {
     flex: 1,
