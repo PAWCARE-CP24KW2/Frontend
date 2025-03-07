@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#493628",
+    color: "#000",
     marginBottom: 20,
   },
   label: {
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   loginButton: {
-    backgroundColor: "#B6917B",
+    backgroundColor: "#493628",
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
@@ -222,11 +222,11 @@ const styles = StyleSheet.create({
   loginText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#493628",
+    color: "#fff",
   },
   linkText: {
     fontSize: 14,
-    color: "#4A4A4A",
+    color: "#000",
     marginTop: 10,
   },
 });
