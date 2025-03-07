@@ -33,14 +33,23 @@ export default function Webboard({ navigation }) {
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query) {
-      const filtered = posts.filter(post =>
-        post.post_title.toLowerCase().includes(query.toLowerCase()) ||
-        post.post_content.toLowerCase().includes(query.toLowerCase())
-      );
+      const filtered = posts.filter(post => {
+        const fullName = `${post.user_firstname} ${post.user_lastname}`.toLowerCase();
+        return (
+          post.post_title.toLowerCase().includes(query.toLowerCase()) ||
+          post.post_content.toLowerCase().includes(query.toLowerCase()) ||
+          fullName.includes(query.toLowerCase())
+        );
+      });
       setFilteredPosts(filtered);
     } else {
       setFilteredPosts(posts);
     }
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setFilteredPosts(posts);
   };
   
   const onRefresh = async () => {
@@ -70,12 +79,16 @@ export default function Webboard({ navigation }) {
     );
   };
 
+  const getFullName = (firstname, lastname) => {
+    return `${firstname} ${lastname}`;
+  };
+
   const renderItem = ({ item }) => (
     <View style={styles.card}>
       <View style={styles.header}>
         <Image source={ userholder } style={styles.avatar} />
         <View>
-          <Text style={styles.name}>{item.user_firstname}&nbsp;{item.user_lastname}</Text>
+          <Text style={styles.name}>{highlightText(getFullName(item.user_firstname, item.user_lastname), searchQuery)}</Text>
           <Text style={styles.date}>{formatDate(item.create_at)}</Text>
         </View>
       </View>
@@ -105,6 +118,11 @@ export default function Webboard({ navigation }) {
             value={searchQuery}
             onChangeText={handleSearch}
           />
+          {searchQuery ? (
+            <TouchableOpacity onPress={clearSearch} style={styles.clearIcon}>
+              <Ionicons name="close" size={20} color="black" />
+            </TouchableOpacity>
+          ) : null}
         </View>
       </View>
       <FlatList
@@ -147,6 +165,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     paddingLeft: 35,
+  },
+  clearIcon: {
+    position: 'absolute',
+    right: 10,
+    zIndex: 1,
   },
   listContent: {
     padding: 10,
