@@ -39,7 +39,6 @@ export function showUpdateToast(status) {
             text2: "Fields should not be empty. ❌"
         });
     }
-    
 }
 
 export function showUploadDocToast(text, action) {
@@ -56,7 +55,6 @@ export function showUploadDocToast(text, action) {
             text2: `${text} was deleted.`,
         });
     }
-    
 }
 
 export function showUploadProToast(text, action) {
@@ -73,5 +71,20 @@ export function showUploadProToast(text, action) {
             text2: `${text} was deleted.`,
         });
     }
-    
+}
+
+export function showCreatePost(action) {
+    if (action == 'success') {
+        Toast.show({
+            type: 'success',
+            text1: `Create successful ✅`,
+            text2: `Post was created.`,
+        });
+    }else if (action == 'fail') {
+        Toast.show({
+            type: 'error',
+            text1: `Create failed ❌`,
+            text2: `Please fill in at least one field. (Title or Content)`,
+        });
+    }
 }

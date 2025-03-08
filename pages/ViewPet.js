@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  ImageBackground
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { MyStyles } from "../styles/MyStyle";
@@ -157,91 +158,95 @@ export default function ViewPet({ route, navigation }) {
   };
 
   return (
-    <SafeAreaView style={MyStyles.container}>
-      <View style={MyStyles.arrowHeader}>
-        <TouchableOpacity
-          style={MyStyles.arrowIcon}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="arrow-back-outline" size={30} color="black" />
-        </TouchableOpacity>
-      </View>
+    <ImageBackground
+      source={require('../assets/wallpaper.jpg')}
+      style={MyStyles.background}
+    >
+      <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.arrowHeader}>
+          <TouchableOpacity
+            style={MyStyles.arrowIcon}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="arrow-back-outline" size={30} color="black" />
+          </TouchableOpacity>
+        </View>
 
-      <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container}>
 
-        <Text style={styles.header}>{capitalizeFirstLetter(pet.pet_name) || "Pet Name"}</Text>
+          <Text style={styles.header}>{capitalizeFirstLetter(pet.pet_name) || "Pet Name"}</Text>
 
-        <View style={styles.profile}>
-          <View style={styles.imageContainer}>
-            <TouchableOpacity onPress={handleOpenModal}>
-              <Image
-                style={[styles.image, image && styles.imageWithBorder]}
-                source={image ? { uri: image } : petplaceholder}
-              />
+          <View style={styles.profile}>
+            <View style={styles.imageContainer}>
+              <TouchableOpacity onPress={handleOpenModal}>
+                <Image
+                  style={[styles.image, image && styles.imageWithBorder]}
+                  source={image ? { uri: image } : petplaceholder}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.cameraIcon} onPress={handleOpenModal}>
+                <Ionicons name="camera-outline" size={27} color="black" />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.actionButtons}>
+            <TouchableOpacity onPress={handleEdit}>
+              <Ionicons name="pencil-outline" size={30} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cameraIcon} onPress={handleOpenModal}>
-              <Ionicons name="camera-outline" size={27} color="black" />
+            <TouchableOpacity onPress={confirmDelete}>
+              <Ionicons name="trash-outline" size={30} color="black" />
             </TouchableOpacity>
           </View>
-        </View>
 
-        <View style={styles.actionButtons}>
-          <TouchableOpacity onPress={handleEdit}>
-            <Ionicons name="pencil-outline" size={30} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={confirmDelete}>
-            <Ionicons name="trash-outline" size={30} color="black" />
-          </TouchableOpacity>
-        </View>
+          {/* Action Grid */}
+          <View style={styles.gridContainer}>
+            <TouchableOpacity style={styles.gridItem}>
+              <Ionicons name="calendar-outline" size={40} color="black" />
+              <Text style={styles.gridText}>Calendar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.gridItem}>
+              <Ionicons name="document-text-outline" size={40} color="black" />
+              <Text style={styles.gridText}>Records</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.gridItem}>
+              <Ionicons name="images-outline" size={40} color="black" />
+              <Text style={styles.gridText}>Gallery</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.gridItem}
+              onPress={() => navigation.navigate("Home", { screen: "Documents", params: {petId: pet.pet_id} })}
+            >
+              <Ionicons name="folder-outline" size={40} color="black" />
+              <Text style={styles.gridText}>Documents</Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
 
-        {/* Action Grid */}
-        <View style={styles.gridContainer}>
-          <TouchableOpacity style={styles.gridItem}>
-            <Ionicons name="calendar-outline" size={40} color="black" />
-            <Text style={styles.gridText}>Calendar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.gridItem}>
-            <Ionicons name="document-text-outline" size={40} color="black" />
-            <Text style={styles.gridText}>Records</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.gridItem}>
-            <Ionicons name="images-outline" size={40} color="black" />
-            <Text style={styles.gridText}>Gallery</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.gridItem}
-            onPress={() => navigation.navigate("Home", { screen: "Documents", params: {petId: pet.pet_id} })}
-          >
-            <Ionicons name="folder-outline" size={40} color="black" />
-            <Text style={styles.gridText}>Documents</Text>
-          </TouchableOpacity>
-        </View>
+        <UploadModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          message={modalMessage}
+          onCameraPress={() => uploadImage("camera")}
+          onGalleryPress={() => uploadImage("gallery")}
+          showRemoveButton={!!pet.profile_path}
+          onRemovePress={handleDeletePress}
+        />
+
+        <ConfirmModal
+          visible={modalDeleteVisible}
+          onClose={() => setModalDeleteVisible(false)}
+          onConfirm={handleConfirmDelete}
+          message={`Are you sure you want to deleted ?`}
+        />
       </SafeAreaView>
-
-      <UploadModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        message={modalMessage}
-        onCameraPress={() => uploadImage("camera")}
-        onGalleryPress={() => uploadImage("gallery")}
-        showRemoveButton={!!pet.profile_path}
-        onRemovePress={handleDeletePress}
-      />
-
-      <ConfirmModal
-        visible={modalDeleteVisible}
-        onClose={() => setModalDeleteVisible(false)}
-        onConfirm={handleConfirmDelete}
-        message={`Are you sure you want to deleted ?`}
-      />
-    </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#EACEBE",
     padding: 25,
   },
   profile: {

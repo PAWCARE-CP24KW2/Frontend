@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   RefreshControl,
+  ImageBackground,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { MyStyles } from "../styles/MyStyle";
@@ -15,6 +16,7 @@ import petplaceholder from "../assets/petplaceholder.png";
 import LoadingScreen from "../components/common/LoadingScreen";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image } from "expo-image";
+import vet from '../assets/vet.png';
 
 export default function Home({ navigation }) {
   const [items, setItems] = useState([]);
@@ -106,65 +108,66 @@ export default function Home({ navigation }) {
   if (loading) {
     return (
       <SafeAreaView style={MyStyles.container}>
-        <View style={MyStyles.header}>
-          <TouchableOpacity>
-            <Ionicons name="add-circle-outline" size={45} color="black" />
-          </TouchableOpacity>
-        </View>
+        <View style={MyStyles.header}></View>
         <LoadingScreen />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={MyStyles.container}>
-      <View style={MyStyles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate("AddPet")}>
-          <Ionicons name="add-circle-outline" size={45} color="black" />
-        </TouchableOpacity>
-      </View>
+    <ImageBackground
+      source={require('../assets/wallpaper.jpg')}
+      style={MyStyles.background}
+    >
+      <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.header}></View>
 
-      {items.length > 0 ? (
-        <FlatList
-          data={items}
-          renderItem={renderItem}
-          keyExtractor={(item) =>
-            item.id ? item.id.toString() : Math.random().toString()
-          }
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        />
-      ) : (
-        <View style={styles.noPetsContainer}>
-          <Text style={styles.title}>NO PETS</Text>
-          <Text style={styles.subtitle}>
-            ADD A PET FOR THE FIRST TIME BY CLICKING ON THE BUTTON BELOW OR THE
-            + BUTTON.
-          </Text>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate("AddPet")}
-          >
-            <Text style={styles.buttonText}>ADD YOUR PET</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </SafeAreaView>
+        {items.length > 0 ? (
+          <FlatList
+            data={items}
+            renderItem={renderItem}
+            keyExtractor={(item) =>
+              item.id ? item.id.toString() : Math.random().toString()
+            }
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          />
+        ) : (
+          <View style={styles.noPetsContainer}>
+            <Text style={styles.title}>NO PETS</Text>
+            <Text style={styles.subtitle}>
+              ADD A PET FOR THE FIRST TIME BY CLICKING ON THE BUTTON BELOW OR THE
+              + BUTTON.
+            </Text>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.navigate("AddPet")}
+            >
+              <Text style={styles.buttonText}>ADD YOUR PET</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        <TouchableOpacity
+          style={styles.createPetButton}
+          onPress={() => navigation.navigate("AddPet")}
+        >
+          <Image source={vet} style={styles.addIcon} />
+        </TouchableOpacity>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: 'cover',
+  },
   container: {
     flex: 1,
     backgroundColor: "#EACEBE",
-  },
-  topNavBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 10,
-    backgroundColor: "#B6917B",
   },
   card: {
     flexDirection: "row",
@@ -247,7 +250,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 60,
-    backgroundColor: "#71543F", // Change this color as needed
+    backgroundColor: "#71543F",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
   },
@@ -284,5 +287,23 @@ const styles = StyleSheet.create({
   imageWithBorder: {
     borderWidth: 1.5,
     borderColor: "black",
-  }
+  },
+  createPetButton: {
+    position: 'absolute',
+    backgroundColor: "#71543F",
+    borderRadius: 100,
+    padding: 10,
+    bottom: 10,
+    right: 10,
+    zIndex: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  addIcon: {
+    width: 49,
+    height: 49,
+  },
 });

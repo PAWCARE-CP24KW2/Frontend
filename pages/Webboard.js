@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, FlatList, Image, RefreshControl, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet, TextInput, FlatList, Image, RefreshControl, TouchableOpacity, ImageBackground } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { MyStyles } from "../styles/MyStyle";
@@ -13,22 +14,32 @@ export default function Webboard({ navigation }) {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [sortBy, setSortBy] = useState('create_at');
 
   const fetchPosts = async () => {
     try {
       const result = await getAllPost();
-      setPosts(result);
-      setFilteredPosts(result);
+      const sortedPosts = result.sort((a, b) => new Date(b.create_at) - new Date(a.create_at));
+      setPosts(sortedPosts);
+      setFilteredPosts(sortedPosts);
     } catch (error) {
       console.error('Error fetching posts:', error);
     } finally {
-      setLoading(false);
+      setRefreshing(false);
     }
   };
 
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchPosts();
+      setSortOrder('desc');
+    }, [])
+  );
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -55,7 +66,6 @@ export default function Webboard({ navigation }) {
   const onRefresh = async () => {
     setRefreshing(true);
     await fetchPosts();
-    setRefreshing(false);
   };
 
   const formatDate = (isoString) => {
@@ -92,8 +102,12 @@ export default function Webboard({ navigation }) {
           <Text style={styles.date}>{formatDate(item.create_at)}</Text>
         </View>
       </View>
-      <Text style={styles.title}>{highlightText(item.post_title, searchQuery)}</Text>
-      <Text style={styles.content}>{highlightText(item.post_content, searchQuery)}</Text>
+      {item.post_title ? (
+        <Text style={styles.title}>{highlightText(item.post_title, searchQuery)}</Text>
+      ) : null}
+      {item.post_content ? (
+        <Text style={styles.content}>{highlightText(item.post_content, searchQuery)}</Text>
+      ) : null}
       <View style={styles.footer}>
         <View style={styles.iconContainer}>
           <FontAwesome name="heart-o" size={18} color="black" />
@@ -107,40 +121,89 @@ export default function Webboard({ navigation }) {
     </View>
   );
 
+  const handleSortBy = (sortKey) => {
+    let sortedPosts = [...posts];
+  
+    if (sortKey === 'create_at') {
+      const newSortOrder = sortOrder === 'desc' ? 'asc' : 'desc';
+      sortedPosts.sort((a, b) => 
+        newSortOrder === 'desc'
+          ? new Date(b.create_at) - new Date(a.create_at)
+          : new Date(a.create_at) - new Date(b.create_at)
+      );
+      setSortOrder(newSortOrder);
+    } else if (sortKey === 'likes') {
+      sortedPosts.sort((a, b) => b.likes - a.likes); 
+    }
+  
+    setSortBy(sortKey);
+    setPosts(sortedPosts);
+    setFilteredPosts(sortedPosts);
+  };
+  
   return (
-    <SafeAreaView style={MyStyles.container}>
-      <View style={MyStyles.header}>
-        <View style={styles.searchContainer}>
-          <Ionicons name="search" size={20} color="black" style={styles.searchIcon} />
-          <TextInput
-            style={styles.searchBar}
-            placeholder="Search..."
-            value={searchQuery}
-            onChangeText={handleSearch}
-          />
-          {searchQuery ? (
-            <TouchableOpacity onPress={clearSearch} style={styles.clearIcon}>
-              <Ionicons name="close" size={20} color="black" />
-            </TouchableOpacity>
-          ) : null}
+    <ImageBackground
+      source={require('../assets/wallpaper.jpg')}
+      style={MyStyles.background}
+    >
+      <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.header}>
+          <View style={styles.searchContainer}>
+            <Ionicons name="search" size={20} color="black" style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchBar}
+              placeholder="Search..."
+              value={searchQuery}
+              onChangeText={handleSearch}
+            />
+            {searchQuery ? (
+              <TouchableOpacity onPress={clearSearch} style={styles.clearIcon}>
+                <Ionicons name="close" size={20} color="black" />
+              </TouchableOpacity>
+            ) : null}
+          </View>
         </View>
-      </View>
-      <FlatList
-        data={filteredPosts}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.post_id.toString()}
-        contentContainerStyle={styles.listContent}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      />
-      <TouchableOpacity
-        style={styles.createPostButton}
-        onPress={() => navigation.navigate('CreatePost')}
-      >
-        <Image source={edit} style={styles.editIcon} />
-      </TouchableOpacity>
-    </SafeAreaView>
+
+        <View style={styles.sortContainer}>
+          <Text style={styles.sortLabel}>Sort by:</Text>
+          <TouchableOpacity
+            style={[styles.sortButton, sortBy === 'create_at' && styles.activeSortButton]}
+            onPress={() => handleSortBy('create_at')}
+          >
+            <View style={styles.sortButtonContent}>
+              <Text style={[styles.sortButtonText, sortBy === 'create_at' && styles.activeSortButtonText]}>
+                Created time&nbsp;
+              </Text>
+              {sortBy === 'create_at' && (
+                <Ionicons name={sortOrder === 'desc' ? "caret-down" : "caret-up"} size={16} color="white" />
+              )}
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.sortButton, sortBy === 'likes' && styles.activeSortButton]}
+            onPress={() => handleSortBy('likes')}
+          >
+            <Text style={[styles.sortButtonText, sortBy === 'likes' && styles.activeSortButtonText]}>Likes</Text>
+          </TouchableOpacity>
+        </View>
+
+        <FlatList
+          data={filteredPosts}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.post_id.toString()}
+          contentContainerStyle={styles.listContent}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        />
+        <TouchableOpacity
+          style={styles.createPostButton}
+          onPress={() => navigation.navigate('AddPost')}
+        >
+          <Image source={edit} style={styles.editIcon} />
+        </TouchableOpacity>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
@@ -171,14 +234,49 @@ const styles = StyleSheet.create({
     right: 10,
     zIndex: 1,
   },
-  listContent: {
+  sortContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 22,
+    marginVertical: 10,
+  },
+  sortLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginRight: 5,
+    opacity: 0.6,
+  },
+  sortButton: {
+    color: "#000",
     padding: 10,
+    borderRadius: 10,
+    marginHorizontal: 5,
+  },
+  activeSortButton: {
+    backgroundColor: "#493628",
+  },
+  sortButtonText: {
+    color: "#000",
+    opacity: 0.6,
+    fontWeight: "bold",
+  },
+  activeSortButtonText: {
+    color: "#FFF",
+    opacity: 1,
+  },
+  sortButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  listContent: {
+    padding: 0,
   },
   card: {
     backgroundColor: "#fff",
     padding: 16,
     borderRadius: 10,
-    margin: 10,
+    marginHorizontal: 20,
+    marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,

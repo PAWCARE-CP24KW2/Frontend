@@ -9,6 +9,7 @@ import {
   Alert,
   ScrollView,
   Image,
+  ImageBackground,
 } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -198,179 +199,184 @@ export default function AddPet({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={MyStyles.container}>
+    <ImageBackground
+      source={require('../assets/wallpaper.jpg')}
+      style={MyStyles.background}
+    >
+      <SafeAreaView style={MyStyles.container}>
 
-      <View style={MyStyles.arrowHeader}>
-        <TouchableOpacity
-          style={MyStyles.arrowIcon}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="arrow-back-outline" size={30} color="black" />
-        </TouchableOpacity>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <Text style={styles.header}>Add your pet</Text>
+        <View style={MyStyles.arrowHeader}>
+          <TouchableOpacity
+            style={MyStyles.arrowIcon}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="arrow-back-outline" size={30} color="black" />
+          </TouchableOpacity>
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <Text style={styles.header}>Add your pet</Text>
+          </View>
+          <View style={{ width: 35 }} />
         </View>
-        <View style={{ width: 35 }} />
-      </View>
 
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <View style={styles.profile}>
-          <View style={styles.imageContainer}>
-            <TouchableOpacity onPress={handleOpenModal}>
-              <Image
-                style={[styles.image, image && styles.imageWithBorder]}
-                source={image ? { uri: image } : petplaceholder}
-              />
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+          <View style={styles.profile}>
+            <View style={styles.imageContainer}>
+              <TouchableOpacity onPress={handleOpenModal}>
+                <Image
+                  style={[styles.image, image && styles.imageWithBorder]}
+                  source={image ? { uri: image } : petplaceholder}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.cameraIcon} onPress={handleOpenModal}>
+                <Ionicons name="camera-outline" size={27} color="black" />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <Text style={styles.sectionTitle}>Pet Name:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Name"
+            value={Item.name}
+            onChangeText={(text) => setItem({ ...Item, name: text })}
+          />
+          <Text style={styles.sectionTitle}>Pet Breed:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Breed"
+            value={Item.breed}
+            onChangeText={(text) => setItem({ ...Item, breed: text })}
+          />
+          <Text style={styles.sectionTitle}>Pet Type:</Text>
+          <DropdownTypeComponent
+            style={styles.DropdownType}
+            type={Item.type}
+            Item={Item}
+            setItem={setItem}
+          />
+          <Text style={styles.sectionTitle}>Pet Color:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Color"
+            value={Item.color}
+            onChangeText={(text) => setItem({ ...Item, color: text })}
+          />
+          <Text style={styles.sectionTitle}>Pet Weight:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Weight"
+            value={Item.weight}
+            keyboardType="numeric"
+            onChangeText={handleWeightChange}
+          />
+          <Text style={styles.sectionTitle}>Date of Birth:</Text>
+          <TouchableOpacity
+            style={styles.dateContainer}
+            onPress={() => showMode("date")}
+          >
+            <Icon name="calendar" size={20} color="black" style={MyStyles.icon} />
+            <TextInput
+              style={MyStyles.input}
+              placeholder="Date of Birth"
+              value={selectedDate}
+              editable={false}
+            />
+          </TouchableOpacity>
+          {show && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={mode === "date" ? date : time}
+              mode={mode}
+              is24Hour={true}
+              display="default"
+              onChange={onChange}
+            />
+          )}
+          <Text style={styles.sectionTitle}>Pet Gender:</Text>
+          <View style={styles.radioContainer}>
+            <TouchableOpacity
+              style={[
+                styles.genderButton,
+                Item.gender === "male" && styles.selectedRadio,
+              ]}
+              onPress={() => setItem({ ...Item, gender: "male" })}
+            >
+              <Text style={styles.genderText}>Male</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cameraIcon} onPress={handleOpenModal}>
-              <Ionicons name="camera-outline" size={27} color="black" />
+            <TouchableOpacity
+              style={[
+                styles.genderButton,
+                Item.gender === "female" && styles.selectedRadio,
+              ]}
+              onPress={() => setItem({ ...Item, gender: "female" })}
+            >
+              <Text style={styles.genderText}>Female</Text>
             </TouchableOpacity>
           </View>
-        </View>
-        <Text style={styles.sectionTitle}>Pet Name:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Name"
-          value={Item.name}
-          onChangeText={(text) => setItem({ ...Item, name: text })}
-        />
-        <Text style={styles.sectionTitle}>Pet Breed:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Breed"
-          value={Item.breed}
-          onChangeText={(text) => setItem({ ...Item, breed: text })}
-        />
-        <Text style={styles.sectionTitle}>Pet Type:</Text>
-        <DropdownTypeComponent
-          style={styles.DropdownType}
-          type={Item.type}
-          Item={Item}
-          setItem={setItem}
-        />
-        <Text style={styles.sectionTitle}>Pet Color:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Color"
-          value={Item.color}
-          onChangeText={(text) => setItem({ ...Item, color: text })}
-        />
-        <Text style={styles.sectionTitle}>Pet Weight:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Weight"
-          value={Item.weight}
-          keyboardType="numeric"
-          onChangeText={handleWeightChange}
-        />
-        <Text style={styles.sectionTitle}>Date of Birth:</Text>
-        <TouchableOpacity
-          style={styles.dateContainer}
-          onPress={() => showMode("date")}
-        >
-          <Icon name="calendar" size={20} color="black" style={MyStyles.icon} />
-          <TextInput
-            style={MyStyles.input}
-            placeholder="Date of Birth"
-            value={selectedDate}
-            editable={false}
-          />
-        </TouchableOpacity>
-        {show && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={mode === "date" ? date : time}
-            mode={mode}
-            is24Hour={true}
-            display="default"
-            onChange={onChange}
-          />
-        )}
-        <Text style={styles.sectionTitle}>Pet Gender:</Text>
-        <View style={styles.radioContainer}>
-          <TouchableOpacity
-            style={[
-              styles.genderButton,
-              Item.gender === "male" && styles.selectedRadio,
-            ]}
-            onPress={() => setItem({ ...Item, gender: "male" })}
-          >
-            <Text style={styles.genderText}>Male</Text>
+          <Text style={styles.sectionTitle}>Living Environment:</Text>
+          <View style={styles.radioContainer}>
+            <TouchableOpacity
+              style={[
+                styles.radioButton,
+                Item.environment === "outdoor" && styles.selectedRadio,
+              ]}
+              onPress={() => setItem({ ...Item, environment: "outdoor" })}
+            >
+              <Text style={styles.radioText}>Outdoor</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.radioButton,
+                Item.environment === "indoor" && styles.selectedRadio,
+              ]}
+              onPress={() => setItem({ ...Item, environment: "indoor" })}
+            >
+              <Text style={styles.radioText}>Indoor</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.sectionTitle}>Has your animal been neutered?</Text>
+          <View style={styles.radioContainer}>
+            <TouchableOpacity
+              style={[
+                styles.radioButton,
+                Item.neutered === "yes" && styles.selectedRadio,
+              ]}
+              onPress={() => setItem({ ...Item, neutered: "yes" })}
+            >
+              <Text style={styles.radioText}>Yes</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.radioButton,
+                Item.neutered === "No" && styles.selectedRadio,
+              ]}
+              onPress={() => setItem({ ...Item, neutered: "No" })}
+            >
+              <Text style={styles.radioText}>No</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity style={styles.button} onPress={handleAddPet}>
+            <Text style={styles.buttonText}>Add</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.genderButton,
-              Item.gender === "female" && styles.selectedRadio,
-            ]}
-            onPress={() => setItem({ ...Item, gender: "female" })}
-          >
-            <Text style={styles.genderText}>Female</Text>
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.sectionTitle}>Living Environment:</Text>
-        <View style={styles.radioContainer}>
-          <TouchableOpacity
-            style={[
-              styles.radioButton,
-              Item.environment === "outdoor" && styles.selectedRadio,
-            ]}
-            onPress={() => setItem({ ...Item, environment: "outdoor" })}
-          >
-            <Text style={styles.radioText}>Outdoor</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.radioButton,
-              Item.environment === "indoor" && styles.selectedRadio,
-            ]}
-            onPress={() => setItem({ ...Item, environment: "indoor" })}
-          >
-            <Text style={styles.radioText}>Indoor</Text>
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.sectionTitle}>Has your animal been neutered?</Text>
-        <View style={styles.radioContainer}>
-          <TouchableOpacity
-            style={[
-              styles.radioButton,
-              Item.neutered === "yes" && styles.selectedRadio,
-            ]}
-            onPress={() => setItem({ ...Item, neutered: "yes" })}
-          >
-            <Text style={styles.radioText}>Yes</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.radioButton,
-              Item.neutered === "No" && styles.selectedRadio,
-            ]}
-            onPress={() => setItem({ ...Item, neutered: "No" })}
-          >
-            <Text style={styles.radioText}>No</Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity style={styles.button} onPress={handleAddPet}>
-          <Text style={styles.buttonText}>Add</Text>
-        </TouchableOpacity>
-      </ScrollView>
+        </ScrollView>
 
-      <UploadModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        message={modalMessage}
-        onCameraPress={() => uploadImage("camera")}
-        onGalleryPress={() => uploadImage("gallery")}
-        showRemoveButton={!!image}
-        onRemovePress={handleDeletePress}
-      />
+        <UploadModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          message={modalMessage}
+          onCameraPress={() => uploadImage("camera")}
+          onGalleryPress={() => uploadImage("gallery")}
+          showRemoveButton={!!image}
+          onRemovePress={handleDeletePress}
+        />
 
-      <ConfirmModal
-        visible={modalDeleteVisible}
-        onClose={() => setModalDeleteVisible(false)}
-        onConfirm={handleConfirmDelete}
-        message={`Are you sure you want to deleted ?`}
-      />
-    </SafeAreaView>
+        <ConfirmModal
+          visible={modalDeleteVisible}
+          onClose={() => setModalDeleteVisible(false)}
+          onConfirm={handleConfirmDelete}
+          message={`Are you sure you want to deleted ?`}
+        />
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
@@ -385,6 +391,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     color: "black",
     textAlign: "center",
+    textShadowColor: "#ab886d",
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 3,
   },
   input: {
     height: 49,

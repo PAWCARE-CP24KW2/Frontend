@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   ScrollView,
+  ImageBackground
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -95,163 +96,166 @@ export default function UpdatePetData({ route, navigation }) {
   };
 
   return (
-    <SafeAreaView style={MyStyles.container}>
-      <View style={MyStyles.arrowHeader}>
-        <TouchableOpacity
-          style={MyStyles.arrowIcon}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="arrow-back-outline" size={30} color="black" />
-        </TouchableOpacity>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <Text style={styles.header}>Edit Pet Data</Text>
-        </View>
-        <View style={{ width: 35 }} />
-      </View>
-
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <Text style={styles.sectionTitle}>Pet Name:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Pet Name"
-          value={petName}
-          onChangeText={setPetName}
-        />
-        <Text style={styles.sectionTitle}>Pet Breed:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Pet Breed"
-          value={petBreed}
-          onChangeText={setPetBreed}
-        />
-        <Text style={styles.sectionTitle}>Pet Type:</Text>
-        <DropdownTypeComponent
-          Item={{ type: petType }}
-          setItem={(item) => setPetType(item.type)}
-          currentPet={petType}
-        />
-        <Text style={styles.sectionTitle}>Pet Color:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Color"
-          value={petColor}
-          onChangeText={setPetColor}
-        />
-        <Text style={styles.sectionTitle}>Pet Weight:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Weight"
-          value={weight}
-          onChangeText={handleWeightChange}
-          keyboardType="numeric"
-        />
-        <Text style={styles.sectionTitle}>Date of Birth:</Text>
-        <TouchableOpacity
-          style={styles.dateContainer}
-          onPress={() => showMode("date")}
-        >
-          <Icon name="calendar" size={20} color="black" style={MyStyles.icon} />
-          <TextInput
-            style={MyStyles.input}
-            placeholder="Date of Birth"
-            value={selectedDate}
-            editable={false}
-          />
-        </TouchableOpacity>
-        {show && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={date}
-            mode={mode}
-            is24Hour={true}
-            display="default"
-            onChange={onChange}
-          />
-        )}
-        <Text style={styles.sectionTitle}>Pet Gender:</Text>
-        <View style={styles.radioContainer}>
+    <ImageBackground
+      source={require('../assets/wallpaper.jpg')}
+      style={MyStyles.background}
+    >
+      <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.arrowHeader}>
           <TouchableOpacity
-            style={[
-              styles.genderButton,
-              gender === "male" && styles.selectedRadio,
-            ]}
-            onPress={() => setGender("male")}
-            value={gender}
-          >
-            <Text style={styles.radioText}>Male</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.genderButton,
-              gender === "female" && styles.selectedRadio,
-            ]}
-            onPress={() => setGender("female")}
-            value={gender}
-          >
-            <Text style={styles.radioText}>Female</Text>
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.sectionTitle}>Living Environment:</Text>
-        <View style={styles.radioContainer}>
-          <TouchableOpacity
-            style={[
-              styles.radioButton,
-              environment === "outdoor" && styles.selectedRadio,
-            ]}
-            onPress={() => setEnvironment("outdoor")}
-            value={environment}
-          >
-            <Text style={styles.radioText}>Outdoor</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.radioButton,
-              environment === "indoor" && styles.selectedRadio,
-            ]}
-            onPress={() => setEnvironment("indoor")}
-            value={environment}
-          >
-            <Text style={styles.radioText}>Indoor</Text>
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.sectionTitle}>Has your animal been neutered?</Text>
-        <View style={styles.radioContainer}>
-          <TouchableOpacity
-            style={[
-              styles.radioButton,
-              neutered === "yes" && styles.selectedRadio,
-            ]}
-            onPress={() => setNeutered("yes")}
-            value={neutered}
-          >
-            <Text style={styles.radioText}>Yes</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.radioButton,
-              neutered === "no" && styles.selectedRadio,
-            ]}
-            onPress={() => setNeutered("no")}
-            value={neutered}
-          >
-            <Text style={styles.radioText}>No</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleSave}>
-            <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
+            style={MyStyles.arrowIcon}
             onPress={() => navigation.goBack()}
           >
-            <Text style={styles.buttonText}>Cancel</Text>
+            <Ionicons name="arrow-back-outline" size={30} color="black" />
           </TouchableOpacity>
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <Text style={styles.header}>Edit Pet Data</Text>
+          </View>
+          <View style={{ width: 35 }} />
         </View>
-      </ScrollView>
-    </SafeAreaView>
+
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+          <Text style={styles.sectionTitle}>Pet Name:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Pet Name"
+            value={petName}
+            onChangeText={setPetName}
+          />
+          <Text style={styles.sectionTitle}>Pet Breed:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Pet Breed"
+            value={petBreed}
+            onChangeText={setPetBreed}
+          />
+          <Text style={styles.sectionTitle}>Pet Type:</Text>
+          <DropdownTypeComponent
+            Item={{ type: petType }}
+            setItem={(item) => setPetType(item.type)}
+            currentPet={petType}
+          />
+          <Text style={styles.sectionTitle}>Pet Color:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Color"
+            value={petColor}
+            onChangeText={setPetColor}
+          />
+          <Text style={styles.sectionTitle}>Pet Weight:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Weight"
+            value={weight}
+            onChangeText={handleWeightChange}
+            keyboardType="numeric"
+          />
+          <Text style={styles.sectionTitle}>Date of Birth:</Text>
+          <TouchableOpacity
+            style={styles.dateContainer}
+            onPress={() => showMode("date")}
+          >
+            <Icon name="calendar" size={20} color="black" style={MyStyles.icon} />
+            <TextInput
+              style={MyStyles.input}
+              placeholder="Date of Birth"
+              value={selectedDate}
+              editable={false}
+            />
+          </TouchableOpacity>
+          {show && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={date}
+              mode={mode}
+              is24Hour={true}
+              display="default"
+              onChange={onChange}
+            />
+          )}
+          <Text style={styles.sectionTitle}>Pet Gender:</Text>
+          <View style={styles.radioContainer}>
+            <TouchableOpacity
+              style={[
+                styles.genderButton,
+                gender === "male" && styles.selectedRadio,
+              ]}
+              onPress={() => setGender("male")}
+              value={gender}
+            >
+              <Text style={styles.radioText}>Male</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.genderButton,
+                gender === "female" && styles.selectedRadio,
+              ]}
+              onPress={() => setGender("female")}
+              value={gender}
+            >
+              <Text style={styles.radioText}>Female</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.sectionTitle}>Living Environment:</Text>
+          <View style={styles.radioContainer}>
+            <TouchableOpacity
+              style={[
+                styles.radioButton,
+                environment === "outdoor" && styles.selectedRadio,
+              ]}
+              onPress={() => setEnvironment("outdoor")}
+              value={environment}
+            >
+              <Text style={styles.radioText}>Outdoor</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.radioButton,
+                environment === "indoor" && styles.selectedRadio,
+              ]}
+              onPress={() => setEnvironment("indoor")}
+              value={environment}
+            >
+              <Text style={styles.radioText}>Indoor</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.sectionTitle}>Has your animal been neutered?</Text>
+          <View style={styles.radioContainer}>
+            <TouchableOpacity
+              style={[
+                styles.radioButton,
+                neutered === "yes" && styles.selectedRadio,
+              ]}
+              onPress={() => setNeutered("yes")}
+              value={neutered}
+            >
+              <Text style={styles.radioText}>Yes</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.radioButton,
+                neutered === "no" && styles.selectedRadio,
+              ]}
+              onPress={() => setNeutered("no")}
+              value={neutered}
+            >
+              <Text style={styles.radioText}>No</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={handleSave}>
+              <Text style={styles.buttonText}>Save</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => navigation.goBack()}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+
+        </ScrollView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
@@ -270,6 +274,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     color: "black",
     textAlign: "center",
+    textShadowColor: "#ab886d",
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 3,
   },
   image: {
     width: 100,
@@ -420,14 +427,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
   },
   button: {
     backgroundColor: "#493628",
-    padding: 10,
-    paddingHorizontal: 20,
+    padding: 15,
     borderRadius: 10,
+    alignItems: "center",
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  cancelButton: {
+    backgroundColor: "#fd7444",
   },
   buttonText: {
     fontSize: 16,
