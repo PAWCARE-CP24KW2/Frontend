@@ -38,6 +38,7 @@ export default function Webboard({ navigation }) {
     useCallback(() => {
       fetchPosts();
       setSortOrder('desc');
+      setSortBy('create_at');
     }, [])
   );
 
@@ -66,6 +67,8 @@ export default function Webboard({ navigation }) {
   const onRefresh = async () => {
     setRefreshing(true);
     await fetchPosts();
+    setSortBy('create_at');
+    setSortOrder('desc');
   };
 
   const formatDate = (isoString) => {
