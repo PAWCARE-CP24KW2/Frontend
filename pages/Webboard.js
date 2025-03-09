@@ -10,6 +10,8 @@ import edit from '../assets/edit.png';
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from 'react-native-popup-menu';
+import ConfirmModal from '../components/modals/ConfirmModal';
+import { deletePost } from '../api/post/deletePost';
 
 export default function Webboard({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -21,6 +23,8 @@ export default function Webboard({ navigation }) {
   const [fullImageVisible, setFullImageVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+  const [postToDelete, setPostToDelete] = useState(null);
 
   const fetchPosts = async () => {
     try {
@@ -158,6 +162,20 @@ export default function Webboard({ navigation }) {
     }
   };
 
+  const handleDeletePost = async () => {
+    if (postToDelete) {
+      try {
+        await deletePost(postToDelete);
+        fetchPosts();
+      } catch (error) {
+        console.error('Error deleting post:', error);
+      } finally {
+        setConfirmModalVisible(false);
+        setPostToDelete(null);
+      }
+    }
+  };
+
   const renderItem = ({ item }) => (
     <View style={styles.card}>
       <View style={styles.header}>
@@ -178,7 +196,10 @@ export default function Webboard({ navigation }) {
                   <Text style={styles.menuOptionText}>Edit Post</Text>
                 </View>
               </MenuOption>
-              <MenuOption onSelect={() => alert(`Delete Post: ${item.post_id}`)}>
+              <MenuOption onSelect={() => {
+                setPostToDelete(item.post_id);
+                setConfirmModalVisible(true);
+              }}>
                 <View style={styles.menuOption}>
                   <Ionicons name="trash-outline" size={20} color="red" />
                   <Text style={styles.menuOptionDeleteText}>Delete Post</Text>
@@ -283,6 +304,13 @@ export default function Webboard({ navigation }) {
               {selectedImage && <Image source={{ uri: selectedImage }} style={styles.fullImage} />}
             </View>
           </Modal>
+
+          <ConfirmModal
+            visible={confirmModalVisible}
+            onConfirm={handleDeletePost}
+            onClose={() => setConfirmModalVisible(false)}
+            message="Are you sure you want to delete this post?"
+          />
         </SafeAreaView>
       </ImageBackground>
     </MenuProvider>
@@ -393,7 +421,7 @@ const styles = StyleSheet.create({
   },
   moreIcon: {
     position: 'absolute',
-    top: -30,
+    top: 0,
     right: 0,
   },
   postImage: {
