@@ -391,8 +391,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     color: "black",
     textAlign: "center",
-    textShadowColor: "#ab886d",
-    textShadowOffset: { width: 2, height: 2 },
+    textShadowColor: "#493628",
+    textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 3,
   },
   input: {

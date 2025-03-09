@@ -154,8 +154,7 @@ export default function Webboard({ navigation }) {
       const token = await AsyncStorage.getItem('userToken');
       if (token) {
         const decodedToken = parseJWT(token);
-        setUserId(decodedToken.userId); // Assuming the token contains userId
-        console.log('Decoded Token:', decodedToken);
+        setUserId(decodedToken.userId);
       }
     } catch (error) {
       console.error('Error decoding token:', error);
@@ -175,6 +174,13 @@ export default function Webboard({ navigation }) {
       }
     }
   };
+
+  const renderEmptyComponent = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyText}>There's nothing here.</Text>
+      <Text style={styles.emptyText}>You're the first one.</Text>
+    </View>
+  );
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
@@ -288,6 +294,7 @@ export default function Webboard({ navigation }) {
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
+            ListEmptyComponent={renderEmptyComponent}
           />
           <TouchableOpacity
             style={styles.createPostButton}
@@ -380,6 +387,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: 0,
+    flexGrow: 1,
   },
   card: {
     backgroundColor: "#fff",
@@ -421,7 +429,7 @@ const styles = StyleSheet.create({
   },
   moreIcon: {
     position: 'absolute',
-    top: 0,
+    top: -30,
     right: 0,
   },
   postImage: {
@@ -482,7 +490,7 @@ const styles = StyleSheet.create({
   },
   fullImageContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.95)',
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -496,6 +504,15 @@ const styles = StyleSheet.create({
     top: 40,
     right: 20,
     zIndex: 1,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 18,
+    color: 'gray',
   },
   menuOption: {
     flexDirection: 'row',

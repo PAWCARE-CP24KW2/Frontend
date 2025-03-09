@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -53,7 +53,7 @@ export default function AddPost({ navigation }) {
     }
   };
 
-  const uploadImage = async (mode) => {
+  const uploadImage = useCallback(async (mode) => {
     try {
       let result = {};
 
@@ -62,7 +62,6 @@ export default function AddPost({ navigation }) {
         result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ["images"],
           allowsEditing: true,
-          // aspect: [1, 1],
           quality: 1,
         });
       } else if (mode === "camera") {
@@ -70,7 +69,6 @@ export default function AddPost({ navigation }) {
         result = await ImagePicker.launchCameraAsync({
           cameraType: ImagePicker.CameraType.back,
           allowsEditing: true,
-          // aspect: [1, 1],
           quality: 1,
         });
       }
@@ -91,17 +89,17 @@ export default function AddPost({ navigation }) {
       alert("Failed to upload image:", error.message);
       setModalVisible(false);
     }
-  };
+  }, []);
 
-  const handleOpenModal = () => {
+  const handleOpenModal = useCallback(() => {
     setModalVisible(true);
-  };
+  }, []);
 
-  const handleDeletePress = () => {
+  const handleDeletePress = useCallback(() => {
     setModalDeleteVisible(true);
-  };
+  }, []);
 
-  const removeImage = async () => {
+  const removeImage = useCallback(async () => {
     try {
       setImage(null);
       setModalVisible(false);
@@ -109,20 +107,20 @@ export default function AddPost({ navigation }) {
       alert(message);
       setModalVisible(false);
     }
-  };
+  }, []);
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = useCallback(() => {
     removeImage(image);
     setModalDeleteVisible(false);
-  };
+  }, [image, removeImage]);
 
-  const handleImagePress = () => {
+  const handleImagePress = useCallback(() => {
     setFullImageVisible(true);
-  };
+  }, []);
 
-  const handleCloseFullImage = () => {
+  const handleCloseFullImage = useCallback(() => {
     setFullImageVisible(false);
-  };
+  }, []);
 
   return (
     <ImageBackground
@@ -145,24 +143,30 @@ export default function AddPost({ navigation }) {
 
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <Text style={styles.sectionTitle}>Title</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="What would you like to share ?"
-            value={title}
-            onChangeText={setTitle}
-          />
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="What would you like to share ?"
+              value={title}
+              onChangeText={setTitle}
+            />
+          </View>
+
           <Text style={styles.sectionTitle}>Content</Text>
-          <TextInput
-            style={styles.contentInput}
-            placeholder="Description"
-            multiline={true}
-            numberOfLines={6}
-            value={content}
-            onChangeText={setContent}
-          />
-          <TouchableOpacity style={styles.imagePicker} onPress={handleOpenModal}>
-            <Text style={styles.imagePickerText}>Pick an image</Text>
-          </TouchableOpacity>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.contentInput}
+              placeholder="Description"
+              multiline={true}
+              numberOfLines={6}
+              value={content}
+              onChangeText={setContent}
+            />
+            <TouchableOpacity style={styles.imageIcon} onPress={handleOpenModal}>
+              <Ionicons name="image-outline" size={30} color="black" />
+            </TouchableOpacity>
+          </View>
+        
           {image && (
             <TouchableOpacity onPress={handleImagePress}>
               <Image source={{ uri: image.uri }} style={styles.image} />
@@ -219,29 +223,43 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     color: "black",
     textAlign: "center",
+    textShadowColor: "#493628",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+  },
+  inputContainer: {
+    position: 'relative',
+    width: "100%",
+    backgroundColor: "#FFF",
+    borderRadius: 10,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   input: {
     fontSize: 16,
     height: 49,
-    borderColor: "#B6917B",
-    borderWidth: 1,
-    borderRadius: 8,
-    borderColor: '#000',
-    marginBottom: 5,
+    borderRadius: 10,
     paddingHorizontal: 10,
-    backgroundColor: "#FFF",
   },
   contentInput: {
     fontSize: 16,
     height: 130,
-    borderColor: "#B6917B",
-    borderWidth: 1,
-    borderRadius: 8,
-    borderColor: '#000',
     marginBottom: 5,
+    borderRadius: 10,
     paddingHorizontal: 10,
-    backgroundColor: "#FFF",
     textAlignVertical: 'top',
+  },
+  imageIcon: {
+    position: 'absolute',
+    bottom: 5,
+    right: 5,
+    padding: 5,
+    borderRadius: 50,
+    backgroundColor: '#fff',
   },
   sectionTitle: {
     marginBottom: 5,
@@ -252,7 +270,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 20,
+    marginTop: 10,
   },
   button: {
     backgroundColor: "#493628",
@@ -261,6 +279,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     marginHorizontal: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   cancelButton: {
     backgroundColor: "#fd7444",
@@ -270,22 +293,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
-  imagePicker: {
-    backgroundColor: "#B6917B",
-    padding: 10,
-    borderRadius: 8,
-    alignItems: "center",
-    marginVertical: 10,
-  },
-  imagePickerText: {
-    color: "#FFF",
-    fontWeight: "bold",
-  },
   image: {
     width: '100%',
     height: 300,
     borderRadius: 8,
-    marginVertical: 10,
+    marginTop: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
@@ -294,7 +306,7 @@ const styles = StyleSheet.create({
   },
   fullImageContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.95)', // Increased opacity
+    backgroundColor: 'rgba(0, 0, 0, 0.85)', // Increased opacity
     justifyContent: 'center',
     alignItems: 'center',
   },
