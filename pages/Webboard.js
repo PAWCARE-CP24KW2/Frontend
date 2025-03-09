@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, TextInput, FlatList, Image, RefreshControl, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, TextInput, FlatList, Image, RefreshControl, TouchableOpacity, ImageBackground, Modal } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,6 +8,8 @@ import { getAllPost } from '../api/post/getAllPost';
 import userholder from '../assets/userholder.png';
 import edit from '../assets/edit.png';
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from 'react-native-popup-menu';
 
 export default function Webboard({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -16,6 +18,9 @@ export default function Webboard({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
   const [sortOrder, setSortOrder] = useState('desc');
   const [sortBy, setSortBy] = useState('create_at');
+  const [fullImageVisible, setFullImageVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   const fetchPosts = async () => {
     try {
@@ -32,13 +37,17 @@ export default function Webboard({ navigation }) {
 
   useEffect(() => {
     fetchPosts();
+    getTokenData();
   }, []);
 
   useFocusEffect(
     useCallback(() => {
-      fetchPosts();
-      setSortOrder('desc');
-      setSortBy('create_at');
+      const timeout = setTimeout(() => {
+        fetchPosts();
+        setSortOrder('desc');
+        setSortBy('create_at');
+      }, 1000); 
+      return () => clearTimeout(timeout);
     }, [])
   );
 
@@ -66,7 +75,7 @@ export default function Webboard({ navigation }) {
   
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchPosts();
+    fetchPosts();
     setSortBy('create_at');
     setSortOrder('desc');
   };
@@ -96,33 +105,15 @@ export default function Webboard({ navigation }) {
     return `${firstname} ${lastname}`;
   };
 
-  const renderItem = ({ item }) => (
-    <View style={styles.card}>
-      <View style={styles.header}>
-        <Image source={ userholder } style={styles.avatar} />
-        <View>
-          <Text style={styles.name}>{highlightText(getFullName(item.user_firstname, item.user_lastname), searchQuery)}</Text>
-          <Text style={styles.date}>{formatDate(item.create_at)}</Text>
-        </View>
-      </View>
-      {item.post_title ? (
-        <Text style={styles.title}>{highlightText(item.post_title, searchQuery)}</Text>
-      ) : null}
-      {item.post_content ? (
-        <Text style={styles.content}>{highlightText(item.post_content, searchQuery)}</Text>
-      ) : null}
-      <View style={styles.footer}>
-        <View style={styles.iconContainer}>
-          <FontAwesome name="heart-o" size={18} color="black" />
-          <Text style={styles.iconText}>{item.likes}</Text>
-        </View>
-        <View style={styles.iconCommentContainer}>
-          <FontAwesome5 name="comment-alt" size={16} color="black" />
-          <Text style={styles.iconText}>{item.comments}</Text>
-        </View>
-      </View>
-    </View>
-  );
+  const handleImagePress = (imageUri) => {
+    setSelectedImage(imageUri);
+    setFullImageVisible(true);
+  };
+
+  const handleCloseFullImage = () => {
+    setFullImageVisible(false);
+    setSelectedImage(null);
+  };
 
   const handleSortBy = (sortKey) => {
     let sortedPosts = [...posts];
@@ -143,70 +134,158 @@ export default function Webboard({ navigation }) {
     setPosts(sortedPosts);
     setFilteredPosts(sortedPosts);
   };
+
+  function parseJWT(token) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
   
-  return (
-    <ImageBackground
-      source={require('../assets/wallpaper.jpg')}
-      style={MyStyles.background}
-    >
-      <SafeAreaView style={MyStyles.container}>
-        <View style={MyStyles.header}>
-          <View style={styles.searchContainer}>
-            <Ionicons name="search" size={20} color="black" style={styles.searchIcon} />
-            <TextInput
-              style={styles.searchBar}
-              placeholder="Search..."
-              value={searchQuery}
-              onChangeText={handleSearch}
-            />
-            {searchQuery ? (
-              <TouchableOpacity onPress={clearSearch} style={styles.clearIcon}>
-                <Ionicons name="close" size={20} color="black" />
-              </TouchableOpacity>
-            ) : null}
-          </View>
-        </View>
+    return JSON.parse(jsonPayload);
+  }
 
-        <View style={styles.sortContainer}>
-          <Text style={styles.sortLabel}>Sort by:</Text>
-          <TouchableOpacity
-            style={[styles.sortButton, sortBy === 'create_at' && styles.activeSortButton]}
-            onPress={() => handleSortBy('create_at')}
-          >
-            <View style={styles.sortButtonContent}>
-              <Text style={[styles.sortButtonText, sortBy === 'create_at' && styles.activeSortButtonText]}>
-                Created time&nbsp;
-              </Text>
-              {sortBy === 'create_at' && (
-                <Ionicons name={sortOrder === 'desc' ? "caret-down" : "caret-up"} size={16} color="white" />
-              )}
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.sortButton, sortBy === 'likes' && styles.activeSortButton]}
-            onPress={() => handleSortBy('likes')}
-          >
-            <Text style={[styles.sortButtonText, sortBy === 'likes' && styles.activeSortButtonText]}>Likes</Text>
-          </TouchableOpacity>
-        </View>
+  const getTokenData = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      if (token) {
+        const decodedToken = parseJWT(token);
+        setUserId(decodedToken.userId); // Assuming the token contains userId
+        console.log('Decoded Token:', decodedToken);
+      }
+    } catch (error) {
+      console.error('Error decoding token:', error);
+    }
+  };
 
-        <FlatList
-          data={filteredPosts}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.post_id.toString()}
-          contentContainerStyle={styles.listContent}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        />
-        <TouchableOpacity
-          style={styles.createPostButton}
-          onPress={() => navigation.navigate('AddPost')}
-        >
-          <Image source={edit} style={styles.editIcon} />
+  const renderItem = ({ item }) => (
+    <View style={styles.card}>
+      <View style={styles.header}>
+        <Image source={ userholder } style={styles.avatar} />
+        <View style={styles.headerText}>
+          <Text style={styles.name}>{highlightText(getFullName(item.user_firstname, item.user_lastname), searchQuery)}</Text>
+          <Text style={styles.date}>{formatDate(item.create_at)}</Text>
+        </View>
+        {userId === item.user_id && (
+          <Menu>
+            <MenuTrigger style={styles.moreIcon}>
+              <Ionicons name="ellipsis-horizontal" size={24} color="black" />
+            </MenuTrigger>
+            <MenuOptions>
+              <MenuOption onSelect={() => alert(`Edit Post: ${item.post_id}`)}>
+                <View style={styles.menuOption}>
+                  <Ionicons name="create-outline" size={20} color="black" />
+                  <Text style={styles.menuOptionText}>Edit Post</Text>
+                </View>
+              </MenuOption>
+              <MenuOption onSelect={() => alert(`Delete Post: ${item.post_id}`)}>
+                <View style={styles.menuOption}>
+                  <Ionicons name="trash-outline" size={20} color="red" />
+                  <Text style={styles.menuOptionDeleteText}>Delete Post</Text>
+                </View>
+              </MenuOption>
+            </MenuOptions>
+          </Menu>
+        )}
+      </View>
+      {item.post_title ? (
+        <Text style={styles.title}>{highlightText(item.post_title, searchQuery)}</Text>
+      ) : null}
+      {item.post_content ? (
+        <Text style={styles.content}>{highlightText(item.post_content, searchQuery)}</Text>
+      ) : null}
+      {item.post_photo_path && (
+        <TouchableOpacity onPress={() => handleImagePress(item.post_photo_path)}>
+          <Image source={{ uri: item.post_photo_path }} style={styles.postImage} />
         </TouchableOpacity>
-      </SafeAreaView>
-    </ImageBackground>
+      )}
+      <View style={styles.footer}>
+        <View style={styles.iconContainer}>
+          <FontAwesome name="heart-o" size={18} color="black" />
+          <Text style={styles.iconText}>{item.likes}</Text>
+        </View>
+        <View style={styles.iconCommentContainer}>
+          <FontAwesome5 name="comment-alt" size={16} color="black" />
+          <Text style={styles.iconText}>{item.comments}</Text>
+        </View>
+      </View>
+    </View>
+  );
+
+  return (
+    <MenuProvider>
+      <ImageBackground
+        source={require('../assets/wallpaper.jpg')}
+        style={MyStyles.background}
+      >
+        <SafeAreaView style={MyStyles.container}>
+          <View style={MyStyles.header}>
+            <View style={styles.searchContainer}>
+              <Ionicons name="search" size={20} color="black" style={styles.searchIcon} />
+              <TextInput
+                style={styles.searchBar}
+                placeholder="Search..."
+                value={searchQuery}
+                onChangeText={handleSearch}
+              />
+              {searchQuery ? (
+                <TouchableOpacity onPress={clearSearch} style={styles.clearIcon}>
+                  <Ionicons name="close" size={20} color="black" />
+                </TouchableOpacity>
+              ) : null}
+            </View>
+          </View>
+
+          <View style={styles.sortContainer}>
+            <Text style={styles.sortLabel}>Sort by:</Text>
+            <TouchableOpacity
+              style={[styles.sortButton, sortBy === 'create_at' && styles.activeSortButton]}
+              onPress={() => handleSortBy('create_at')}
+            >
+              <View style={styles.sortButtonContent}>
+                <Text style={[styles.sortButtonText, sortBy === 'create_at' && styles.activeSortButtonText]}>
+                  Created time&nbsp;
+                </Text>
+                {sortBy === 'create_at' && (
+                  <Ionicons name={sortOrder === 'desc' ? "caret-down" : "caret-up"} size={16} color="white" />
+                )}
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.sortButton, sortBy === 'likes' && styles.activeSortButton]}
+              onPress={() => handleSortBy('likes')}
+            >
+              <Text style={[styles.sortButtonText, sortBy === 'likes' && styles.activeSortButtonText]}>Likes</Text>
+            </TouchableOpacity>
+          </View>
+
+          <FlatList
+            data={filteredPosts}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.post_id.toString()}
+            contentContainerStyle={styles.listContent}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          />
+          <TouchableOpacity
+            style={styles.createPostButton}
+            onPress={() => navigation.navigate('AddPost')}
+          >
+            <Image source={edit} style={styles.editIcon} />
+          </TouchableOpacity>
+
+          <Modal visible={fullImageVisible} transparent={true}>
+            <View style={styles.fullImageContainer}>
+              <TouchableOpacity style={styles.closeButton} onPress={handleCloseFullImage}>
+                <Ionicons name="close" size={30} color="white" />
+              </TouchableOpacity>
+              {selectedImage && <Image source={{ uri: selectedImage }} style={styles.fullImage} />}
+            </View>
+          </Modal>
+        </SafeAreaView>
+      </ImageBackground>
+    </MenuProvider>
   );
 }
 
@@ -290,6 +369,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
+    position: 'relative',
+  },
+  headerText: {
+    flex: 1,
   },
   avatar: {
     width: 60,
@@ -307,6 +390,17 @@ const styles = StyleSheet.create({
   date: {
     fontSize: 14,
     color: "gray",
+  },
+  moreIcon: {
+    position: 'absolute',
+    top: -30,
+    right: 0,
+  },
+  postImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 10,
   },
   title: {
     fontSize: 20,
@@ -357,5 +451,37 @@ const styles = StyleSheet.create({
   },
   highlight: {
     backgroundColor: '#E0E0E0',
+  },
+  fullImageContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.95)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullImage: {
+    width: '90%',
+    height: '90%',
+    resizeMode: 'contain',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    zIndex: 1,
+  },
+  menuOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  menuOptionText: {
+    fontSize: 18,
+    marginLeft: 10,
+  },
+  menuOptionDeleteText: {
+    fontSize: 18,
+    marginLeft: 10,
+    color: 'red',
   },
 });

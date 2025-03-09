@@ -6,7 +6,7 @@ export const getAllPost = async () => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       if (!token) {
-          throw new Error('No token found');
+        throw new Error('No token found');
       }
       const response = await axios.get(`${BASE_URL}/api/post/getPost`, {
         headers: {
