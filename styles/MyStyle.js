@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const MyStyles = StyleSheet.create({
   background: {
     flex: 1,
-    backgroundColor: "#B6917B",
+    resizeMode: 'center',
   },
   container: {
     flex: 1,
@@ -11,8 +11,20 @@ export const MyStyles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    marginTop: 45,
-    marginBottom: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 11,
+    height: 65,
+    backgroundColor: "#B6917B",
+  },
+  arrowHeader: {
+    flexDirection: "row",
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: "#B6917B",
+  },
+  arrowIcon: {
+    paddingVertical: 8
   },
   textHeader: {
     fontSize: 30,
@@ -25,7 +37,11 @@ export const MyStyles = StyleSheet.create({
     padding: 10,
     marginRight: 10,
     marginTop: 25,
-    paddingBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   itemHeader: {
     fontSize: 20,
@@ -37,8 +53,8 @@ export const MyStyles = StyleSheet.create({
   },
   itemTime: {
     position: "absolute",
-    right: 12,
-    top: 12
+    right: 0,
+    top: -2,
   },
   addInput: {
     backgroundColor: "white",
@@ -51,7 +67,7 @@ export const MyStyles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
-    marginTop: 5,
+    marginTop: 25,
   },
   buttonText: {
     color: "#FFFFFF",
@@ -64,12 +80,12 @@ export const MyStyles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
-    marginTop: 20,
+    marginTop: 10,
   },
   deleteButton: {
     position: "absolute",
-    bottom: 12, 
-    right: 12
+    bottom: 8, 
+    right: 8,
   },
   modal: {
     flex: 1,
@@ -153,22 +169,21 @@ export const MyStyles = StyleSheet.create({
     paddingVertical: 5,
     backgroundColor: '#FFF',
     marginTop: 10,
-    marginBottom: 20
   },
   petItem: {
-  flexDirection: "row",
-  alignItems: "center",
-  backgroundColor: "#FFF",
-  borderRadius: 10,
-  padding: 10,
-  marginVertical: 5,
-  marginHorizontal: 10,
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.2,
-  shadowRadius: 3,
-  elevation: 2,
-},
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFF",
+    borderRadius: 10,
+    padding: 10,
+    marginVertical: 5,
+    marginHorizontal: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 2,
+  },
   dateText: {
     flex: 1,
     fontSize: 16,

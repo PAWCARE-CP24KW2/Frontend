@@ -1,0 +1,42 @@
+name: React Native Android CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build Android App
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: |
+          yarn install
+
+      - name: Set Gradlew Permissions
+        run: chmod +x android/gradlew
+
+      - name: Build Android app
+        run: |
+          cd android
+          ./gradlew assembleRelease
+          cd ..
+
+      - name: Upload Android Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-release
+          path: android/app/build/outputs/apk/release/app-release.apk

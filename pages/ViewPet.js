@@ -5,24 +5,35 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  SafeAreaView,
-  Alert
+  Alert,
+  ImageBackground
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { MyStyles } from "../styles/MyStyle";
-import { getAllPet } from "../composable/getAllPet";
-import { deletePet } from "../composable/deletePet";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { getPetByPetId } from "../api/pet/getPetByPetId";
+import { deletePet } from "../api/pet/deletePet";
+import petplaceholder from "../assets/petplaceholder.png";
+import UploadModal from "../components/modals/UploadModal";
+import ConfirmModal from "../components/modals/ConfirmModal";
+import * as ImagePicker from "expo-image-picker";
+import { showUploadProToast } from "../services/showToast";
+import { updatePetProfile } from "../api/pet/updatePetProfile";
+import { deletePetProfile } from "../api/pet/deletePetProfile";
 
-export default function ViewPet({ route,navigation }) {
-
+export default function ViewPet({ route, navigation }) {
+  const FormData = global.FormData;
   const [items, setItems] = useState([]);
   const { pet } = route.params;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("Upload profile picture");
+  const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
+  const [image, setImage] = useState(pet.profile_path);
 
   useEffect(() => {
     const getPets = async () => {
       try {
-        const pets = await getAllPet();
-        // console.log("Response data:", pets);
+        const pets = await getPetByPetId(pet.pet_id);
         setItems(pets);
       } catch (error) {
         console.error("Failed to fetch pets in component:", error);
@@ -30,7 +41,7 @@ export default function ViewPet({ route,navigation }) {
     };
     getPets();
   }, []);
-  
+
   const handleDelete = async () => {
     try {
       // console.log("Pet data:", pet); // Log the pet data
@@ -50,134 +61,232 @@ export default function ViewPet({ route,navigation }) {
       [
         {
           text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
+          // onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
         },
-        { text: "Delete", onPress: handleDelete }
+        { text: "Delete", onPress: handleDelete },
       ],
       { cancelable: false }
     );
   };
 
   const handleEdit = () => {
-    console.log("Edit pet data:", pet);
-    
+    // console.log("Edit pet data:", pet);
     navigation.navigate("UpdatePetData", { pet });
   };
 
+  const uploadImage = async (mode) => {
+    try {
+      let result = {};
+
+      if (mode === "gallery") {
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+        result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ["images"],
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 1,
+        });
+      } else if (mode === "camera") {
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+        result = await ImagePicker.launchCameraAsync({
+          cameraType: ImagePicker.CameraType.back,
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 1,
+        });
+      }
+
+      if (!result.canceled) {
+        await saveImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      alert("Failed to upload image:", error.message);
+      setModalVisible(false);
+    }
+  };
+
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleDeletePress = () => {
+    setModalDeleteVisible(true);
+  };
+
+  const handleConfirmDelete = () => {
+    removeImage(image);
+    setModalDeleteVisible(false);
+  };
+
+  const removeImage = async () => {
+    try {
+      setImage(null);
+      setModalVisible(false);
+      deletePetProfile(pet.pet_id);
+      showUploadProToast("Pet profile picture", "delete");
+    } catch ({ message }) {
+      alert(message);
+      setModalVisible(false);
+    }
+  };
+
+  const saveImage = async (image) => {
+    try {
+      setImage(image);
+      setModalVisible(false);
+      
+      const uriParts = image.split(".");
+      const fileType = uriParts[uriParts.length - 1];
+      const formData = new FormData();
+      formData.append("file", {
+        uri: image,
+        name: `file.${fileType}`,
+        type: `image/${fileType}`,
+      });
+      await updatePetProfile(pet.pet_id, formData);
+
+      showUploadProToast("Pet profile picture", "upload");
+    } catch (error) {
+      console.error('Error uploading profile image:', error.response ? error.response.data : error.message);
+      alert("Failed to upload image");
+    }
+  };
+
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
 
   return (
-    <View style={styles.container}>
-      {/* Top Navigation Bar */}
-      <SafeAreaView style={styles.topNavBar}>
-        <View style={MyStyles.header}>
+    <ImageBackground
+      source={require('../assets/wallpaper.jpg')}
+      style={MyStyles.background}
+    >
+      <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.arrowHeader}>
           <TouchableOpacity
-            style={{ marginRight: 12 }}
+            style={MyStyles.arrowIcon}
             onPress={() => navigation.goBack()}
           >
-            <Ionicons name="arrow-back" size={45} color="black" />
+            <Ionicons name="arrow-back-outline" size={30} color="black" />
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
 
-      <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.title}>{pet.pet_name || "Pet Name"}</Text>
-        <Image
-          style={styles.image}
-          source={{
-            uri: pet.image || "https://via.placeholder.com/80",
-          }}
+        <SafeAreaView style={styles.container}>
+
+          <Text style={styles.header}>{capitalizeFirstLetter(pet.pet_name) || "Pet Name"}</Text>
+
+          <View style={styles.profile}>
+            <View style={styles.imageContainer}>
+              <TouchableOpacity onPress={handleOpenModal}>
+                <Image
+                  style={[styles.image, image && styles.imageWithBorder]}
+                  source={image ? { uri: image } : petplaceholder}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.cameraIcon} onPress={handleOpenModal}>
+                <Ionicons name="camera-outline" size={27} color="black" />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.actionButtons}>
+            <TouchableOpacity onPress={handleEdit}>
+              <Ionicons name="pencil-outline" size={30} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={confirmDelete}>
+              <Ionicons name="trash-outline" size={30} color="black" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Action Grid */}
+          <View style={styles.gridContainer}>
+            <TouchableOpacity style={styles.gridItem}>
+              <Ionicons name="calendar-outline" size={40} color="black" />
+              <Text style={styles.gridText}>Calendar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.gridItem}>
+              <Ionicons name="document-text-outline" size={40} color="black" />
+              <Text style={styles.gridText}>Records</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.gridItem}>
+              <Ionicons name="images-outline" size={40} color="black" />
+              <Text style={styles.gridText}>Gallery</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.gridItem}
+              onPress={() => navigation.navigate("Home", { screen: "Documents", params: {petId: pet.pet_id} })}
+            >
+              <Ionicons name="folder-outline" size={40} color="black" />
+              <Text style={styles.gridText}>Documents</Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+
+        <UploadModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          message={modalMessage}
+          onCameraPress={() => uploadImage("camera")}
+          onGalleryPress={() => uploadImage("gallery")}
+          showRemoveButton={!!pet.profile_path}
+          onRemovePress={handleDeletePress}
         />
-        <View style={styles.actionButtons}>
-          <TouchableOpacity onPress={handleEdit}>
-            <Ionicons name="pencil-outline" size={30} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Ionicons name="download-outline" size={30} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={confirmDelete}>
-            <Ionicons name="trash-outline" size={30} color="black" />
-          </TouchableOpacity>
-        </View>
-      </View>
-      {/* Action Grid */}
-      <View style={styles.gridContainer}>
-        <TouchableOpacity style={styles.gridItem}>
-          <Ionicons name="calendar-outline" size={40} color="black" />
-          <Text style={styles.gridText}>Calendar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.gridItem}>
-          <Ionicons name="people-outline" size={40} color="black" />
-          <Text style={styles.gridText}>Users</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.gridItem}>
-          <Ionicons name="document-text-outline" size={40} color="black" />
-          <Text style={styles.gridText}>Records</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.gridItem}>
-          <Ionicons name="images-outline" size={40} color="black" />
-          <Text style={styles.gridText}>Gallery</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.gridItem}>
-          <Ionicons name="folder-outline" size={40} color="black" />
-          <Text style={styles.gridText}>Documents</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
-    </View>
+
+        <ConfirmModal
+          visible={modalDeleteVisible}
+          onClose={() => setModalDeleteVisible(false)}
+          onConfirm={handleConfirmDelete}
+          message={`Are you sure you want to deleted ?`}
+        />
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#EACEBE",
+    padding: 25,
   },
-  topNavBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  profile: {
     alignItems: "center",
-    padding: 10,
-    backgroundColor: "#B6917B",
+    marginVertical: 5,
   },
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#d9c2b0",
-    borderRadius: 15,
-    padding: 10,
-    margin: 10,
+  imageContainer: {
+    position: "relative",
   },
   image: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginRight: 10,
+    width: 134,
+    height: 134,
     textAlign: "center",
+    borderRadius: 100,
+    overflow: "hidden",
+    backgroundColor: "white",
+  },
+  imageWithBorder: {
+    borderWidth: 3,
+    borderColor: "black",
+  },
+  cameraIcon: {
+    position: "absolute",
+    bottom: 3,
+    right: 3,
+    backgroundColor: "white",
+    borderRadius: 15,
+    padding: 4,
+    borderWidth: 2,
   },
   infoContainer: {
     flex: 1,
   },
-  gender: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#4A4A4A",
-  },
-  age: {
-    fontSize: 14,
-    color: "#7B7B7B",
-  },
-  noPetsContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
   header: {
-    alignItems: "center",
-    marginBottom: 20,
+    fontSize: 24,
+    fontWeight: "bold",
+    justifyContent: "space-around",
+    color: "black",
+    textAlign: "center",
+    marginBottom: 10,
   },
   title: {
     fontSize: 24,
@@ -212,8 +321,9 @@ const styles = StyleSheet.create({
   actionButtons: {
     flexDirection: "row",
     justifyContent: "space-around",
+    alignSelf: "center",
     width: "60%",
-    marginTop: 10,
+    marginTop: 15,
     backgroundColor: "#B6917B",
     padding: 10,
     borderRadius: 10,
@@ -224,6 +334,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     width: "100%",
     paddingHorizontal: 20,
+    marginTop: 10,
   },
   gridItem: {
     width: "40%",
