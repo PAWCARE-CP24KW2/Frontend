@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
   },
   imageIcon: {
     position: 'absolute',
-    bottom: 5,
+    bottom: 0,
     right: 5,
     padding: 5,
     borderRadius: 50,

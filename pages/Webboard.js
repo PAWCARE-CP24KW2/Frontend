@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, TextInput, FlatList, Image, RefreshControl, TouchableOpacity, ImageBackground, Modal } from 'react-native';
+import { View, Text, StyleSheet, TextInput, FlatList, Image, RefreshControl, TouchableOpacity, ImageBackground, Modal, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -25,6 +25,7 @@ export default function Webboard({ navigation }) {
   const [userId, setUserId] = useState(null);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
+  const [imageLoading, setImageLoading] = useState(false); // Add state for image loading
 
   const fetchPosts = async () => {
     try {
@@ -223,7 +224,21 @@ export default function Webboard({ navigation }) {
       ) : null}
       {item.post_photo_path && (
         <TouchableOpacity onPress={() => handleImagePress(item.post_photo_path)}>
-          <Image source={{ uri: item.post_photo_path }} style={styles.postImage} />
+          <View>
+            {imageLoading && (
+              <ActivityIndicator
+                size="large"
+                color="#71543F"
+                style={styles.imageLoader}
+              />
+            )}
+            <Image
+              source={{ uri: item.post_photo_path }}
+              style={styles.postImage}
+              onLoadStart={() => setImageLoading(true)}
+              onLoadEnd={() => setImageLoading(false)}
+            />
+          </View>
         </TouchableOpacity>
       )}
       <View style={styles.footer}>
@@ -437,6 +452,12 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 10,
     marginBottom: 10,
+  },
+  imageLoader: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -25 }, { translateY: -25 }],
   },
   title: {
     fontSize: 20,
