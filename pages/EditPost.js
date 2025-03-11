@@ -14,8 +14,9 @@ import { MyStyles } from "../styles/MyStyle";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import { updatePost, getPostById } from "../api/post/postPost";
-import { showUpdatePost } from "../services/showToast.js";
+import { getPostById } from "../api/post/getPostById.js";
+import { updatePost } from "../api/post/updatePost.js";
+import { showPostToast } from "../services/showToast.js";
 import UploadModal from "../components/modals/UploadModal.js";
 import ConfirmModal from "../components/modals/ConfirmModal.js";
 
@@ -45,7 +46,7 @@ export default function EditPost({ route, navigation }) {
 
   const handleUpdatePost = async () => {
     if (!title && !content) {
-      showUpdatePost("fail");
+      showPostToast('fail');
       return;
     }
 
@@ -59,10 +60,12 @@ export default function EditPost({ route, navigation }) {
           type: image.type,
           name: image.name,
         });
+      } else {
+        formData.append("file", null);
       }
       await updatePost(postId, formData);
       navigation.goBack();
-      showUpdatePost("success");
+      showPostToast("update");
     } catch (error) {
       console.error("Error updating post:", error);
     }

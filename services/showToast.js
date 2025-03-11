@@ -92,5 +92,11 @@ export function showPostToast(action) {
             text1: `Delete successful 🗑️`,
             text2: `Post was deleted.`,
         });
+    }else if (action == 'update') {
+        Toast.show({
+            type: 'success',
+            text1: `Update successful 🔄`,
+            text2: `Post was updated.`,
+        });
     }
 }
