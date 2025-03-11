@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from 'react-native-popup-menu';
 import ConfirmModal from '../components/modals/ConfirmModal';
 import { deletePost } from '../api/post/deletePost';
+import { showPostToast } from "../services/showToast.js";
 
 export default function Webboard({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -167,6 +168,7 @@ export default function Webboard({ navigation }) {
       try {
         await deletePost(postToDelete);
         fetchPosts();
+        showPostToast('delete');
       } catch (error) {
         console.error('Error deleting post:', error);
       } finally {
@@ -197,7 +199,7 @@ export default function Webboard({ navigation }) {
               <Ionicons name="ellipsis-horizontal" size={24} color="black" />
             </MenuTrigger>
             <MenuOptions>
-              <MenuOption onSelect={() => alert(`Edit Post: ${item.post_id}`)}>
+              <MenuOption onSelect={() => navigation.navigate('EditPost', { postId: item.post_id })}>
                 <View style={styles.menuOption}>
                   <Ionicons name="create-outline" size={20} color="black" />
                   <Text style={styles.menuOptionText}>Edit Post</Text>
@@ -266,7 +268,7 @@ export default function Webboard({ navigation }) {
               <Ionicons name="search" size={20} color="black" style={styles.searchIcon} />
               <TextInput
                 style={styles.searchBar}
-                placeholder="Search..."
+                placeholder="Search by title, content, user"
                 value={searchQuery}
                 onChangeText={handleSearch}
               />
