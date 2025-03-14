@@ -8,6 +8,7 @@ import { unlikePost } from '../../api/post/unlikePost';
 
 const PostItem = ({
   item,
+  likedPosts = [],
   searchQuery,
   userId,
   navigation,
@@ -21,10 +22,16 @@ const PostItem = ({
 }) => {
   const [likes, setLikes] = useState(item.likes);
   const [isLiking, setIsLiking] = useState(false);
-  const [liked, setLiked] = useState(item.liked); // Initialize with the initial liked state from the item
+  const [liked, setLiked] = useState(false); // Initialize with false
   const imageHeight = imageHeights[item.post_id] || 0;
 
   const scaleValue = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (likedPosts.some((likedPost) => likedPost.post_id === item.post_id)) {
+      setLiked(true);
+    }
+  }, [likedPosts, item.post_id]);
 
   const handleLike = async () => {
     setIsLiking(true);

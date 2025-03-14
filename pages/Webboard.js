@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { MyStyles } from "../styles/MyStyle";
 import { getAllPost } from '../api/post/getAllPost';
+import { getLikedPost } from '../api/post/getLikedPost';
 import edit from '../assets/edit.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MenuProvider } from 'react-native-popup-menu';
@@ -13,6 +14,7 @@ import { deletePost } from '../api/post/deletePost';
 import { showPostToast } from "../services/showToast.js";
 import { Dimensions } from 'react-native';
 import PostItem from '../components/common/PostItems.js';
+import LoadingScreen from '../components/common/LoadingScreen';
 
 export default function Webboard({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,8 +28,10 @@ export default function Webboard({ navigation }) {
   const [userId, setUserId] = useState(null);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
-  const [imageLoading, setImageLoading] = useState(false); // Add state for image loading
-  const [imageHeights, setImageHeights] = useState({}); // Add state for image heights
+  const [imageLoading, setImageLoading] = useState(false);
+  const [imageHeights, setImageHeights] = useState({});
+  const [likedPosts, setLikedPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchPosts = async () => {
     try {
@@ -39,11 +43,22 @@ export default function Webboard({ navigation }) {
       console.error('Error fetching posts:', error);
     } finally {
       setRefreshing(false);
+      setLoading(false);
+    }
+  };
+
+  const fetchLikedPosts = async () => {
+    try {
+      const likedPosts = await getLikedPost();
+      setLikedPosts(likedPosts);
+    } catch (error) {
+      console.error('Error fetching liked posts:', error);
     }
   };
 
   useEffect(() => {
     fetchPosts();
+    fetchLikedPosts();
     getTokenData();
   }, []);
 
@@ -51,6 +66,7 @@ export default function Webboard({ navigation }) {
     useCallback(() => {
       const timeout = setTimeout(() => {
         fetchPosts();
+        fetchLikedPosts();
         setSortOrder('desc');
         setSortBy('create_at');
       }, 1000); 
@@ -83,6 +99,7 @@ export default function Webboard({ navigation }) {
   const onRefresh = async () => {
     setRefreshing(true);
     fetchPosts();
+    fetchLikedPosts();
     setSortBy('create_at');
     setSortOrder('desc');
   };
@@ -163,7 +180,7 @@ export default function Webboard({ navigation }) {
 
   const handleImageLoad = (postId, event) => {
     const { width, height } = event.nativeEvent.source;
-    const screenWidth = Dimensions.get('window').width - 40; // Subtracting margin
+    const screenWidth = Dimensions.get('window').width - 40;
     const aspectRatio = width / height;
     const calculatedHeight = screenWidth / aspectRatio;
     setImageHeights(prevState => ({ ...prevState, [postId]: calculatedHeight }));
@@ -182,8 +199,18 @@ export default function Webboard({ navigation }) {
       handleImageLoad={handleImageLoad}
       setPostToDelete={setPostToDelete}
       setConfirmModalVisible={setConfirmModalVisible}
+      likedPosts={likedPosts}
     />
   );
+
+  if (loading) {
+    return (
+      <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.header}></View>
+        <LoadingScreen />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <MenuProvider>
