@@ -19,6 +19,7 @@ import { updatePost } from "../api/post/updatePost.js";
 import { showPostToast } from "../services/showToast.js";
 import UploadModal from "../components/modals/UploadModal.js";
 import ConfirmModal from "../components/modals/ConfirmModal.js";
+import { deleteImagePost } from '../api/post/deleteImagePost';
 
 export default function EditPost({ route, navigation }) {
   const { postId } = route.params;
@@ -119,6 +120,7 @@ export default function EditPost({ route, navigation }) {
 
   const removeImage = useCallback(async () => {
     try {
+      await deleteImagePost(postId);
       setImage(null);
       setModalVisible(false);
     } catch ({ message }) {
