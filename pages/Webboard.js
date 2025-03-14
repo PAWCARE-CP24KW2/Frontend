@@ -1,17 +1,20 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, TextInput, FlatList, Image, RefreshControl, TouchableOpacity, ImageBackground, Modal } from 'react-native';
+import { View, Text, StyleSheet, TextInput, FlatList, Image, RefreshControl, TouchableOpacity, ImageBackground, Modal, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { MyStyles } from "../styles/MyStyle";
 import { getAllPost } from '../api/post/getAllPost';
-import userholder from '../assets/userholder.png';
+import { getLikedPost } from '../api/post/getLikedPost';
 import edit from '../assets/edit.png';
-import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from 'react-native-popup-menu';
+import { MenuProvider } from 'react-native-popup-menu';
 import ConfirmModal from '../components/modals/ConfirmModal';
 import { deletePost } from '../api/post/deletePost';
+import { showPostToast } from "../services/showToast.js";
+import { Dimensions } from 'react-native';
+import PostItem from '../components/common/PostItems.js';
+import LoadingScreen from '../components/common/LoadingScreen';
 
 export default function Webboard({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,6 +28,10 @@ export default function Webboard({ navigation }) {
   const [userId, setUserId] = useState(null);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [imageHeights, setImageHeights] = useState({});
+  const [likedPosts, setLikedPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchPosts = async () => {
     try {
@@ -36,11 +43,22 @@ export default function Webboard({ navigation }) {
       console.error('Error fetching posts:', error);
     } finally {
       setRefreshing(false);
+      setLoading(false);
+    }
+  };
+
+  const fetchLikedPosts = async () => {
+    try {
+      const likedPosts = await getLikedPost();
+      setLikedPosts(likedPosts);
+    } catch (error) {
+      console.error('Error fetching liked posts:', error);
     }
   };
 
   useEffect(() => {
     fetchPosts();
+    fetchLikedPosts();
     getTokenData();
   }, []);
 
@@ -48,6 +66,7 @@ export default function Webboard({ navigation }) {
     useCallback(() => {
       const timeout = setTimeout(() => {
         fetchPosts();
+        fetchLikedPosts();
         setSortOrder('desc');
         setSortBy('create_at');
       }, 1000); 
@@ -80,33 +99,9 @@ export default function Webboard({ navigation }) {
   const onRefresh = async () => {
     setRefreshing(true);
     fetchPosts();
+    fetchLikedPosts();
     setSortBy('create_at');
     setSortOrder('desc');
-  };
-
-  const formatDate = (isoString) => {
-    const date = new Date(isoString);
-    return date.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" });
-  };
-
-  const highlightText = (text, query) => {
-    if (!query) return <Text>{text}</Text>;
-    const parts = text.split(new RegExp(`(${query})`, 'gi'));
-    return (
-      <Text>
-        {parts.map((part, index) =>
-          part.toLowerCase() === query.toLowerCase() ? (
-            <Text key={index} style={styles.highlight}>{part}</Text>
-          ) : (
-            part
-          )
-        )}
-      </Text>
-    );
-  };
-
-  const getFullName = (firstname, lastname) => {
-    return `${firstname} ${lastname}`;
   };
 
   const handleImagePress = (imageUri) => {
@@ -166,6 +161,7 @@ export default function Webboard({ navigation }) {
       try {
         await deletePost(postToDelete);
         fetchPosts();
+        showPostToast('delete');
       } catch (error) {
         console.error('Error deleting post:', error);
       } finally {
@@ -182,62 +178,39 @@ export default function Webboard({ navigation }) {
     </View>
   );
 
+  const handleImageLoad = (postId, event) => {
+    const { width, height } = event.nativeEvent.source;
+    const screenWidth = Dimensions.get('window').width - 40;
+    const aspectRatio = width / height;
+    const calculatedHeight = screenWidth / aspectRatio;
+    setImageHeights(prevState => ({ ...prevState, [postId]: calculatedHeight }));
+  };
+
   const renderItem = ({ item }) => (
-    <View style={styles.card}>
-      <View style={styles.header}>
-        <Image source={ userholder } style={styles.avatar} />
-        <View style={styles.headerText}>
-          <Text style={styles.name}>{highlightText(getFullName(item.user_firstname, item.user_lastname), searchQuery)}</Text>
-          <Text style={styles.date}>{formatDate(item.create_at)}</Text>
-        </View>
-        {userId === item.user_id && (
-          <Menu>
-            <MenuTrigger style={styles.moreIcon}>
-              <Ionicons name="ellipsis-horizontal" size={24} color="black" />
-            </MenuTrigger>
-            <MenuOptions>
-              <MenuOption onSelect={() => alert(`Edit Post: ${item.post_id}`)}>
-                <View style={styles.menuOption}>
-                  <Ionicons name="create-outline" size={20} color="black" />
-                  <Text style={styles.menuOptionText}>Edit Post</Text>
-                </View>
-              </MenuOption>
-              <MenuOption onSelect={() => {
-                setPostToDelete(item.post_id);
-                setConfirmModalVisible(true);
-              }}>
-                <View style={styles.menuOption}>
-                  <Ionicons name="trash-outline" size={20} color="red" />
-                  <Text style={styles.menuOptionDeleteText}>Delete Post</Text>
-                </View>
-              </MenuOption>
-            </MenuOptions>
-          </Menu>
-        )}
-      </View>
-      {item.post_title ? (
-        <Text style={styles.title}>{highlightText(item.post_title, searchQuery)}</Text>
-      ) : null}
-      {item.post_content ? (
-        <Text style={styles.content}>{highlightText(item.post_content, searchQuery)}</Text>
-      ) : null}
-      {item.post_photo_path && (
-        <TouchableOpacity onPress={() => handleImagePress(item.post_photo_path)}>
-          <Image source={{ uri: item.post_photo_path }} style={styles.postImage} />
-        </TouchableOpacity>
-      )}
-      <View style={styles.footer}>
-        <View style={styles.iconContainer}>
-          <FontAwesome name="heart-o" size={18} color="black" />
-          <Text style={styles.iconText}>{item.likes}</Text>
-        </View>
-        <View style={styles.iconCommentContainer}>
-          <FontAwesome5 name="comment-alt" size={16} color="black" />
-          <Text style={styles.iconText}>{item.comments}</Text>
-        </View>
-      </View>
-    </View>
+    <PostItem
+      item={item}
+      searchQuery={searchQuery}
+      userId={userId}
+      navigation={navigation}
+      handleImagePress={handleImagePress}
+      imageLoading={imageLoading}
+      setImageLoading={setImageLoading}
+      imageHeights={imageHeights}
+      handleImageLoad={handleImageLoad}
+      setPostToDelete={setPostToDelete}
+      setConfirmModalVisible={setConfirmModalVisible}
+      likedPosts={likedPosts}
+    />
   );
+
+  if (loading) {
+    return (
+      <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.header}></View>
+        <LoadingScreen />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <MenuProvider>
@@ -251,7 +224,7 @@ export default function Webboard({ navigation }) {
               <Ionicons name="search" size={20} color="black" style={styles.searchIcon} />
               <TextInput
                 style={styles.searchBar}
-                placeholder="Search..."
+                placeholder="Search by title, content, user"
                 value={searchQuery}
                 onChangeText={handleSearch}
               />
@@ -389,84 +362,6 @@ const styles = StyleSheet.create({
     padding: 0,
     flexGrow: 1,
   },
-  card: {
-    backgroundColor: "#fff",
-    padding: 16,
-    borderRadius: 10,
-    marginHorizontal: 20,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-    position: 'relative',
-  },
-  headerText: {
-    flex: 1,
-  },
-  avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 100,
-    marginRight: 15,
-    borderWidth: 0.5,
-    borderColor: "black",
-  },
-  name: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#5B3A29",
-  },
-  date: {
-    fontSize: 14,
-    color: "gray",
-  },
-  moreIcon: {
-    position: 'absolute',
-    top: -30,
-    right: 0,
-  },
-  postImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 10,
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#4A2C23",
-    marginBottom: 5,
-  },
-  content: {
-    fontSize: 16,
-    color: "#4A2C23",
-    marginBottom: 10,
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-  },
-  iconContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  iconCommentContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginLeft: 5,
-  },
-  iconText: {
-    marginLeft: 4,
-    fontSize: 14,
-    color: "#5B3A29",
-  },
   createPostButton: {
     position: 'absolute',
     backgroundColor: "#71543F",
@@ -484,9 +379,6 @@ const styles = StyleSheet.create({
   editIcon: {
     width: 35,
     height: 35,
-  },
-  highlight: {
-    backgroundColor: '#E0E0E0',
   },
   fullImageContainer: {
     flex: 1,
@@ -513,20 +405,5 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     color: 'gray',
-  },
-  menuOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-  },
-  menuOptionText: {
-    fontSize: 18,
-    marginLeft: 10,
-  },
-  menuOptionDeleteText: {
-    fontSize: 18,
-    marginLeft: 10,
-    color: 'red',
   },
 });

@@ -5,11 +5,11 @@ export * from "./agenda/getCategories";
 export * from "./agenda/postAgenda";
 export * from "./agenda/putAgenda";
 
-export * from "./minio/deleteDocument";
-export * from "./minio/getDocument";
-export * from "./minio/uploadMedicalBook";
-export * from "./minio/uploadPassport";
-export * from "./minio/uploadRegistration";
+export * from "./documents/deleteDocument";
+export * from "./documents/getDocument";
+export * from "./documents/uploadMedicalBook";
+export * from "./documents/uploadPassport";
+export * from "./documents/uploadRegistration";
 
 export * from "./pet/deletePet";
 export * from "./pet/deletePetProfile"; 
