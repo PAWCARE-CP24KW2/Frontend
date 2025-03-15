@@ -17,6 +17,7 @@ import Documents from './pages/Documents';
 import AddPost from './pages/AddPost';
 import EditUserProfile from './pages/EditUserProfile';
 import EditPost from './pages/EditPost';
+import PostPage from './pages/PostPage';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from './services/toastConfig';
 
@@ -42,6 +43,7 @@ function WebboardStack() {
       <Stack.Screen name="WebboardMain" component={Webboard} />
       <Stack.Screen name="AddPost" component={AddPost} />
       <Stack.Screen name="EditPost" component={EditPost} /> 
+      <Stack.Screen name="PostPage" component={PostPage} />
     </Stack.Navigator>
   );
 }
@@ -81,7 +83,7 @@ function MainTabs() {
             iconName = focused ? 'calendar' : 'calendar-outline';
           } else if (route.name === 'Webboard') {
             iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
-          } else if (route.name === 'SettingsMain') {
+          } else if (route.name === 'Settings') {
             iconName = focused ? 'settings' : 'settings-outline';
           }
 
@@ -100,7 +102,7 @@ function MainTabs() {
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Calendar" component={Calendar} />
       <Tab.Screen name="Webboard" component={WebboardStack} />
-      <Tab.Screen name="SettingsMain" component={SettingsStack} />
+      <Tab.Screen name="Settings" component={SettingsStack} />
     </Tab.Navigator>
   );
 }
@@ -108,7 +110,7 @@ function MainTabs() {
 function SettingsStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="SettingsMain" component={Settings} />
       <Stack.Screen name="EditUserProfile" component={EditUserProfile} />
     </Stack.Navigator>
   );

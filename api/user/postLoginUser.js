@@ -9,8 +9,6 @@ export const postLoginUser = async (userData) => {
     const { token, refreshToken} = response.data;
     await AsyncStorage.setItem('userToken', token); // Store the token
     await AsyncStorage.setItem('refreshToken', refreshToken); // Store the refresh token
-    console.log(url);
-    
     return response.data;
   } catch (error) {
     if (error.response) {

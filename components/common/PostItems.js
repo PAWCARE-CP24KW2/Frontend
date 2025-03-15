@@ -19,10 +19,11 @@ const PostItem = ({
   handleImageLoad,
   setPostToDelete,
   setConfirmModalVisible,
+  updatePostLikes
 }) => {
   const [likes, setLikes] = useState(item.likes);
   const [isLiking, setIsLiking] = useState(false);
-  const [liked, setLiked] = useState(false); // Initialize with false
+  const [liked, setLiked] = useState(false);
   const imageHeight = imageHeights[item.post_id] || 0;
 
   const scaleValue = useRef(new Animated.Value(1)).current;
@@ -40,10 +41,12 @@ const PostItem = ({
         await unlikePost(item.post_id);
         setLikes(likes - 1);
         setLiked(false);
+        updatePostLikes(item.post_id, likes - 1); // Update likes count
       } else {
         await likePost(item.post_id);
         setLikes(likes + 1);
         setLiked(true);
+        updatePostLikes(item.post_id, likes + 1); // Update likes count
       }
       animateIcon();
     } catch (error) {
@@ -100,77 +103,79 @@ const PostItem = ({
   const getFullName = (firstname, lastname) => `${firstname} ${lastname}`;
 
   return (
-    <View style={styles.card}>
-      <View style={styles.header}>
-        <Image source={userholder} style={styles.avatar} />
-        <View style={styles.headerText}>
-          <Text style={styles.name}>{highlightText(getFullName(item.user_firstname, item.user_lastname), searchQuery)}</Text>
-          <Text style={styles.date}>{formatDate(item.create_at)}</Text>
-        </View>
-        {userId === item.user_id && (
-          <Menu>
-            <MenuTrigger style={styles.moreIcon}>
-              <Ionicons name="ellipsis-horizontal" size={24} color="black" />
-            </MenuTrigger>
-            <MenuOptions>
-              <MenuOption onSelect={() => navigation.navigate('EditPost', { postId: item.post_id })}>
-                <View style={styles.menuOption}>
-                  <Ionicons name="create-outline" size={20} color="black" />
-                  <Text style={styles.menuOptionText}>Edit Post</Text>
-                </View>
-              </MenuOption>
-              <MenuOption onSelect={() => {
-                setPostToDelete(item.post_id);
-                setConfirmModalVisible(true);
-              }}>
-                <View style={styles.menuOption}>
-                  <Ionicons name="trash-outline" size={20} color="red" />
-                  <Text style={styles.menuOptionDeleteText}>Delete Post</Text>
-                </View>
-              </MenuOption>
-            </MenuOptions>
-          </Menu>
-        )}
-      </View>
-      {item.post_title ? (
-        <Text style={styles.title}>{highlightText(item.post_title, searchQuery)}</Text>
-      ) : null}
-      {item.post_content ? (
-        <Text style={styles.content}>{highlightText(item.post_content, searchQuery)}</Text>
-      ) : null}
-      {item.post_photo_path && (
-        <TouchableOpacity onPress={() => handleImagePress(item.post_photo_path)}>
-          <View>
-            {imageLoading && (
-              <ActivityIndicator
-                size="large"
-                color="#71543F"
-                style={styles.imageLoader}
-              />
-            )}
-            <Image
-              source={{ uri: item.post_photo_path }}
-              style={[styles.postImage, { height: imageHeight }]}
-              onLoadStart={() => setImageLoading(true)}
-              onLoadEnd={() => setImageLoading(false)}
-              onLoad={(event) => handleImageLoad(item.post_id, event)}
-            />
+    <TouchableOpacity onPress={() => navigation.navigate('PostPage', { postId: item.post_id, updatePostLikes, fullName: getFullName(item.user_firstname, item.user_lastname) })}>
+      <View style={styles.card}>
+        <View style={styles.header}>
+          <Image source={userholder} style={styles.avatar} />
+          <View style={styles.headerText}>
+            <Text style={styles.name}>{highlightText(getFullName(item.user_firstname, item.user_lastname), searchQuery)}</Text>
+            <Text style={styles.date}>{formatDate(item.create_at)}</Text>
           </View>
-        </TouchableOpacity>
-      )}
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.iconContainer} onPress={handleLike} disabled={isLiking}>
-          <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
-            <FontAwesome name={liked ? "heart" : "heart-o"} size={18} color={liked ? "red" : "black"} />
-          </Animated.View>
-          <Text style={styles.iconText}>{likes}</Text>
-        </TouchableOpacity>
-        <View style={styles.iconCommentContainer}>
-          <FontAwesome5 name="comment-alt" size={16} color="black" />
-          <Text style={styles.iconText}>{item.comments}</Text>
+          {userId === item.user_id && (
+            <Menu>
+              <MenuTrigger style={styles.moreIcon}>
+                <Ionicons name="ellipsis-horizontal" size={24} color="black" />
+              </MenuTrigger>
+              <MenuOptions>
+                <MenuOption onSelect={() => navigation.navigate('EditPost', { postId: item.post_id })}>
+                  <View style={styles.menuOption}>
+                    <Ionicons name="create-outline" size={20} color="black" />
+                    <Text style={styles.menuOptionText}>Edit Post</Text>
+                  </View>
+                </MenuOption>
+                <MenuOption onSelect={() => {
+                  setPostToDelete(item.post_id);
+                  setConfirmModalVisible(true);
+                }}>
+                  <View style={styles.menuOption}>
+                    <Ionicons name="trash-outline" size={20} color="red" />
+                    <Text style={styles.menuOptionDeleteText}>Delete Post</Text>
+                  </View>
+                </MenuOption>
+              </MenuOptions>
+            </Menu>
+          )}
+        </View>
+        {item.post_title ? (
+          <Text style={styles.title}>{highlightText(item.post_title, searchQuery)}</Text>
+        ) : null}
+        {item.post_content ? (
+          <Text style={styles.content}>{highlightText(item.post_content, searchQuery)}</Text>
+        ) : null}
+        {item.post_photo_path && (
+          <TouchableOpacity onPress={() => handleImagePress(item.post_photo_path)}>
+            <View>
+              {imageLoading && (
+                <ActivityIndicator
+                  size="large"
+                  color="#71543F"
+                  style={styles.imageLoader}
+                />
+              )}
+              <Image
+                source={{ uri: item.post_photo_path }}
+                style={[styles.postImage, { height: imageHeight }]}
+                onLoadStart={() => setImageLoading(true)}
+                onLoadEnd={() => setImageLoading(false)}
+                onLoad={(event) => handleImageLoad(item.post_id, event)}
+              />
+            </View>
+          </TouchableOpacity>
+        )}
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.iconContainer} onPress={handleLike} disabled={isLiking}>
+            <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
+              <FontAwesome name={liked ? "heart" : "heart-o"} size={18} color={liked ? "red" : "black"} />
+            </Animated.View>
+            <Text style={styles.iconText}>{likes}</Text>
+          </TouchableOpacity>
+          <View style={styles.iconCommentContainer}>
+            <FontAwesome5 name="comment-alt" size={16} color="black" />
+            <Text style={styles.iconText}>{item.comments}</Text>
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

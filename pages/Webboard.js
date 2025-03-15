@@ -74,6 +74,12 @@ export default function Webboard({ navigation }) {
     }, [])
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      fetchLikedPosts();
+    }, [])
+  );
+
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query) {
@@ -98,8 +104,8 @@ export default function Webboard({ navigation }) {
   
   const onRefresh = async () => {
     setRefreshing(true);
-    fetchPosts();
-    fetchLikedPosts();
+    await fetchPosts();
+    await fetchLikedPosts();
     setSortBy('create_at');
     setSortOrder('desc');
   };
@@ -171,6 +177,19 @@ export default function Webboard({ navigation }) {
     }
   };
 
+  const updatePostLikes = (postId, likes) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.post_id === postId ? { ...post, likes } : post
+      )
+    );
+    setFilteredPosts((prevFilteredPosts) =>
+      prevFilteredPosts.map((post) =>
+        post.post_id === postId ? { ...post, likes } : post
+      )
+    );
+  };
+
   const renderEmptyComponent = () => (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyText}>There's nothing here.</Text>
@@ -200,6 +219,7 @@ export default function Webboard({ navigation }) {
       setPostToDelete={setPostToDelete}
       setConfirmModalVisible={setConfirmModalVisible}
       likedPosts={likedPosts}
+      updatePostLikes={updatePostLikes} // Pass the callback function
     />
   );
 
