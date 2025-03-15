@@ -82,7 +82,7 @@ export default function EditUserProfile({ navigation }) {
       };
       await updateUserProfile(updatedUserData);
       Alert.alert("Success", "Profile updated successfully", [
-        { text: "OK", onPress: () => navigation.navigate("HomeScreen") },
+        { text: "OK", onPress: () => navigation.goBack() },
       ]);
     } catch (error) {
       console.error("Error updating profile:", error);

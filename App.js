@@ -81,7 +81,7 @@ function MainTabs() {
             iconName = focused ? 'calendar' : 'calendar-outline';
           } else if (route.name === 'Webboard') {
             iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
-          } else if (route.name === 'Settings') {
+          } else if (route.name === 'SettingsMain') {
             iconName = focused ? 'settings' : 'settings-outline';
           }
 
@@ -100,7 +100,7 @@ function MainTabs() {
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Calendar" component={Calendar} />
       <Tab.Screen name="Webboard" component={WebboardStack} />
-      <Tab.Screen name="Settings" component={SettingsStack} />
+      <Tab.Screen name="SettingsMain" component={SettingsStack} />
     </Tab.Navigator>
   );
 }
