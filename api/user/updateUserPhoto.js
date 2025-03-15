@@ -1,16 +1,16 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BASE_URL } from '@env'; 
+import { BASE_URL } from '@env';
 
-export const postLoginUser = async (userData) => {
+export const updateUserPhoto = async (formData) => {
   try {
-    const url = `${BASE_URL}/api/user/auth/login`;
-    const response = await axios.post(`${BASE_URL}/api/user/auth/login`, userData);
-    const { token, refreshToken} = response.data;
-    await AsyncStorage.setItem('userToken', token); // Store the token
-    await AsyncStorage.setItem('refreshToken', refreshToken); // Store the refresh token
-    console.log(url);
-    
+    const token = await AsyncStorage.getItem('userToken');
+    const response = await axios.post(`${BASE_URL}/api/user/update-photo`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     if (error.response) {

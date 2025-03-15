@@ -15,6 +15,7 @@ import Webboard from './pages/Webboard';
 import Settings from './pages/Settings';
 import Documents from './pages/Documents';
 import AddPost from './pages/AddPost';
+import EditUserProfile from './pages/EditUserProfile';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from './services/toastConfig';
 
@@ -29,6 +30,7 @@ function HomeStack() {
       <Stack.Screen name="ViewPet" component={ViewPet} />
       <Stack.Screen name="UpdatePetData" component={UpdatePetData} />
       <Stack.Screen name="Documents" component={Documents} />
+      <Stack.Screen name="EditUserProfile" component={EditUserProfile} />
     </Stack.Navigator>
   );
 }
@@ -96,7 +98,16 @@ function MainTabs() {
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Calendar" component={Calendar} />
       <Tab.Screen name="Webboard" component={WebboardStack} />
-      <Tab.Screen name="Settings" component={Settings} />
+      <Tab.Screen name="Settings" component={SettingsStack} />
     </Tab.Navigator>
+  );
+}
+
+function SettingsStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="EditUserProfile" component={EditUserProfile} />
+    </Stack.Navigator>
   );
 }
