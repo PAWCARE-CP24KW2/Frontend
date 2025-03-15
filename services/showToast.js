@@ -61,19 +61,19 @@ export function showUploadProToast(text, action) {
     if (action == 'upload') {
         Toast.show({
             type: 'success',
-            text1: `Upload successful`,
+            text1: `Upload successful ✅`,
             text2: `${text} was uploaded.`,
         });
     }else if (action == 'delete') {
         Toast.show({
             type: 'info',
-            text1: `Delete successful`,
+            text1: `Delete successful 🗑️`,
             text2: `${text} was deleted.`,
         });
     }
 }
 
-export function showCreatePost(action) {
+export function showPostToast(action) {
     if (action == 'success') {
         Toast.show({
             type: 'success',
@@ -85,6 +85,18 @@ export function showCreatePost(action) {
             type: 'error',
             text1: `Create failed ❌`,
             text2: `Please fill in at least one field. (Title or Content)`,
+        });
+    }else if (action == 'delete') {
+        Toast.show({
+            type: 'info',
+            text1: `Delete successful 🗑️`,
+            text2: `Post was deleted.`,
+        });
+    }else if (action == 'update') {
+        Toast.show({
+            type: 'success',
+            text1: `Update successful 🔄`,
+            text2: `Post was updated.`,
         });
     }
 }

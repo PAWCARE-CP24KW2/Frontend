@@ -16,6 +16,7 @@ import Settings from './pages/Settings';
 import Documents from './pages/Documents';
 import AddPost from './pages/AddPost';
 import EditUserProfile from './pages/EditUserProfile';
+import EditPost from './pages/EditPost';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from './services/toastConfig';
 
@@ -40,6 +41,7 @@ function WebboardStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="WebboardMain" component={Webboard} />
       <Stack.Screen name="AddPost" component={AddPost} />
+      <Stack.Screen name="EditPost" component={EditPost} /> 
     </Stack.Navigator>
   );
 }
@@ -85,10 +87,10 @@ function MainTabs() {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: 'black', // Active tab color
-        tabBarInactiveTintColor: '#493628',   // Inactive tab color
+        tabBarActiveTintColor: 'black',
+        tabBarInactiveTintColor: '#493628',
         tabBarStyle: {
-          backgroundColor: '#B6917B',      // Tab bar background color
+          backgroundColor: '#B6917B',
           height: 60,
           paddingBottom: 5,
         },

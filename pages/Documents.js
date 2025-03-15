@@ -14,11 +14,11 @@ import * as ImagePicker from "expo-image-picker";
 import ShowDocumentModal from "../components/common/ShowDocumentModal";
 import ConfirmModal from "../components/modals/ConfirmModal";
 import { showUploadDocToast } from "../services/showToast";
-import { uploadRegistration } from "../api/minio/uploadRegistration";
-import { uploadMedicalBook } from "../api/minio/uploadMedicalBook";
-import { uploadPassport } from "../api/minio/uploadPassport";
-import { deleteDocument } from "../api/minio/deleteDocument";
-import { getDocument } from "../api/minio/getDocument";
+import { uploadRegistration } from "../api/documents/uploadRegistration";
+import { uploadMedicalBook } from "../api/documents/uploadMedicalBook";
+import { uploadPassport } from "../api/documents/uploadPassport";
+import { deleteDocument } from "../api/documents/deleteDocument";
+import { getDocument } from "../api/documents/getDocument";
 import { useFocusEffect } from "@react-navigation/native";
 import LoadingScreen from "../components/common/LoadingScreen";
 

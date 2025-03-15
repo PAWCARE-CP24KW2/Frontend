@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -11,24 +11,41 @@ import {
   Modal,
 } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import { createPost } from '../api/post/postPost';
+import { getPostById } from "../api/post/getPostById.js";
+import { updatePost } from "../api/post/updatePost.js";
 import { showPostToast } from "../services/showToast.js";
 import UploadModal from "../components/modals/UploadModal.js";
 import ConfirmModal from "../components/modals/ConfirmModal.js";
+import { deleteImagePost } from '../api/post/deleteImagePost';
 
-export default function AddPost({ navigation }) {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+export default function EditPost({ route, navigation }) {
+  const { postId } = route.params;
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("Upload image picture");
   const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
   const [image, setImage] = useState(null);
   const [fullImageVisible, setFullImageVisible] = useState(false);
 
-  const handleAddPost = async () => {
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const post = await getPostById(postId);
+        setTitle(post.post_title);
+        setContent(post.post_content);
+        setImage(post.post_photo_path ? { uri: post.post_photo_path } : null);
+      } catch (error) {
+        console.error("Error fetching post:", error);
+      }
+    };
+    fetchPost();
+  }, [postId]);
+
+  const handleUpdatePost = async () => {
     if (!title && !content) {
       showPostToast('fail');
       return;
@@ -36,20 +53,22 @@ export default function AddPost({ navigation }) {
 
     try {
       const formData = new FormData();
-      formData.append('post_title', title);
-      formData.append('post_content', content);
+      formData.append("post_title", title);
+      formData.append("post_content", content);
       if (image) {
-        formData.append('file', {
+        formData.append("file", {
           uri: image.uri,
           type: image.type,
           name: image.name,
         });
+      } else {
+        formData.append("file", null);
       }
-      await createPost(formData);
+      await updatePost(postId, formData);
       navigation.goBack();
-      showPostToast('success');
+      showPostToast("update");
     } catch (error) {
-      console.error("Error adding post:", error);
+      console.error("Error updating post:", error);
     }
   };
 
@@ -75,8 +94,8 @@ export default function AddPost({ navigation }) {
 
       if (!result.canceled) {
         const { uri } = result.assets[0];
-        const fileName = uri.split('/').pop();
-        const fileType = fileName.split('.').pop();
+        const fileName = uri.split("/").pop();
+        const fileType = fileName.split(".").pop();
         const image = {
           uri,
           name: fileName,
@@ -101,6 +120,7 @@ export default function AddPost({ navigation }) {
 
   const removeImage = useCallback(async () => {
     try {
+      await deleteImagePost(postId);
       setImage(null);
       setModalVisible(false);
     } catch ({ message }) {
@@ -124,7 +144,7 @@ export default function AddPost({ navigation }) {
 
   return (
     <ImageBackground
-      source={require('../assets/wallpaper.jpg')}
+      source={require("../assets/wallpaper.jpg")}
       style={MyStyles.background}
     >
       <SafeAreaView style={[MyStyles.container, { flex: 1 }]}>
@@ -136,7 +156,7 @@ export default function AddPost({ navigation }) {
             <Ionicons name="arrow-back-outline" size={30} color="black" />
           </TouchableOpacity>
           <View style={{ flex: 1, alignItems: "center" }}>
-            <Text style={styles.header}>Create post</Text>
+            <Text style={styles.header}>Edit post</Text>
           </View>
           <View style={{ width: 35 }} />
         </View>
@@ -162,22 +182,28 @@ export default function AddPost({ navigation }) {
               value={content}
               onChangeText={setContent}
             />
-            <TouchableOpacity style={styles.imageIcon} onPress={handleOpenModal}>
+            <TouchableOpacity
+              style={styles.imageIcon}
+              onPress={handleOpenModal}
+            >
               <Ionicons name="image-outline" size={30} color="black" />
             </TouchableOpacity>
           </View>
-        
+
           {image && (
             <TouchableOpacity onPress={handleImagePress}>
               <Image source={{ uri: image.uri }} style={styles.image} />
             </TouchableOpacity>
           )}
-          
+
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleAddPost}>
-              <Text style={styles.buttonText}>Post</Text>
+            <TouchableOpacity style={styles.button} onPress={handleUpdatePost}>
+              <Text style={styles.buttonText}>Update</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => navigation.goBack()}>
+            <TouchableOpacity
+              style={[styles.button, styles.cancelButton]}
+              onPress={() => navigation.goBack()}
+            >
               <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
@@ -197,15 +223,20 @@ export default function AddPost({ navigation }) {
           visible={modalDeleteVisible}
           onClose={() => setModalDeleteVisible(false)}
           onConfirm={handleConfirmDelete}
-          message={`Are you sure you want to deleted ?`}
+          message={`Are you sure you want to delete this image?`}
         />
 
         <Modal visible={fullImageVisible} transparent={true}>
           <View style={styles.fullImageContainer}>
-            <TouchableOpacity style={styles.closeButton} onPress={handleCloseFullImage}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={handleCloseFullImage}
+            >
               <Ionicons name="close" size={30} color="white" />
             </TouchableOpacity>
-            {image && <Image source={{ uri: image.uri }} style={styles.fullImage} />}
+            {image && (
+              <Image source={{ uri: image.uri }} style={styles.fullImage} />
+            )}
           </View>
         </Modal>
       </SafeAreaView>
@@ -228,7 +259,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   inputContainer: {
-    position: 'relative',
+    position: "relative",
     width: "100%",
     backgroundColor: "#FFF",
     borderRadius: 10,
@@ -251,15 +282,15 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     borderRadius: 10,
     paddingHorizontal: 10,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   imageIcon: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     right: 5,
     padding: 5,
     borderRadius: 50,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   sectionTitle: {
     marginBottom: 5,
@@ -268,8 +299,8 @@ const styles = StyleSheet.create({
     color: "#4A4A4A",
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 10,
   },
   button: {
@@ -294,7 +325,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   image: {
-    width: '100%',
+    width: "100%",
     height: 300,
     borderRadius: 8,
     marginTop: 10,
@@ -306,17 +337,17 @@ const styles = StyleSheet.create({
   },
   fullImageContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.85)', // Increased opacity
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.85)", // Increased opacity
+    justifyContent: "center",
+    alignItems: "center",
   },
   fullImage: {
-    width: '90%',
-    height: '90%',
-    resizeMode: 'contain',
+    width: "90%",
+    height: "90%",
+    resizeMode: "contain",
   },
   closeButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 40,
     right: 20,
     zIndex: 1,
