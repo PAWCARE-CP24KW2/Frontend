@@ -323,6 +323,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     zIndex: 1,
+    backgroundColor: "#D9D9D9",
   },
   sortContainer: {
     flexDirection: 'row',
