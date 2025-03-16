@@ -296,7 +296,7 @@ export default function Webboard({ navigation }) {
             <Image source={edit} style={styles.editIcon} />
           </TouchableOpacity>
 
-          <Modal visible={fullImageVisible} transparent={true}>
+          <Modal visible={fullImageVisible} transparent={true} animationType='fade'>
             <View style={styles.fullImageContainer}>
               <TouchableOpacity style={styles.closeButton} onPress={handleCloseFullImage}>
                 <Ionicons name="close" size={30} color="white" />

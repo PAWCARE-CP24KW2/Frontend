@@ -5,7 +5,7 @@ import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-m
 import userholder from '../../assets/userholder.png';
 import { likePost } from '../../api/post/likePost';
 import { unlikePost } from '../../api/post/unlikePost';
-import PostPage from '../../pages/PostPage';
+import PostDetails from '../../pages/PostDetails';
 
 const PostItem = ({
   item,
@@ -75,11 +75,14 @@ const PostItem = ({
 
   const formatDate = (isoString) => {
     const date = new Date(isoString);
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleString("en-US", {
       month: "short",
       day: "2-digit",
       year: "numeric",
-    });
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }).replace(/,/g, '');
   };
 
   const highlightText = (text, query) => {
@@ -177,7 +180,7 @@ const PostItem = ({
           </View>
         </View>
       </TouchableOpacity>
-      <PostPage
+      <PostDetails
         visible={postPageVisible}
         onClose={() => setPostPageVisible(false)}
         postId={item.post_id}

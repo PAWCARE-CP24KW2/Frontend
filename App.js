@@ -17,7 +17,7 @@ import Documents from './pages/Documents';
 import AddPost from './pages/AddPost';
 import EditUserProfile from './pages/EditUserProfile';
 import EditPost from './pages/EditPost';
-import PostPage from './pages/PostPage';
+import PostDetails from './pages/PostDetails';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from './services/toastConfig';
 
@@ -43,7 +43,7 @@ function WebboardStack() {
       <Stack.Screen name="WebboardMain" component={Webboard} />
       <Stack.Screen name="AddPost" component={AddPost} />
       <Stack.Screen name="EditPost" component={EditPost} /> 
-      <Stack.Screen name="PostPage" component={PostPage} />
+      <Stack.Screen name="PostDetails" component={PostDetails} />
     </Stack.Navigator>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ImageBackground, Modal, Animated, Easing } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, Modal, Animated, Easing, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { MyStyles } from '../styles/MyStyle';
@@ -8,8 +8,9 @@ import { likePost } from '../api/post/likePost';
 import { unlikePost } from '../api/post/unlikePost';
 import { getLikedPost } from '../api/post/getLikedPost';
 import { getPostById } from '../api/post/getPostById';
+import Comments from '../components/common/comments';
 
-const PostPage = ({
+const PostDetails = ({
   visible,
   onClose,
   postId,
@@ -107,6 +108,42 @@ const PostPage = ({
     return null;
   }
 
+  const renderPostDetails = () => (
+    <View style={styles.card}>
+      <View style={styles.header}>
+        <Image source={userholder} style={styles.avatar} />
+        <View style={styles.headerText}>
+          <Text style={styles.name}>{fullName}</Text>
+          <Text style={styles.date}>{formatDate(post.create_at)}</Text>
+        </View>
+      </View>
+      <Text style={styles.title}>{post.post_title}</Text>
+      <Text style={styles.content}>{post.post_content}</Text>
+      {post.post_photo_path && (
+        <TouchableOpacity onPress={() => handleImagePress(post.post_photo_path)}>
+          <Image source={{ uri: post.post_photo_path }} style={styles.postImage} />
+        </TouchableOpacity>
+      )}
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.iconContainer} onPress={handleLike} disabled={isLiking}>
+          <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
+            <FontAwesome name={liked ? "heart" : "heart-o"} size={18} color={liked ? "red" : "black"} />
+          </Animated.View>
+          <Text style={styles.iconText}>{likes}</Text>
+        </TouchableOpacity>
+        <View style={styles.iconCommentContainer}>
+          <FontAwesome5 name="comment-alt" size={16} color="black" />
+          <Text style={styles.iconText}>{post.comments}</Text>
+        </View>
+      </View>
+
+      <Comments 
+        postId={postId} 
+        formatDate={formatDate} 
+      />
+    </View>
+  );
+
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
       <ImageBackground
@@ -124,51 +161,14 @@ const PostPage = ({
             <View style={{ width: 35 }} />
           </View>
 
-          <ScrollView contentContainerStyle={styles.scrollViewContent}>
-            <View style={styles.card}>
-              <View style={styles.header}>
-                <Image source={userholder} style={styles.avatar} />
-                <View style={styles.headerText}>
-                  <Text style={styles.name}>{fullName}</Text>
-                  <Text style={styles.date}>{formatDate(post.create_at)}</Text>
-                </View>
-              </View>
-              <Text style={styles.title}>{post.post_title}</Text>
-              <Text style={styles.content}>{post.post_content}</Text>
-              {post.post_photo_path && (
-                <TouchableOpacity
-                  onPress={() => handleImagePress(post.post_photo_path)}
-                >
-                  <Image
-                    source={{ uri: post.post_photo_path }}
-                    style={styles.postImage}
-                  />
-                </TouchableOpacity>
-              )}
-              <View style={styles.footer}>
-                <TouchableOpacity
-                  style={styles.iconContainer}
-                  onPress={handleLike}
-                  disabled={isLiking}
-                >
-                  <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
-                    <FontAwesome
-                      name={liked ? "heart" : "heart-o"}
-                      size={18}
-                      color={liked ? "red" : "black"}
-                    />
-                  </Animated.View>
-                  <Text style={styles.iconText}>{likes}</Text>
-                </TouchableOpacity>
-                <View style={styles.iconCommentContainer}>
-                  <FontAwesome5 name="comment-alt" size={16} color="black" />
-                  <Text style={styles.iconText}>{post.comments}</Text>
-                </View>
-              </View>
-            </View>
-          </ScrollView>
+          <FlatList
+            data={[{ key: 'postDetails' }]}
+            renderItem={renderPostDetails}
+            keyExtractor={(item) => item.key}
+            contentContainerStyle={styles.scrollViewContent}
+          />
 
-          <Modal visible={fullImageVisible} transparent={true}>
+          <Modal visible={fullImageVisible} transparent={true} animationType='fade'>
             <View style={styles.fullImageContainer}>
               <TouchableOpacity
                 style={styles.closeButton}
@@ -184,6 +184,7 @@ const PostPage = ({
               )}
             </View>
           </Modal>
+
         </SafeAreaView>
       </ImageBackground>
     </Modal>
@@ -279,6 +280,7 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: "row",
     justifyContent: "flex-start",
+    marginBottom: 15,
   },
   iconContainer: {
     flexDirection: "row",
@@ -296,4 +298,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostPage;
+export default PostDetails;
