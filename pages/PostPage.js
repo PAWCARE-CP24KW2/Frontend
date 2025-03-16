@@ -9,42 +9,52 @@ import { unlikePost } from '../api/post/unlikePost';
 import { getLikedPost } from '../api/post/getLikedPost';
 import { getPostById } from '../api/post/getPostById';
 
-const PostPage = ({ route, navigation }) => {
-  const { postId, updatePostLikes, fullName } = route.params;
+const PostPage = ({
+  visible,
+  onClose,
+  postId,
+  fullName,
+  formatDate,
+  likes,
+  isLiking,
+  liked,
+  setLikes,
+  setIsLiking,
+  setLiked,
+}) => {
   const [post, setPost] = useState(null);
   const [fullImageVisible, setFullImageVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [likes, setLikes] = useState(0);
-  const [isLiking, setIsLiking] = useState(false);
-  const [liked, setLiked] = useState(false);
 
   const scaleValue = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    const fetchPostDetails = async () => {
-      try {
-        const postDetails = await getPostById(postId);
-        setPost(postDetails);
-        setLikes(postDetails.likes);
-      } catch (error) {
-        console.error('Error fetching post details:', error);
-      }
-    };
-
-    const fetchLikedPosts = async () => {
-      try {
-        const likedPosts = await getLikedPost();
-        if (likedPosts.some((likedPost) => likedPost.post_id === postId)) {
-          setLiked(true);
+    if (visible) {
+      const fetchPostDetails = async () => {
+        try {
+          const postDetails = await getPostById(postId);
+          setPost(postDetails);
+          setLikes(postDetails.likes);
+        } catch (error) {
+          console.error("Error fetching post details:", error);
         }
-      } catch (error) {
-        console.error('Error fetching liked posts:', error);
-      }
-    };
+      };
 
-    fetchPostDetails();
-    fetchLikedPosts();
-  }, [postId]);
+      const fetchLikedPosts = async () => {
+        try {
+          const likedPosts = await getLikedPost();
+          if (likedPosts.some((likedPost) => likedPost.post_id === postId)) {
+            setLiked(true);
+          }
+        } catch (error) {
+          console.error("Error fetching liked posts:", error);
+        }
+      };
+
+      fetchPostDetails();
+      fetchLikedPosts();
+    }
+  }, [visible, postId]);
 
   const handleLike = async () => {
     setIsLiking(true);
@@ -53,16 +63,14 @@ const PostPage = ({ route, navigation }) => {
         await unlikePost(postId);
         setLikes(likes - 1);
         setLiked(false);
-        updatePostLikes(postId, likes - 1); // Update likes count
       } else {
         await likePost(postId);
         setLikes(likes + 1);
         setLiked(true);
-        updatePostLikes(postId, likes + 1); // Update likes count
       }
       animateIcon();
     } catch (error) {
-      console.error('Error liking/unliking post:', error);
+      console.error("Error liking/unliking post:", error);
     } finally {
       setIsLiking(false);
     }
@@ -85,15 +93,6 @@ const PostPage = ({ route, navigation }) => {
     ]).start();
   };
 
-  const formatDate = (isoString) => {
-    const date = new Date(isoString);
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "2-digit",
-      year: "numeric",
-    });
-  };
-
   const handleImagePress = (imageUri) => {
     setSelectedImage(imageUri);
     setFullImageVisible(true);
@@ -105,73 +104,89 @@ const PostPage = ({ route, navigation }) => {
   };
 
   if (!post) {
-    return (
-      <SafeAreaView style={MyStyles.container}>
-        <Text>Loading...</Text>
-      </SafeAreaView>
-    );
+    return null;
   }
 
   return (
-    <ImageBackground
-      source={require('../assets/wallpaper.jpg')}
-      style={MyStyles.background}
-    >
-      <SafeAreaView style={[MyStyles.container, { flex: 1 }]}>
-        <View style={MyStyles.arrowHeader}>
-          <TouchableOpacity
-            style={MyStyles.arrowIcon}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="arrow-back-outline" size={30} color="black" />
-          </TouchableOpacity>
-          <View style={{ flex: 1, alignItems: "center" }}>
-            <Text style={styles.headerBarText}>Post Details</Text>
-          </View>
-          <View style={{ width: 35 }} />
-        </View>
-
-        <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <View style={styles.card}>
-            <View style={styles.header}>
-              <Image source={userholder} style={styles.avatar} />
-              <View style={styles.headerText}>
-                <Text style={styles.name}>{fullName}</Text>
-                <Text style={styles.date}>{formatDate(post.create_at)}</Text>
-              </View>
-            </View>
-            <Text style={styles.title}>{post.post_title}</Text>
-            <Text style={styles.content}>{post.post_content}</Text>
-            {post.post_photo_path && (
-              <TouchableOpacity onPress={() => handleImagePress(post.post_photo_path)}>
-                <Image source={{ uri: post.post_photo_path }} style={styles.postImage} />
-              </TouchableOpacity>
-            )}
-            <View style={styles.footer}>
-              <TouchableOpacity style={styles.iconContainer} onPress={handleLike} disabled={isLiking}>
-                <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
-                  <FontAwesome name={liked ? "heart" : "heart-o"} size={18} color={liked ? "red" : "black"} />
-                </Animated.View>
-                <Text style={styles.iconText}>{likes}</Text>
-              </TouchableOpacity>
-              <View style={styles.iconCommentContainer}>
-                <FontAwesome5 name="comment-alt" size={16} color="black" />
-                <Text style={styles.iconText}>{post.comments}</Text>
-              </View>
-            </View>
-          </View>
-        </ScrollView>
-
-        <Modal visible={fullImageVisible} transparent={true}>
-          <View style={styles.fullImageContainer}>
-            <TouchableOpacity style={styles.closeButton} onPress={handleCloseFullImage}>
-              <Ionicons name="close" size={30} color="white" />
+    <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
+      <ImageBackground
+        source={require("../assets/wallpaper.jpg")}
+        style={MyStyles.background}
+      >
+        <SafeAreaView style={[MyStyles.container, { flex: 1 }]}>
+          <View style={MyStyles.arrowHeader}>
+            <TouchableOpacity style={MyStyles.arrowIcon} onPress={onClose}>
+              <Ionicons name="arrow-back-outline" size={30} color="black" />
             </TouchableOpacity>
-            {selectedImage && <Image source={{ uri: selectedImage }} style={styles.fullImage} />}
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <Text style={styles.headerBarText}>Post Details</Text>
+            </View>
+            <View style={{ width: 35 }} />
           </View>
-        </Modal>
-      </SafeAreaView>
-    </ImageBackground>
+
+          <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <View style={styles.card}>
+              <View style={styles.header}>
+                <Image source={userholder} style={styles.avatar} />
+                <View style={styles.headerText}>
+                  <Text style={styles.name}>{fullName}</Text>
+                  <Text style={styles.date}>{formatDate(post.create_at)}</Text>
+                </View>
+              </View>
+              <Text style={styles.title}>{post.post_title}</Text>
+              <Text style={styles.content}>{post.post_content}</Text>
+              {post.post_photo_path && (
+                <TouchableOpacity
+                  onPress={() => handleImagePress(post.post_photo_path)}
+                >
+                  <Image
+                    source={{ uri: post.post_photo_path }}
+                    style={styles.postImage}
+                  />
+                </TouchableOpacity>
+              )}
+              <View style={styles.footer}>
+                <TouchableOpacity
+                  style={styles.iconContainer}
+                  onPress={handleLike}
+                  disabled={isLiking}
+                >
+                  <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
+                    <FontAwesome
+                      name={liked ? "heart" : "heart-o"}
+                      size={18}
+                      color={liked ? "red" : "black"}
+                    />
+                  </Animated.View>
+                  <Text style={styles.iconText}>{likes}</Text>
+                </TouchableOpacity>
+                <View style={styles.iconCommentContainer}>
+                  <FontAwesome5 name="comment-alt" size={16} color="black" />
+                  <Text style={styles.iconText}>{post.comments}</Text>
+                </View>
+              </View>
+            </View>
+          </ScrollView>
+
+          <Modal visible={fullImageVisible} transparent={true}>
+            <View style={styles.fullImageContainer}>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={handleCloseFullImage}
+              >
+                <Ionicons name="close" size={30} color="white" />
+              </TouchableOpacity>
+              {selectedImage && (
+                <Image
+                  source={{ uri: selectedImage }}
+                  style={styles.fullImage}
+                />
+              )}
+            </View>
+          </Modal>
+        </SafeAreaView>
+      </ImageBackground>
+    </Modal>
   );
 };
 
