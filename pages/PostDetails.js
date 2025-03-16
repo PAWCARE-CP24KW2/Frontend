@@ -9,6 +9,7 @@ import { unlikePost } from '../api/post/unlikePost';
 import { getLikedPost } from '../api/post/getLikedPost';
 import { getPostById } from '../api/post/getPostById';
 import Comments from '../components/common/comments';
+import { MenuProvider } from 'react-native-popup-menu';
 
 const PostDetails = ({
   visible,
@@ -117,8 +118,12 @@ const PostDetails = ({
           <Text style={styles.date}>{formatDate(post.create_at)}</Text>
         </View>
       </View>
-      <Text style={styles.title}>{post.post_title}</Text>
-      <Text style={styles.content}>{post.post_content}</Text>
+      {post.post_title ? (
+        <Text style={styles.title}>{post.post_title}</Text>
+      ) : null}
+      {post.post_content ? (
+        <Text style={styles.content}>{post.post_content}</Text>
+      ) : null}
       {post.post_photo_path && (
         <TouchableOpacity onPress={() => handleImagePress(post.post_photo_path)}>
           <Image source={{ uri: post.post_photo_path }} style={styles.postImage} />
@@ -146,47 +151,49 @@ const PostDetails = ({
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-      <ImageBackground
-        source={require("../assets/wallpaper.jpg")}
-        style={MyStyles.background}
-      >
-        <SafeAreaView style={[MyStyles.container, { flex: 1 }]}>
-          <View style={MyStyles.arrowHeader}>
-            <TouchableOpacity style={MyStyles.arrowIcon} onPress={onClose}>
-              <Ionicons name="arrow-back-outline" size={30} color="black" />
-            </TouchableOpacity>
-            <View style={{ flex: 1, alignItems: "center" }}>
-              <Text style={styles.headerBarText}>Post Details</Text>
-            </View>
-            <View style={{ width: 35 }} />
-          </View>
-
-          <FlatList
-            data={[{ key: 'postDetails' }]}
-            renderItem={renderPostDetails}
-            keyExtractor={(item) => item.key}
-            contentContainerStyle={styles.scrollViewContent}
-          />
-
-          <Modal visible={fullImageVisible} transparent={true} animationType='fade'>
-            <View style={styles.fullImageContainer}>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={handleCloseFullImage}
-              >
-                <Ionicons name="close" size={30} color="white" />
+      <MenuProvider skipInstanceCheck>
+        <ImageBackground
+          source={require("../assets/wallpaper.jpg")}
+          style={MyStyles.background}
+        >
+          <SafeAreaView style={[MyStyles.container, { flex: 1 }]}>
+            <View style={MyStyles.arrowHeader}>
+              <TouchableOpacity style={MyStyles.arrowIcon} onPress={onClose}>
+                <Ionicons name="arrow-back-outline" size={30} color="black" />
               </TouchableOpacity>
-              {selectedImage && (
-                <Image
-                  source={{ uri: selectedImage }}
-                  style={styles.fullImage}
-                />
-              )}
+              <View style={{ flex: 1, alignItems: "center" }}>
+                <Text style={styles.headerBarText}>Post Details</Text>
+              </View>
+              <View style={{ width: 35 }} />
             </View>
-          </Modal>
 
-        </SafeAreaView>
-      </ImageBackground>
+            <FlatList
+              data={[{ key: 'postDetails' }]}
+              renderItem={renderPostDetails}
+              keyExtractor={(item) => item.key}
+              contentContainerStyle={styles.scrollViewContent}
+            />
+
+            <Modal visible={fullImageVisible} transparent={true} animationType='fade'>
+              <View style={styles.fullImageContainer}>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={handleCloseFullImage}
+                >
+                  <Ionicons name="close" size={30} color="white" />
+                </TouchableOpacity>
+                {selectedImage && (
+                  <Image
+                    source={{ uri: selectedImage }}
+                    style={styles.fullImage}
+                  />
+                )}
+              </View>
+            </Modal>
+
+          </SafeAreaView>
+        </ImageBackground>
+      </MenuProvider>
     </Modal>
   );
 };
@@ -280,7 +287,6 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: "row",
     justifyContent: "flex-start",
-    marginBottom: 15,
   },
   iconContainer: {
     flexDirection: "row",

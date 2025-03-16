@@ -302,6 +302,7 @@ export default function MyCalendar({ navigation }) {
         visible={modalDontHasPet}
         onConfirm={() => handleNavigate()}
         message={`You need to create pet's profile to add activity.`}
+        buttonText="Add pet"
       />
     </SafeAreaView>
   );

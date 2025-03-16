@@ -3,6 +3,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
+import { MenuProvider } from 'react-native-popup-menu';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from './services/toastConfig';
+
 import Home from './pages/Home';
 import FirstPage from './pages/FirstPage';
 import Login from './pages/Login';
@@ -18,8 +22,6 @@ import AddPost from './pages/AddPost';
 import EditUserProfile from './pages/EditUserProfile';
 import EditPost from './pages/EditPost';
 import PostDetails from './pages/PostDetails';
-import Toast from 'react-native-toast-message';
-import { toastConfig } from './services/toastConfig';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -60,13 +62,15 @@ function AuthStack() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Auth">
-        <Stack.Screen name="Auth" component={AuthStack} />
-        <Stack.Screen name="Main" component={MainTabs} />
-      </Stack.Navigator>
-      <Toast config={toastConfig}/>
-    </NavigationContainer>
+    <MenuProvider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Auth">
+          <Stack.Screen name="Auth" component={AuthStack} />
+          <Stack.Screen name="Main" component={MainTabs} />
+        </Stack.Navigator>
+        <Toast config={toastConfig}/>
+      </NavigationContainer>
+    </MenuProvider>
   );
 }
 

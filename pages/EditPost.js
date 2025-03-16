@@ -58,8 +58,8 @@ export default function EditPost({ route, navigation }) {
       if (image) {
         formData.append("file", {
           uri: image.uri,
-          type: image.type,
-          name: image.name,
+          type: image.type|| 'image/jpeg', 
+          name: image.name || 'image.jpg', 
         });
       } else {
         formData.append("file", null);
