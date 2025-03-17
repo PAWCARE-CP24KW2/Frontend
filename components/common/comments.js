@@ -7,7 +7,7 @@ import deleteComment from '../../api/post/comments/deleteComments';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import userholder from '../../assets/userholder.png';
 import ConfirmModal from '../modals/ConfirmModal';
-import DontHavePetModal from '../modals/DontHavePetModal';
+import AlertModal from '../modals/AlertModal';
 
 const Comments = ({ postId, formatDate }) => {
   const [comments, setComments] = useState([]);
@@ -20,7 +20,6 @@ const Comments = ({ postId, formatDate }) => {
   const fetchComments = async () => {
     try {
       const commentsData = await getComments(postId);
-      console.log(commentsData);
       setComments(commentsData);
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -81,34 +80,48 @@ const Comments = ({ postId, formatDate }) => {
         <View style={styles.comment}>
           <View style={styles.header}>
             <View style={styles.headerText}>
-              <Text style={styles.commentAuthor}>{getFullName(item.user_firstname, item.user_lastname)}</Text>
-              <Text style={styles.commentText}>{item.comment_content}</Text>
+              <Text style={styles.commentAuthor}>
+                {getFullName(item.user_firstname, item.user_lastname)}
+              </Text>
+              {userId === item.user_id && (
+                <Menu>
+                  <MenuTrigger style={styles.moreIcon}>
+                    <Ionicons
+                      name="ellipsis-horizontal"
+                      size={24}
+                      color="black"
+                    />
+                  </MenuTrigger>
+                  <MenuOptions>
+                    <MenuOption onSelect={() => console.log("Edit Comment")}>
+                      <View style={styles.menuOption}>
+                        <Ionicons
+                          name="create-outline"
+                          size={20}
+                          color="black"
+                        />
+                        <Text style={styles.menuOptionText}>Edit Comment</Text>
+                      </View>
+                    </MenuOption>
+                    <MenuOption
+                      onSelect={() => {
+                        setCommentToDelete(item.comment_id);
+                        setConfirmModalVisible(true);
+                      }}
+                    >
+                      <View style={styles.menuOption}>
+                        <Ionicons name="trash-outline" size={20} color="red" />
+                        <Text style={styles.menuOptionDeleteText}>
+                          Delete Comment
+                        </Text>
+                      </View>
+                    </MenuOption>
+                  </MenuOptions>
+                </Menu>
+              )}
             </View>
-            {userId === item.user_id && (
-              <Menu>
-                <MenuTrigger style={styles.moreIcon}>
-                  <Ionicons name="ellipsis-horizontal" size={24} color="black" />
-                </MenuTrigger>
-                <MenuOptions>
-                  <MenuOption onSelect={() => console.log('Edit Comment')}>
-                    <View style={styles.menuOption}>
-                      <Ionicons name="create-outline" size={20} color="black" />
-                      <Text style={styles.menuOptionText}>Edit Comment</Text>
-                    </View>
-                  </MenuOption>
-                  <MenuOption onSelect={() => {
-                    setCommentToDelete(item.comment_id);
-                    setConfirmModalVisible(true);
-                  }}>
-                    <View style={styles.menuOption}>
-                      <Ionicons name="trash-outline" size={20} color="red" />
-                      <Text style={styles.menuOptionDeleteText}>Delete Comment</Text>
-                    </View>
-                  </MenuOption>
-                </MenuOptions>
-              </Menu>
-            )}
           </View>
+          <Text style={styles.commentText}>{item.comment_content}</Text>
         </View>
         <Text style={styles.date}>{formatDate(item.created_at)}</Text>
       </View>
@@ -132,7 +145,7 @@ const Comments = ({ postId, formatDate }) => {
         message="Are you sure you want to delete this comment?"
       />
 
-      <DontHavePetModal
+      <AlertModal
         visible={dontHavePetModalVisible}
         onConfirm={() => setDontHavePetModalVisible(false)}
         message="Comment deleted successfully."
@@ -163,7 +176,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 0,
-    position: 'relative',
   },
   avatar: {
     width: 45,
@@ -178,9 +190,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   commentAuthor: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
-    color: '#5B3A29',
+    color: '#000',
   },
   date: {
     fontSize: 14,
@@ -189,12 +201,12 @@ const styles = StyleSheet.create({
   },
   commentText: {
     fontSize: 16,
-    color: "#4A2C23",
+    color: "#000",
   },
   moreIcon: {
     position: 'absolute',
     padding: 5,
-    top: -25,
+    top: -30,
     right: -5,
   },
   menuOption: {
@@ -218,5 +230,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
+
 
 export default Comments;

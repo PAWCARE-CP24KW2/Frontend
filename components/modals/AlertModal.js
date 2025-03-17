@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 
-export default function DontHavePetModal({ visible, onClose, onConfirm, message, buttonText }) {
+export default function AlertModal({ visible, onClose, onConfirm, message, buttonText }) {
   return (
     <Modal
       transparent={true}
