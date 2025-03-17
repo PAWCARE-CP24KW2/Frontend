@@ -10,7 +10,7 @@ import userholder from '../../assets/userholder.png';
 import ConfirmModal from '../modals/ConfirmModal';
 import AlertModal from '../modals/AlertModal';
 
-const Comments = ({ postId, formatDate, fetchPostDetails, }) => {
+const Comments = ({ postId, formatDate, fetchPostDetails }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
@@ -18,6 +18,8 @@ const Comments = ({ postId, formatDate, fetchPostDetails, }) => {
   const [commentToDelete, setCommentToDelete] = useState(null);
   const [dontHavePetModalVisible, setDontHavePetModalVisible] = useState(false);
   const [newComment, setNewComment] = useState('');
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editedComment, setEditedComment] = useState('');
 
   const fetchComments = async () => {
     try {
@@ -81,6 +83,22 @@ const Comments = ({ postId, formatDate, fetchPostDetails, }) => {
     }
   };
 
+  const handleEditComment = (commentId, commentContent) => {
+    setEditingCommentId(commentId);
+    setEditedComment(commentContent);
+  };
+
+  const handleSaveEditedComment = () => {
+    console.log('Edited comment:', editedComment);
+    setEditingCommentId(null);
+    setEditedComment('');
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCommentId(null);
+    setEditedComment('');
+  };
+
   const getFullName = (firstname, lastname) => `${firstname} ${lastname}`;
 
   if (loading) {
@@ -91,11 +109,12 @@ const Comments = ({ postId, formatDate, fetchPostDetails, }) => {
     <View style={styles.container}>
       <Image source={userholder} style={styles.avatar} />
       <View style={styles.commentContainer}>
-        <View style={styles.comment}>
+        <View style={[styles.comment, editingCommentId === item.comment_id && styles.editingContainer]}>
           <View style={styles.header}>
             <View style={styles.headerText}>
               <Text style={styles.commentAuthor}>
                 {getFullName(item.user_firstname, item.user_lastname)}
+                {editingCommentId === item.comment_id && <Text style={styles.editingText}> (Editing)</Text>}
               </Text>
               {userId === item.user_id && (
                 <Menu>
@@ -107,7 +126,7 @@ const Comments = ({ postId, formatDate, fetchPostDetails, }) => {
                     />
                   </MenuTrigger>
                   <MenuOptions>
-                    <MenuOption onSelect={() => console.log("Edit Comment")}>
+                    <MenuOption onSelect={() => handleEditComment(item.comment_id, item.comment_content)}>
                       <View style={styles.menuOption}>
                         <Ionicons
                           name="create-outline"
@@ -135,7 +154,27 @@ const Comments = ({ postId, formatDate, fetchPostDetails, }) => {
               )}
             </View>
           </View>
-          <Text style={styles.commentText}>{item.comment_content}</Text>
+          {editingCommentId === item.comment_id ? (
+            <>
+              <TextInput
+                style={styles.editCommentInput}
+                multiline={true}
+                numberOfLines={4}
+                value={editedComment}
+                onChangeText={setEditedComment}
+              />
+              <View style={styles.editButtonsContainer}>
+                <TouchableOpacity onPress={handleCancelEdit} style={[styles.editButton, styles.cancelButton]}>
+                  <Text style={[styles.editButtonText, styles.cancelButtonText]}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleSaveEditedComment} style={styles.editButton}>
+                  <Text style={styles.editButtonText}>Update</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          ) : (
+            <Text style={styles.commentText}>{item.comment_content}</Text>
+          )}
         </View>
         <Text style={styles.date}>{formatDate(item.created_at)}</Text>
       </View>
@@ -194,6 +233,15 @@ const styles = StyleSheet.create({
   },
   commentContainer: {
     flex: 1,
+  },
+  editingContainer: {
+    borderColor: '#493628',
+    backgroundColor: '#fff',
+    borderWidth: 2,
+  },
+  editCommentInput: {
+    fontSize: 16,
+    color: "#000",
   },
   comment: {
     padding: 12,
@@ -275,7 +323,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#ebecee',
     marginRight: 10,
   },
+  editButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 10,
+  },
+  editButton: {
+    marginLeft: 10,
+    padding: 5,
+    backgroundColor: '#493628',
+    borderRadius: 5,
+  },
+  editButtonText: {
+    color: 'white',
+    fontSize: 14,
+  },
+  cancelButton: {
+    backgroundColor: '#e2e5e9',
+  },
+  cancelButtonText: {
+    color: 'black',
+  },
 });
-
 
 export default Comments;
