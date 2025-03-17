@@ -43,7 +43,6 @@ export default function Settings({ navigation }) {
           if (decodedToken.lastName) setLastName(decodedToken.lastName);
           if (decodedToken.email) setEmail(decodedToken.email);
           if (decodedToken.photo_path) setImage(decodedToken.photo_path);
-          console.log(decodedToken);
         }
       } catch (error) {
         console.error('Error decoding token:', error);

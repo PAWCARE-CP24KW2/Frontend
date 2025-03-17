@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 
-export default function ConfirmModal({ visible, onClose, onConfirm, message }) {
+export default function AlertModal({ visible, onClose, onConfirm, message, buttonText }) {
   return (
     <Modal
       transparent={true}
@@ -14,7 +14,7 @@ export default function ConfirmModal({ visible, onClose, onConfirm, message }) {
           <Text style={styles.message}>{message}</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.buttonConfirm} onPress={onConfirm}>
-              <Text style={styles.buttonText}>Add pet</Text>
+              <Text style={styles.buttonText}>{buttonText}</Text>
             </TouchableOpacity>
           </View>
         </View>

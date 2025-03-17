@@ -163,7 +163,7 @@ export default function CreateAccountScreen({ navigation }) {
         </View>
 
         <TouchableOpacity 
-          style={styles.loginButton}
+          style={styles.RegisButton}
           onPress={handleContinue}
         >
           <Text style={styles.register}>CONTINUE</Text>
@@ -201,7 +201,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#493628",
     fontWeight: "bold",
-    marginBottom: 5,
     marginLeft: 3,
   },
   input: {
@@ -217,7 +216,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     borderRadius: 10,
     paddingHorizontal: 12,
-    marginBottom: 15,
+    marginBottom: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
@@ -233,12 +232,13 @@ const styles = StyleSheet.create({
   eyeIcon: {
     padding: 10,
   },
-  loginButton: {
+  RegisButton: {
     backgroundColor: "#493628",
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
     alignItems: "center",
+    marginTop: 10,
     width: "100%",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },

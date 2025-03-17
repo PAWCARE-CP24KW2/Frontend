@@ -19,7 +19,7 @@ import { fetchAgendas } from "../../api/agenda/getAllAgendas.js";
 import { deleteAgenda } from "../../api/agenda/deleteAgenda.js";
 import { cancelNotification } from "../../services/notificationService.js";
 import ConfirmModal from "../modals/ConfirmModal.js";
-import DontHavePetModal from "../modals/DontHavePetModal.js";
+import AlertModal from "../modals/AlertModal.js";
 import { getPetsByUserId } from "../../api/pet/getPetFromId.js";
 import LoadingScreen from "./LoadingScreen.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -298,10 +298,11 @@ export default function MyCalendar({ navigation }) {
         } ?`}
       />
 
-      <DontHavePetModal
+      <AlertModal
         visible={modalDontHasPet}
         onConfirm={() => handleNavigate()}
         message={`You need to create pet's profile to add activity.`}
+        buttonText="Add pet"
       />
     </SafeAreaView>
   );

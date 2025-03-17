@@ -74,6 +74,12 @@ export default function Webboard({ navigation }) {
     }, [])
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      fetchLikedPosts();
+    }, [])
+  );
+
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query) {
@@ -98,8 +104,8 @@ export default function Webboard({ navigation }) {
   
   const onRefresh = async () => {
     setRefreshing(true);
-    fetchPosts();
-    fetchLikedPosts();
+    await fetchPosts();
+    await fetchLikedPosts();
     setSortBy('create_at');
     setSortOrder('desc');
   };
@@ -171,6 +177,19 @@ export default function Webboard({ navigation }) {
     }
   };
 
+  const updatePostLikes = (postId, likes) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.post_id === postId ? { ...post, likes } : post
+      )
+    );
+    setFilteredPosts((prevFilteredPosts) =>
+      prevFilteredPosts.map((post) =>
+        post.post_id === postId ? { ...post, likes } : post
+      )
+    );
+  };
+
   const renderEmptyComponent = () => (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyText}>There's nothing here.</Text>
@@ -200,6 +219,8 @@ export default function Webboard({ navigation }) {
       setPostToDelete={setPostToDelete}
       setConfirmModalVisible={setConfirmModalVisible}
       likedPosts={likedPosts}
+      updatePostLikes={updatePostLikes}
+      fetchPosts={fetchPosts}
     />
   );
 
@@ -213,87 +234,85 @@ export default function Webboard({ navigation }) {
   }
 
   return (
-    <MenuProvider>
-      <ImageBackground
-        source={require('../assets/wallpaper.jpg')}
-        style={MyStyles.background}
-      >
-        <SafeAreaView style={MyStyles.container}>
-          <View style={MyStyles.header}>
-            <View style={styles.searchContainer}>
-              <Ionicons name="search" size={20} color="black" style={styles.searchIcon} />
-              <TextInput
-                style={styles.searchBar}
-                placeholder="Search by title, content, user"
-                value={searchQuery}
-                onChangeText={handleSearch}
-              />
-              {searchQuery ? (
-                <TouchableOpacity onPress={clearSearch} style={styles.clearIcon}>
-                  <Ionicons name="close" size={20} color="black" />
-                </TouchableOpacity>
-              ) : null}
-            </View>
-          </View>
-
-          <View style={styles.sortContainer}>
-            <Text style={styles.sortLabel}>Sort by:</Text>
-            <TouchableOpacity
-              style={[styles.sortButton, sortBy === 'create_at' && styles.activeSortButton]}
-              onPress={() => handleSortBy('create_at')}
-            >
-              <View style={styles.sortButtonContent}>
-                <Text style={[styles.sortButtonText, sortBy === 'create_at' && styles.activeSortButtonText]}>
-                  Created time&nbsp;
-                </Text>
-                {sortBy === 'create_at' && (
-                  <Ionicons name={sortOrder === 'desc' ? "caret-down" : "caret-up"} size={16} color="white" />
-                )}
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.sortButton, sortBy === 'likes' && styles.activeSortButton]}
-              onPress={() => handleSortBy('likes')}
-            >
-              <Text style={[styles.sortButtonText, sortBy === 'likes' && styles.activeSortButtonText]}>Likes</Text>
-            </TouchableOpacity>
-          </View>
-
-          <FlatList
-            data={filteredPosts}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.post_id.toString()}
-            contentContainerStyle={styles.listContent}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-            ListEmptyComponent={renderEmptyComponent}
-          />
-          <TouchableOpacity
-            style={styles.createPostButton}
-            onPress={() => navigation.navigate('AddPost')}
-          >
-            <Image source={edit} style={styles.editIcon} />
-          </TouchableOpacity>
-
-          <Modal visible={fullImageVisible} transparent={true}>
-            <View style={styles.fullImageContainer}>
-              <TouchableOpacity style={styles.closeButton} onPress={handleCloseFullImage}>
-                <Ionicons name="close" size={30} color="white" />
+    <ImageBackground
+      source={require('../assets/wallpaper.jpg')}
+      style={MyStyles.background}
+    >
+      <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.header}>
+          <View style={styles.searchContainer}>
+            <Ionicons name="search" size={20} color="black" style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchBar}
+              placeholder="Search by title, content, user"
+              value={searchQuery}
+              onChangeText={handleSearch}
+            />
+            {searchQuery ? (
+              <TouchableOpacity onPress={clearSearch} style={styles.clearIcon}>
+                <Ionicons name="close" size={20} color="black" />
               </TouchableOpacity>
-              {selectedImage && <Image source={{ uri: selectedImage }} style={styles.fullImage} />}
-            </View>
-          </Modal>
+            ) : null}
+          </View>
+        </View>
 
-          <ConfirmModal
-            visible={confirmModalVisible}
-            onConfirm={handleDeletePost}
-            onClose={() => setConfirmModalVisible(false)}
-            message="Are you sure you want to delete this post?"
-          />
-        </SafeAreaView>
-      </ImageBackground>
-    </MenuProvider>
+        <View style={styles.sortContainer}>
+          <Text style={styles.sortLabel}>Sort by:</Text>
+          <TouchableOpacity
+            style={[styles.sortButton, sortBy === 'create_at' && styles.activeSortButton]}
+            onPress={() => handleSortBy('create_at')}
+          >
+            <View style={styles.sortButtonContent}>
+              <Text style={[styles.sortButtonText, sortBy === 'create_at' && styles.activeSortButtonText]}>
+                Created time&nbsp;
+              </Text>
+              {sortBy === 'create_at' && (
+                <Ionicons name={sortOrder === 'desc' ? "caret-down" : "caret-up"} size={16} color="white" />
+              )}
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.sortButton, sortBy === 'likes' && styles.activeSortButton]}
+            onPress={() => handleSortBy('likes')}
+          >
+            <Text style={[styles.sortButtonText, sortBy === 'likes' && styles.activeSortButtonText]}>Likes</Text>
+          </TouchableOpacity>
+        </View>
+
+        <FlatList
+          data={filteredPosts}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.post_id.toString()}
+          contentContainerStyle={styles.listContent}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          ListEmptyComponent={renderEmptyComponent}
+        />
+        <TouchableOpacity
+          style={styles.createPostButton}
+          onPress={() => navigation.navigate('AddPost')}
+        >
+          <Image source={edit} style={styles.editIcon} />
+        </TouchableOpacity>
+
+        <Modal visible={fullImageVisible} transparent={true} animationType='fade'>
+          <View style={styles.fullImageContainer}>
+            <TouchableOpacity style={styles.closeButton} onPress={handleCloseFullImage}>
+              <Ionicons name="close" size={30} color="white" />
+            </TouchableOpacity>
+            {selectedImage && <Image source={{ uri: selectedImage }} style={styles.fullImage} />}
+          </View>
+        </Modal>
+
+        <ConfirmModal
+          visible={confirmModalVisible}
+          onConfirm={handleDeletePost}
+          onClose={() => setConfirmModalVisible(false)}
+          message="Are you sure you want to delete this post?"
+        />
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
@@ -314,7 +333,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flex: 1,
     height: 45,
-    backgroundColor: "#D9D9D9",
+    backgroundColor: "#E0E0E0",
     borderWidth: 1,
     borderRadius: 10,
     paddingLeft: 35,

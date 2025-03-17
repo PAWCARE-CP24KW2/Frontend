@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   image: {
     width: 60,
     height: 60,
-    borderRadius: 30,
+    borderRadius: 100,
     marginRight: 10,
   },
   infoContainer: {

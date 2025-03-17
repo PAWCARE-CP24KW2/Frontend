@@ -3,6 +3,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
+import { MenuProvider } from 'react-native-popup-menu';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from './services/toastConfig';
+
 import Home from './pages/Home';
 import FirstPage from './pages/FirstPage';
 import Login from './pages/Login';
@@ -17,8 +21,7 @@ import Documents from './pages/Documents';
 import AddPost from './pages/AddPost';
 import EditUserProfile from './pages/EditUserProfile';
 import EditPost from './pages/EditPost';
-import Toast from 'react-native-toast-message';
-import { toastConfig } from './services/toastConfig';
+import PostDetails from './pages/PostDetails';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -42,6 +45,7 @@ function WebboardStack() {
       <Stack.Screen name="WebboardMain" component={Webboard} />
       <Stack.Screen name="AddPost" component={AddPost} />
       <Stack.Screen name="EditPost" component={EditPost} /> 
+      <Stack.Screen name="PostDetails" component={PostDetails} />
     </Stack.Navigator>
   );
 }
@@ -58,13 +62,15 @@ function AuthStack() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Auth">
-        <Stack.Screen name="Auth" component={AuthStack} />
-        <Stack.Screen name="Main" component={MainTabs} />
-      </Stack.Navigator>
-      <Toast config={toastConfig}/>
-    </NavigationContainer>
+    <MenuProvider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Auth">
+          <Stack.Screen name="Auth" component={AuthStack} />
+          <Stack.Screen name="Main" component={MainTabs} />
+        </Stack.Navigator>
+        <Toast config={toastConfig}/>
+      </NavigationContainer>
+    </MenuProvider>
   );
 }
 
@@ -81,7 +87,7 @@ function MainTabs() {
             iconName = focused ? 'calendar' : 'calendar-outline';
           } else if (route.name === 'Webboard') {
             iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
-          } else if (route.name === 'SettingsMain') {
+          } else if (route.name === 'Settings') {
             iconName = focused ? 'settings' : 'settings-outline';
           }
 
@@ -100,7 +106,7 @@ function MainTabs() {
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Calendar" component={Calendar} />
       <Tab.Screen name="Webboard" component={WebboardStack} />
-      <Tab.Screen name="SettingsMain" component={SettingsStack} />
+      <Tab.Screen name="Settings" component={SettingsStack} />
     </Tab.Navigator>
   );
 }
@@ -108,7 +114,7 @@ function MainTabs() {
 function SettingsStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="SettingsMain" component={Settings} />
       <Stack.Screen name="EditUserProfile" component={EditUserProfile} />
     </Stack.Navigator>
   );

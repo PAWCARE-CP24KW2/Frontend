@@ -49,7 +49,6 @@ export default function EditUserProfile({ navigation }) {
         const token = await AsyncStorage.getItem('userToken');
         if (token) {
           const decodedToken = parseJWT(token);
-          console.log(decodedToken);
           if (decodedToken.userId) setUserId(decodedToken.userId);
           if (decodedToken.userName) setUserName(decodedToken.userName);
           if (decodedToken.firstName) setFirstName(decodedToken.firstName);
