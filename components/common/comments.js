@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, FlatList, Image, TextInput, TouchableOpacity } from 'react-native';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import { Ionicons } from '@expo/vector-icons';
 import getComments from '../../api/post/comments/getComments';
 import deleteComment from '../../api/post/comments/deleteComments';
 import postComment from '../../api/post/comments/postComment';
+import editComment from '../../api/post/comments/editComment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import userholder from '../../assets/userholder.png';
 import ConfirmModal from '../modals/ConfirmModal';
@@ -20,6 +21,7 @@ const Comments = ({ postId, formatDate, fetchPostDetails }) => {
   const [newComment, setNewComment] = useState('');
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editedComment, setEditedComment] = useState('');
+  const editInputRef = useRef(null);
 
   const fetchComments = async () => {
     try {
@@ -86,12 +88,23 @@ const Comments = ({ postId, formatDate, fetchPostDetails }) => {
   const handleEditComment = (commentId, commentContent) => {
     setEditingCommentId(commentId);
     setEditedComment(commentContent);
+    setTimeout(() => {
+      if (editInputRef.current) {
+        editInputRef.current.focus();
+      }
+    }, 100);
   };
 
-  const handleSaveEditedComment = () => {
-    console.log('Edited comment:', editedComment);
-    setEditingCommentId(null);
-    setEditedComment('');
+  const handleSaveEditedComment = async () => {
+    try {
+      await editComment(editingCommentId, editedComment);
+      fetchComments();
+      fetchPostDetails();
+      setEditingCommentId(null);
+      setEditedComment('');
+    } catch (error) {
+      console.error('Error editing comment:', error);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -157,6 +170,7 @@ const Comments = ({ postId, formatDate, fetchPostDetails }) => {
           {editingCommentId === item.comment_id ? (
             <>
               <TextInput
+                ref={editInputRef}
                 style={styles.editCommentInput}
                 multiline={true}
                 numberOfLines={4}
@@ -183,7 +197,7 @@ const Comments = ({ postId, formatDate, fetchPostDetails }) => {
 
   return (
     <>
-      <View style={styles.divider} />
+      {comments.length > 0 && <View style={styles.divider} />}
       <FlatList
         data={comments}
         renderItem={renderItem}
@@ -270,6 +284,11 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: 'bold',
     color: '#000',
+  },
+  editingText: {
+    fontSize: 17,
+    fontWeight: 'thin',
+    color: 'red',
   },
   date: {
     fontSize: 14,
