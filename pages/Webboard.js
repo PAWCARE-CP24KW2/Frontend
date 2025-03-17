@@ -219,7 +219,8 @@ export default function Webboard({ navigation }) {
       setPostToDelete={setPostToDelete}
       setConfirmModalVisible={setConfirmModalVisible}
       likedPosts={likedPosts}
-      updatePostLikes={updatePostLikes} // Pass the callback function
+      updatePostLikes={updatePostLikes}
+      fetchPosts={fetchPosts}
     />
   );
 

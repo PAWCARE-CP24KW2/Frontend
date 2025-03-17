@@ -20,7 +20,8 @@ const PostItem = ({
   handleImageLoad,
   setPostToDelete,
   setConfirmModalVisible,
-  updatePostLikes
+  updatePostLikes,
+  fetchPosts,
 }) => {
   const [likes, setLikes] = useState(item.likes);
   const [isLiking, setIsLiking] = useState(false);
@@ -182,7 +183,7 @@ const PostItem = ({
       </TouchableOpacity>
       <PostDetails
         visible={postPageVisible}
-        onClose={() => setPostPageVisible(false)}
+        onClose={() => { setPostPageVisible(false); fetchPosts(); }}
         postId={item.post_id}
         updatePostLikes={updatePostLikes}
         fullName={getFullName(item.user_firstname, item.user_lastname)}

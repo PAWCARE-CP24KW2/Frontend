@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, FlatList, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, FlatList, Image, TextInput, TouchableOpacity } from 'react-native';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import { Ionicons } from '@expo/vector-icons';
 import getComments from '../../api/post/comments/getComments';
 import deleteComment from '../../api/post/comments/deleteComments';
+import postComment from '../../api/post/comments/postComment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import userholder from '../../assets/userholder.png';
 import ConfirmModal from '../modals/ConfirmModal';
 import AlertModal from '../modals/AlertModal';
 
-const Comments = ({ postId, formatDate }) => {
+const Comments = ({ postId, formatDate, fetchPostDetails, }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState(null);
   const [dontHavePetModalVisible, setDontHavePetModalVisible] = useState(false);
+  const [newComment, setNewComment] = useState('');
 
   const fetchComments = async () => {
     try {
@@ -59,11 +61,23 @@ const Comments = ({ postId, formatDate }) => {
     try {
       await deleteComment(commentToDelete);
       fetchComments();
+      fetchPostDetails();
       setConfirmModalVisible(false);
       setCommentToDelete(null);
       setDontHavePetModalVisible(true);
     } catch (error) {
       console.error('Error deleting comment:', error);
+    }
+  };
+
+  const handleAddComment = async () => {
+    try {
+      await postComment(postId, newComment);
+      fetchPostDetails();
+      setNewComment('');
+      fetchComments();
+    } catch (error) {
+      console.error('Error adding comment:', error);
     }
   };
 
@@ -151,6 +165,21 @@ const Comments = ({ postId, formatDate }) => {
         message="Comment deleted successfully."
         buttonText="Ok"
       />
+  
+      <View style={styles.commentInputContainer}>
+        <Image source={userholder} style={styles.avatar} />
+        <TextInput
+          style={styles.commentInput}
+          placeholder="Write a comment..."
+          multiline={true}
+          numberOfLines={4}
+          value={newComment}
+          onChangeText={setNewComment}
+        />
+        <TouchableOpacity onPress={handleAddComment}>
+          <Ionicons name="send" size={24} color="gray" />
+        </TouchableOpacity>
+      </View>
     </>
   );
 };
@@ -228,6 +257,23 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#ccc',
     marginTop: 10,
+  },
+  commentInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderColor: '#ccc',
+  },
+  commentInput: {
+    flex: 1,
+    padding: 10,
+    paddingLeft: 15,
+    fontSize: 16,
+    borderRadius: 20,
+    backgroundColor: '#ebecee',
+    marginRight: 10,
   },
 });
 

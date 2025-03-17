@@ -23,6 +23,7 @@ const PostDetails = ({
   setLikes,
   setIsLiking,
   setLiked,
+  comments,
 }) => {
   const [post, setPost] = useState(null);
   const [fullImageVisible, setFullImageVisible] = useState(false);
@@ -30,33 +31,33 @@ const PostDetails = ({
 
   const scaleValue = useRef(new Animated.Value(1)).current;
 
+  const fetchPostDetails = async () => {
+    try {
+      const postDetails = await getPostById(postId);
+      setPost(postDetails);
+      setLikes(postDetails.likes);
+    } catch (error) {
+      console.error("Error fetching post details:", error);
+    }
+  };
+
+  const fetchLikedPosts = async () => {
+    try {
+      const likedPosts = await getLikedPost();
+      if (likedPosts.some((likedPost) => likedPost.post_id === postId)) {
+        setLiked(true);
+      }
+    } catch (error) {
+      console.error("Error fetching liked posts:", error);
+    }
+  };
+
   useEffect(() => {
     if (visible) {
-      const fetchPostDetails = async () => {
-        try {
-          const postDetails = await getPostById(postId);
-          setPost(postDetails);
-          setLikes(postDetails.likes);
-        } catch (error) {
-          console.error("Error fetching post details:", error);
-        }
-      };
-
-      const fetchLikedPosts = async () => {
-        try {
-          const likedPosts = await getLikedPost();
-          if (likedPosts.some((likedPost) => likedPost.post_id === postId)) {
-            setLiked(true);
-          }
-        } catch (error) {
-          console.error("Error fetching liked posts:", error);
-        }
-      };
-
       fetchPostDetails();
       fetchLikedPosts();
     }
-  }, [visible, postId]);
+  }, [visible]);
 
   const handleLike = async () => {
     setIsLiking(true);
@@ -144,7 +145,8 @@ const PostDetails = ({
 
       <Comments 
         postId={postId} 
-        formatDate={formatDate} 
+        formatDate={formatDate}
+        fetchPostDetails={fetchPostDetails}
       />
     </View>
   );
