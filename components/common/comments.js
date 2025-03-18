@@ -17,7 +17,7 @@ const Comments = ({ postId, formatDate, fetchPostDetails }) => {
   const [userId, setUserId] = useState(null);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState(null);
-  const [dontHavePetModalVisible, setDontHavePetModalVisible] = useState(false);
+  const [alertModalVisible, setAlertModalVisible] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editedComment, setEditedComment] = useState('');
@@ -68,13 +68,16 @@ const Comments = ({ postId, formatDate, fetchPostDetails }) => {
       fetchPostDetails();
       setConfirmModalVisible(false);
       setCommentToDelete(null);
-      setDontHavePetModalVisible(true);
+      setAlertModalVisible(true);
     } catch (error) {
       console.error('Error deleting comment:', error);
     }
   };
 
   const handleAddComment = async () => {
+    if (newComment.trim() === '') {
+      return;
+    }
     try {
       await postComment(postId, newComment);
       fetchPostDetails();
@@ -213,8 +216,8 @@ const Comments = ({ postId, formatDate, fetchPostDetails }) => {
       />
 
       <AlertModal
-        visible={dontHavePetModalVisible}
-        onConfirm={() => setDontHavePetModalVisible(false)}
+        visible={alertModalVisible}
+        onConfirm={() => setAlertModalVisible(false)}
         message="Comment deleted successfully."
         buttonText="Ok"
       />
