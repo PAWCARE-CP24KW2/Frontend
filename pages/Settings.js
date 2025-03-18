@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   View, 
   Text, 
@@ -16,6 +16,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import petplaceholder from '../assets/petplaceholder.png';
 import { getUser } from '../api/user/getUser';
+import { useFocusEffect } from '@react-navigation/native';
+import { showLogOutToast , showDelUserToast } from '../services/showToast';
 
 function parseJWT(token) {
   const base64Url = token.split('.')[1];
@@ -33,36 +35,38 @@ export default function Settings({ navigation }) {
   const [email, setEmail] = useState('');
   const [image, setImage] = useState(null);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = await AsyncStorage.getItem('userToken');
-        if (token) {
-          const decodedToken = parseJWT(token);
-          const userId = decodedToken.userId;
-          const userData = await getUser(userId);
-          console.log('User data:', userData);
-          if (userData.user_firstname) setFirstName(userData.user_firstname);
-          if (userData.user_lastname) setLastName(userData.user_lastname);
-          if (userData.email) setEmail(userData.email);
-          if (userData.photo_path) setImage(userData.photo_path);
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
+  const fetchUserData = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      if (token) {
+        const decodedToken = parseJWT(token);
+        const userId = decodedToken.userId;
+        const userData = await getUser(userId);
+        console.log('User data:', userData);
+        if (userData.user_firstname) setFirstName(userData.user_firstname);
+        if (userData.user_lastname) setLastName(userData.user_lastname);
+        if (userData.email) setEmail(userData.email);
+        if (userData.photo_path) setImage(userData.photo_path);
       }
-    };
-    fetchUserData();
-  }, []);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserData();
+    }, [])
+  );
 
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('userToken'); // Clear the token
-      Alert.alert("Success", "Logged out successfully", [
-        { text: "OK", onPress: () => navigation.navigate('Auth', { screen: 'FirstPage' }) }
-      ]);
+      showLogOutToast('success');
+      navigation.navigate('Auth', { screen: 'FirstPage' }) 
     } catch (error) {
       console.error('Error logging out:', error);
-      Alert.alert("Error", "Failed to log out");
+      showLogOutToast('error');
     }
   };
 
@@ -82,12 +86,11 @@ export default function Settings({ navigation }) {
             try {
               await deleteUserProfile();
               await AsyncStorage.removeItem('userToken'); // Clear the token
-              Alert.alert("Success", "Account deleted successfully", [
-                { text: "OK", onPress: () => navigation.navigate('Auth', { screen: 'FirstPage' }) }
-              ]);
+              showDelUserToast('success');
+              navigation.navigate('Auth', { screen: 'FirstPage' })
             } catch (error) {
               console.error('Error deleting account:', error);
-              Alert.alert("Error", "Failed to delete account");
+              showDelUserToast('error');
             }
           }
         }

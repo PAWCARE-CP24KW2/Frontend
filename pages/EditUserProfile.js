@@ -20,6 +20,8 @@ import ConfirmModal from "../components/modals/ConfirmModal";
 import { updateUserProfile } from '../api/user/updateUserProfile';
 import { updateUserPhoto } from '../api/user/updateUserPhoto';
 import { deleteUserProfile } from '../api/user/deleteUserProfile';
+import { getUser } from '../api/user/getUser';
+import { showUpdateUserToast } from '../services/showToast';
 
 function parseJWT(token) {
   const base64Url = token.split('.')[1];
@@ -49,16 +51,19 @@ export default function EditUserProfile({ navigation }) {
         const token = await AsyncStorage.getItem('userToken');
         if (token) {
           const decodedToken = parseJWT(token);
-          if (decodedToken.userId) setUserId(decodedToken.userId);
-          if (decodedToken.userName) setUserName(decodedToken.userName);
-          if (decodedToken.firstName) setFirstName(decodedToken.firstName);
-          if (decodedToken.lastName) setLastName(decodedToken.lastName);
-          if (decodedToken.phone) setPhone(decodedToken.phone);
-          if (decodedToken.email) setEmail(decodedToken.email);
-          if (decodedToken.photo_path) setImage(decodedToken.photo_path);
+          const userId = decodedToken.userId;
+          const userData = await getUser(userId);
+          console.log('Edit User data:', userData);
+          if (userData.user_id) setUserId(userData.user_id);
+          if (userData.username) setUserName(userData.username);
+          if (userData.user_firstname) setFirstName(userData.user_firstname);
+          if (userData.user_lastname) setLastName(userData.user_lastname);
+          if (userData.user_phone) setPhone(userData.user_phone);
+          if (userData.email) setEmail(userData.email);
+          if (userData.photo_path) setImage(userData.photo_path);
         }
       } catch (error) {
-        console.error('Error decoding token:', error);
+        console.error('Error fetching user data:', error);
       }
     };
 
@@ -80,12 +85,11 @@ export default function EditUserProfile({ navigation }) {
         email,
       };
       await updateUserProfile(updatedUserData);
-      Alert.alert("Success", "Profile updated successfully", [
-        { text: "OK", onPress: () => navigation.goBack() },
-      ]);
+      showUpdateUserToast('success');
+      navigation.navigate('Settings')
     } catch (error) {
       console.error("Error updating profile:", error);
-      Alert.alert("Error", "Failed to update profile");
+      showUpdateUserToast('error');
     }
   };
 

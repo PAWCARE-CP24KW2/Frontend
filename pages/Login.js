@@ -5,12 +5,12 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   ImageBackground,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { postLoginUser } from "../api/user/postLoginUser";
 import { MyStyles } from "../styles/MyStyle";
+import { showLoginToast } from '../services/showToast';
 
 export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState("");
@@ -19,7 +19,7 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = async () => {
     if (!username || !password) {
-      Alert.alert("Error", "All fields are required.");
+      showLoginToast('error require');
       return;
     }
 
@@ -30,14 +30,13 @@ export default function LoginScreen({ navigation }) {
 
     try {
       const response = await postLoginUser(userData);
-      Alert.alert("Success", "Login successful", [
-        { text: "OK", onPress: () => navigation.navigate('Main') }
-      ]);
+      showLoginToast('success');
+      navigation.navigate('Main');
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        Alert.alert("Error", "Invalid username or password");
+        showLoginToast('error');
       } else {
-        Alert.alert("Error", "Failed to login");
+        showLoginToast('error 401');
       }
     } finally {
       setUsername("");
