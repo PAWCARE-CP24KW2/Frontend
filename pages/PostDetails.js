@@ -164,7 +164,7 @@ const PostDetails = ({
                 <Ionicons name="arrow-back-outline" size={30} color="black" />
               </TouchableOpacity>
               <View style={{ flex: 1, alignItems: "center" }}>
-                <Text style={styles.headerBarText}>Post Details</Text>
+                <Text style={styles.headerBarText}></Text>
               </View>
               <View style={{ width: 35 }} />
             </View>
