@@ -1,9 +1,13 @@
 import axios from 'axios';
 import { BASE_URL } from '@env';
 
-export const postUser = async (userData) => {
+export const postUser = async (formData) => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/user/register`, userData);
+    const response = await axios.post(`${BASE_URL}/api/user/register`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   } catch (error) {
     if (error.response) {

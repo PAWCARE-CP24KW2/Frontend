@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import {
   View,
   Text,
@@ -42,7 +41,7 @@ export default function AddPet({ navigation }) {
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalMessage, setModalMessage] = useState("Upload profile picture");
+  const [modalMessage, setModalMessage] = useState("Upload pet's profile picture");
   const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
   const [image, setImage] = useState();
 

@@ -295,11 +295,12 @@ const styles = StyleSheet.create({
   },
   cameraIcon: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: '#FFF',
+    bottom: 5,
+    right: 5,
+    backgroundColor: 'white',
     borderRadius: 15,
-    padding: 5,
+    padding: 4,
+    borderWidth: 2,
   },
   sectionTitle: {
     marginBottom: 5,
