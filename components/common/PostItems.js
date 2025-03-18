@@ -111,7 +111,7 @@ const PostItem = ({
       <TouchableOpacity onPress={() => setPostPageVisible(true)}>
         <View style={styles.card}>
           <View style={styles.header}>
-            <Image source={userholder} style={styles.avatar} />
+            <Image source={item.photo_path ? { uri: item.photo_path } : userholder} style={styles.avatar}  />
             <View style={styles.headerText}>
               <Text style={styles.name}>{highlightText(getFullName(item.user_firstname, item.user_lastname), searchQuery)}</Text>
               <Text style={styles.date}>{formatDate(item.create_at)}</Text>
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 100,
     marginRight: 15,
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderColor: "black",
   },
   name: {
