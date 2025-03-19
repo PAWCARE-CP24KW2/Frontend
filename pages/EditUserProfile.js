@@ -17,9 +17,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import UploadModal from "../components/modals/UploadModal";
 import ConfirmModal from "../components/modals/ConfirmModal";
-import { updateUserProfile } from '../api/user/updateUserProfile';
-import { updateUserPhoto } from '../api/user/updateUserPhoto';
-import { deleteUserProfile } from '../api/user/deleteUserProfile';
+import { updateUserProfile } from '../api/user/editUser';
+import { editImageUser } from '../api/user/editImageUser';
+import { deleteImageUser } from '../api/user/deleteImageUser';
 import { getUser } from '../api/user/getUser';
 import { showUpdateUserToast } from '../services/showToast';
 
@@ -53,7 +53,7 @@ export default function EditUserProfile({ navigation }) {
           const decodedToken = parseJWT(token);
           const userId = decodedToken.userId;
           const userData = await getUser(userId);
-          console.log('Edit User data:', userData);
+          // console.log('Edit User data:', userData);
           if (userData.user_id) setUserId(userData.user_id);
           if (userData.username) setUserName(userData.username);
           if (userData.user_firstname) setFirstName(userData.user_firstname);
@@ -85,8 +85,21 @@ export default function EditUserProfile({ navigation }) {
         email,
       };
       await updateUserProfile(updatedUserData);
+
+      if (image) {
+        const uriParts = image.split(".");
+        const fileType = uriParts[uriParts.length - 1];
+        const formData = new FormData();
+        formData.append("profile_user", {
+          uri: image,
+          name: `profile_user.${fileType}`,
+          type: `image/${fileType}`,
+        });
+        await editImageUser(formData);
+      }
+
       showUpdateUserToast('success');
-      navigation.navigate('Settings')
+      navigation.goBack()
     } catch (error) {
       console.error("Error updating profile:", error);
       showUpdateUserToast('error');
@@ -128,18 +141,6 @@ export default function EditUserProfile({ navigation }) {
     try {
       setImage(image);
       setModalVisible(false);
-
-      const uriParts = image.split(".");
-      const fileType = uriParts[uriParts.length - 1];
-      const formData = new FormData();
-      formData.append("file", {
-        uri: image,
-        name: `file.${fileType}`,
-        type: `image/${fileType}`,
-      });
-      await updateUserPhoto(formData);
-
-      Alert.alert("Success", "Profile picture updated successfully");
     } catch (error) {
       console.error('Error uploading profile image:', error.response ? error.response.data : error.message);
       alert("Failed to upload image");
@@ -150,7 +151,7 @@ export default function EditUserProfile({ navigation }) {
     try {
       setImage(null);
       setModalVisible(false);
-      await deleteUserProfile();
+      await deleteImageUser();
       Alert.alert("Success", "Profile picture deleted successfully");
     } catch ({ message }) {
       alert(message);
@@ -282,7 +283,6 @@ const styles = StyleSheet.create({
   },
   profile: {
     alignItems: 'center',
-    marginBottom: 20,
   },
   imageContainer: {
     position: 'relative',
@@ -295,12 +295,12 @@ const styles = StyleSheet.create({
   },
   imageWithBorder: {
     borderWidth: 2,
-    borderColor: '#B6917B',
+    borderColor: '#000',
   },
   cameraIcon: {
     position: 'absolute',
-    bottom: 5,
-    right: 5,
+    bottom: 7,
+    right: 7,
     backgroundColor: 'white',
     borderRadius: 15,
     padding: 4,
@@ -320,11 +320,16 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     paddingHorizontal: 10,
     backgroundColor: "#FFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
+    marginTop: 15,
   },
   button: {
     backgroundColor: "#493628",
@@ -333,6 +338,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     marginHorizontal: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   cancelButton: {
     backgroundColor: "#fd7444",

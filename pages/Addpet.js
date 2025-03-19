@@ -446,8 +446,11 @@ const styles = StyleSheet.create({
   },
   selectedRadio: {
     backgroundColor: "#B6917B",
-    borderWidth: 1,
-    borderColor: "black"
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   radioText: {
     marginLeft: 10,
@@ -458,7 +461,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontSize: 16,
     fontWeight: "bold",
-    color: "#4A4A4A",
   },
   genderText: {
     color: "black",
@@ -482,6 +484,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   buttonText: {
     color: "#FFF",

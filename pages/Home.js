@@ -169,14 +169,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#EACEBE",
   },
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#d9c2b0",
-    borderRadius: 15,
-    padding: 10,
-    margin: 10,
-  },
   image: {
     width: 60,
     height: 60,
@@ -230,7 +222,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   petCard: {
-    backgroundColor: "#C3A68F",
+    backgroundColor: "#e4ccb9",
     borderRadius: 15,
     marginHorizontal: 20,
     marginVertical: 8,

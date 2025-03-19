@@ -326,8 +326,11 @@ const styles = StyleSheet.create({
   },
   selectedRadio: {
     backgroundColor: "#B6917B",
-    borderWidth: 1,
-    borderColor: "black",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   radioText: {
     marginLeft: 10,
@@ -438,6 +441,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     marginHorizontal: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   cancelButton: {
     backgroundColor: "#fd7444",

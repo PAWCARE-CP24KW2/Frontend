@@ -45,9 +45,9 @@ export function showUpdateUserToast(status) {
 
     if (status == 'success') {
         Toast.show({
-            type: 'info',
-            text1: `Update User Profile`,
-            text2: 'Your user profile Updated successfully. 🔄'
+            type: 'success',
+            text1: `Updated user profile.`,
+            text2: 'Your user profile updated successfully. 🔄'
         });
     }else if (status == 'error') {
         Toast.show({
@@ -89,9 +89,9 @@ export function showLoginToast(status) {
 export function showLogOutToast(status) {
     if (status == 'success') {
         Toast.show({
-            type: 'success',
-            text1: `Login successful`,
-            text2: 'You logined successfully ✅'
+            type: 'error',
+            text1: `Sign out`,
+            text2: ''
         });
     }else if (status == 'error') {
         Toast.show({

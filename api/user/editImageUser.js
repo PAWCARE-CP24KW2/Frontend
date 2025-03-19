@@ -2,10 +2,10 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '@env';
 
-export const updateUserPhoto = async (formData) => {
+export const editImageUser = async (formData) => {
   try {
     const token = await AsyncStorage.getItem('userToken');
-    const response = await axios.post(`${BASE_URL}/api/user/update-photo`, formData, {
+    const response = await axios.put(`${BASE_URL}/api/user/update-photo`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${token}`,
