@@ -90,7 +90,6 @@ export const MyStyles = StyleSheet.create({
   },
   modal: {
     flex: 1,
-    backgroundColor: "#EACEBE",
     padding: 20,
   },
   petItem: {
@@ -106,13 +105,6 @@ export const MyStyles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 2,
-  },
-
-  // Add agenda container
-  addContainer: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#EACEBE',
   },
   inputContainer: {
     flexDirection: 'row',

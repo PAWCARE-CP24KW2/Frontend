@@ -4,12 +4,12 @@ import {
   TouchableOpacity,
   Image,
   RefreshControl,
+  ImageBackground,
 } from "react-native";
 import { MyStyles } from "../../styles/MyStyle.js";
 import React, { useState, useEffect, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import { Agenda } from "react-native-calendars";
-import { calendarTheme } from "react-native-calendars";
+import { Agenda, calendarTheme } from "react-native-calendars";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AddAgenda from "../modals/AddAgendaModal.js";
@@ -25,6 +25,16 @@ import LoadingScreen from "./LoadingScreen.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getPetByPetId } from "../../api/pet/getPetByPetId.js";
 import petplaceholder from "../../assets/petplaceholder.png";
+
+import appointmentIcon from "../../assets/agendaIcons/appointment.png";
+import bathIcon from "../../assets/agendaIcons/bath.png";
+import exerciseIcon from "../../assets/agendaIcons/exercise.png";
+import vaccineIcon from "../../assets/agendaIcons/vaccine.png";
+import medicationIcon from "../../assets/agendaIcons/medication.png";
+import treatmentIcon from "../../assets/agendaIcons/treatment.png";
+import foodIcon from "../../assets/agendaIcons/food.png";
+import groomingIcon from "../../assets/agendaIcons/grooming.png";
+import birthdayIcon from "../../assets/agendaIcons/birthday.png";
 
 export default function MyCalendar({ navigation }) {
   const getCurrentTime = () => {
@@ -50,6 +60,18 @@ export default function MyCalendar({ navigation }) {
   const [petImages, setPetImages] = useState({});
   const [refreshing, setRefreshing] = useState(false);
 
+  const iconMapping = {
+    Appointment: appointmentIcon,
+    Bath: bathIcon,
+    Exercise: exerciseIcon,
+    Vaccine: vaccineIcon,
+    Medication: medicationIcon,
+    Treatment: treatmentIcon,
+    Food: foodIcon,
+    Grooming: groomingIcon,
+    Birthday: birthdayIcon,
+  };
+
   const getAgendas = async () => {
     const pets = await getPetsByUserId();
     if (pets.length === 0) {
@@ -62,6 +84,7 @@ export default function MyCalendar({ navigation }) {
     try {
       const agendas = await fetchAgendas();
       setItems(agendas);
+      console.log(items)
     } catch (error) {
       console.error("Failed to fetch agendas in component:", error);
     } finally {
@@ -194,10 +217,13 @@ export default function MyCalendar({ navigation }) {
         }}
       >
         <View style={styles.itemContainer}>
-          <Image
+          {/* <Image
             source={item.petImage ? { uri: item.petImage } : petplaceholder}
             style={[styles.petImage, item && styles.imageWithBorder]}
-          />
+          /> */}
+          {iconMapping[item.title] && (
+            <Image source={iconMapping[item.title]} style={styles.icon} />
+          )}
           <View style={styles.textContainer}>
             <Text style={MyStyles.itemHeader}>{item.title}</Text>
             <Text style={MyStyles.itemText}>{item.message}</Text>
@@ -232,7 +258,7 @@ export default function MyCalendar({ navigation }) {
     navigation.navigate("Home");
   };
 
-  if (loading) { // Wait for items to be updated before rendering
+  if (loading) {
     return (
       <SafeAreaView style={MyStyles.container}>
         <View style={MyStyles.header}>
@@ -246,6 +272,10 @@ export default function MyCalendar({ navigation }) {
   }
 
   return (
+  <ImageBackground
+    source={require("../../assets/wallpaper.jpg")}
+    style={MyStyles.background}
+  >
     <SafeAreaView style={MyStyles.container}>
       <View style={MyStyles.header}>
         <TouchableOpacity onPress={() => setisAddModalVisible(true)}>
@@ -305,6 +335,8 @@ export default function MyCalendar({ navigation }) {
         buttonText="Add pet"
       />
     </SafeAreaView>
+
+  </ImageBackground>
   );
 }
 
@@ -327,5 +359,10 @@ const styles = {
   imageWithBorder: {
     borderWidth: 1,
     borderColor: "black",
+  },
+  icon: {
+    width: 50,
+    height: 50,
+    marginLeft: 5,
   },
 };

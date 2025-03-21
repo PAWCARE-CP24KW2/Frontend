@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   TextInput,
   Modal,
-  Platform,
 } from "react-native";
 import { MyStyles } from "../../styles/MyStyle.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,12 +12,10 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import TopBar from "../common/Topbar.js";
 import Icon from "react-native-vector-icons/Ionicons";
 import { showToast } from "../../services/showToast.js";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import DropdownComponent from "../dropdowns/Dropdown.js";
 import { postAgenda } from "../../api/agenda/postAgenda.js";
 import { scheduleNotification } from '../../services/notificationService.js';
 import DropdownSelectPet from "../dropdowns/DropdownSelectPet.js";
-import { fetchAgendas } from "../../api/agenda/getAllAgendas.js";
 
 export default function AddAgendaModal({
   isAddModalVisible,

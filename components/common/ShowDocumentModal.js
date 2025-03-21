@@ -1,9 +1,11 @@
-import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Modal, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, TouchableOpacity, StyleSheet, Modal, Image, ActivityIndicator } from 'react-native';
 import Ionicons from "@expo/vector-icons/Ionicons";
 import emptyholder from '../../assets/emptyholder.png';
 
 export default function ShowDocumentModal({ visible, onClose, uri }) {
+  const [imageLoading, setImageLoading] = useState(true);
+
   return (
     <Modal
       transparent={true}
@@ -17,7 +19,19 @@ export default function ShowDocumentModal({ visible, onClose, uri }) {
             <Ionicons name="close" size={30} color="black" />
           </TouchableOpacity>
           <View style={styles.imageContainer}>
-            <Image source={uri ? { uri } : emptyholder} style={styles.image} />
+            {imageLoading && (
+              <ActivityIndicator
+                size="large"
+                color="#71543F"
+                style={styles.imageLoader}
+              />
+            )}
+            <Image
+              source={uri ? { uri } : emptyholder}
+              style={styles.image}
+              onLoadStart={() => setImageLoading(true)}
+              onLoadEnd={() => setImageLoading(false)}
+            />
           </View>
         </View>
       </View>
@@ -57,5 +71,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'contain',
+  },
+  imageLoader: {
+    position: 'absolute',
+    zIndex: 1,
   },
 });

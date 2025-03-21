@@ -20,6 +20,7 @@ import * as ImagePicker from "expo-image-picker";
 import { showUploadProToast } from "../services/showToast";
 import { updatePetProfile } from "../api/pet/updatePetProfile";
 import { deletePetProfile } from "../api/pet/deletePetProfile";
+import RecordsModal from "./Records";
 
 export default function ViewPet({ route, navigation }) {
   const FormData = global.FormData;
@@ -29,6 +30,7 @@ export default function ViewPet({ route, navigation }) {
   const [modalMessage, setModalMessage] = useState("Upload profile picture");
   const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
   const [image, setImage] = useState(pet.profile_path);
+  const [recordsModalVisible, setRecordsModalVisible] = useState(false);
 
   useEffect(() => {
     const getPets = async () => {
@@ -44,7 +46,6 @@ export default function ViewPet({ route, navigation }) {
 
   const handleDelete = async () => {
     try {
-      // console.log("Pet data:", pet); // Log the pet data
       await deletePet(pet.pet_id);
       Alert.alert("Success", "Pet deleted successfully");
       navigation.goBack();
@@ -71,7 +72,6 @@ export default function ViewPet({ route, navigation }) {
   };
 
   const handleEdit = () => {
-    // console.log("Edit pet data:", pet);
     navigation.navigate("UpdatePetData", { pet });
   };
 
@@ -157,6 +157,14 @@ export default function ViewPet({ route, navigation }) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
+  const handleOpenRecordsModal = () => {
+    setRecordsModalVisible(true);
+  };
+
+  const handleCloseRecordsModal = () => {
+    setRecordsModalVisible(false);
+  };
+
   return (
     <ImageBackground
       source={require('../assets/wallpaper.jpg')}
@@ -201,11 +209,11 @@ export default function ViewPet({ route, navigation }) {
 
           {/* Action Grid */}
           <View style={styles.gridContainer}>
-            <TouchableOpacity style={styles.gridItem}>
+            <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate("Calendar")}>
               <Ionicons name="calendar-outline" size={40} color="black" />
               <Text style={styles.gridText}>Calendar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.gridItem}>
+            <TouchableOpacity style={styles.gridItem} onPress={handleOpenRecordsModal}>
               <Ionicons name="document-text-outline" size={40} color="black" />
               <Text style={styles.gridText}>Records</Text>
             </TouchableOpacity>
@@ -222,6 +230,12 @@ export default function ViewPet({ route, navigation }) {
             </TouchableOpacity>
           </View>
         </SafeAreaView>
+
+        <RecordsModal
+          visible={recordsModalVisible}
+          onClose={handleCloseRecordsModal}
+          petId={pet.pet_id}
+        />
 
         <UploadModal
           visible={modalVisible}

@@ -166,7 +166,6 @@ const PostDetails = ({
               <View style={{ flex: 1, alignItems: "center" }}>
                 <Text style={styles.headerBarText}></Text>
               </View>
-              <View style={{ width: 35 }} />
             </View>
 
             <FlatList

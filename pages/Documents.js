@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  ImageBackground,
 } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -195,7 +196,10 @@ export default function Documents({ navigation, route }) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#EACEBE" }}>
+    <ImageBackground
+      source={require("../assets/wallpaper.jpg")}
+      style={MyStyles.background}
+    >
       <SafeAreaView style={styles.topBar}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -319,7 +323,7 @@ export default function Documents({ navigation, route }) {
           />
         </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -350,7 +354,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#EACEBE",
+    // backgroundColor: "#EACEBE",
   },
   text: {
     fontSize: 18,
@@ -360,16 +364,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginVertical: 10,
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    marginHorizontal: 10,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    backgroundColor: "#fff",
   },
   addButton: {
     backgroundColor: "#493628",
