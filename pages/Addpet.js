@@ -21,6 +21,7 @@ import { Ionicons } from "@expo/vector-icons";
 import UploadModal from "../components/modals/UploadModal";
 import ConfirmModal from "../components/modals/ConfirmModal";
 import * as ImagePicker from "expo-image-picker";
+import { showAddToast } from "../services/showToast";
 
 export default function AddPet({ navigation }) {
   const [Item, setItem] = useState({
@@ -79,13 +80,13 @@ export default function AddPet({ navigation }) {
         weight: parseFloat(Item.weight), // Convert weight to a number
       };
       if (!Item.name) {
-        Alert.alert("Error", "Please fill Pet Name");
+        showAddToast('error', "Please fill Pet Name");
         return;
       } else if (!Item.weight) {
-        Alert.alert("Error", "Please fill Weight");
+        showAddToast('error', "Please fill Weight");
         return;
       } else if (!selectedDate) {
-        Alert.alert("Error", "Please fill Date of Birth");
+        showAddToast('error', "Please fill Date of Birth");
         return;
       }
 
@@ -130,7 +131,7 @@ export default function AddPet({ navigation }) {
       });
     } catch (error) {
       console.error("Error adding pet:", error);
-      Alert.alert("Error", "Failed to add pet");
+      showAddToast('error', "Failed to add pet");
     }
   };
 
@@ -294,21 +295,21 @@ export default function AddPet({ navigation }) {
           <View style={styles.radioContainer}>
             <TouchableOpacity
               style={[
-                styles.genderButton,
+                styles.radioButton,
                 Item.gender === "male" && styles.selectedRadio,
               ]}
               onPress={() => setItem({ ...Item, gender: "male" })}
             >
-              <Text style={styles.genderText}>Male</Text>
+              <Text style={styles.radioText}>Male</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
-                styles.genderButton,
+                styles.radioButton,
                 Item.gender === "female" && styles.selectedRadio,
               ]}
               onPress={() => setItem({ ...Item, gender: "female" })}
             >
-              <Text style={styles.genderText}>Female</Text>
+              <Text style={styles.radioText}>Female</Text>
             </TouchableOpacity>
           </View>
           <Text style={styles.sectionTitle}>Living Environment:</Text>
@@ -417,15 +418,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     backgroundColor: '#FFF',
   },
-  genderButton: {
-    flex: 1,
-    padding: 10,
-    marginHorizontal: 5,
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: "#B6917B",
-    alignItems: "center",
-  },
   radioContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -456,10 +448,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     marginBottom: 5,
     fontSize: 16,
-    fontWeight: "bold",
-  },
-  genderText: {
-    color: "black",
     fontWeight: "bold",
   },
   datePicker: {

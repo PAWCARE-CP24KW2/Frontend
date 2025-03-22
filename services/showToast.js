@@ -16,6 +16,22 @@ export function showToast(status) {
     }
 }
 
+export function showAddToast(text, action) {
+    if (action == 'success') {
+        Toast.show({
+            type: 'success',
+            text1: `Added successful`,
+            text2: `${text} was added.`,
+        });
+    }else if (action == 'error') {
+        Toast.show({
+            type: 'error',
+            text1: `Delete successful`,
+            text2: `${text}`,
+        });
+    }
+}
+
 export function showDelToast(name) {
     Toast.show({
         type: 'info',
@@ -41,6 +57,7 @@ export function showUpdateToast(status) {
     }
 }
 
+
 export function showUpdateUserToast(status) {
 
     if (status == 'success') {
@@ -57,6 +74,23 @@ export function showUpdateUserToast(status) {
         });
     }
 }
+
+export function showUpdatePetToast(text, action)  {
+    if (action == 'success') {
+        Toast.show({
+            type: 'success',
+            text1: `updated successful`,
+            text2: `${text}`,
+        });
+    }else if (action == 'error') {
+        Toast.show({
+            type: 'error',
+            text1: `updated failed`,
+            text2: `${text}`,
+        });
+    }
+}
+
 
 export function showLoginToast(status) {
     if (status == 'success') {

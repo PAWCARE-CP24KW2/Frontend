@@ -5,7 +5,6 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  Alert,
   ImageBackground
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -20,8 +19,8 @@ import * as ImagePicker from "expo-image-picker";
 import { showUploadProToast } from "../services/showToast";
 import { updatePetProfile } from "../api/pet/updatePetProfile";
 import { deletePetProfile } from "../api/pet/deletePetProfile";
-import RecordsModal from "./Records";
-
+import { showUploadPhotoToast } from "../services/showToast";
+ 
 export default function ViewPet({ route, navigation }) {
   const FormData = global.FormData;
   const [items, setItems] = useState([]);
@@ -30,7 +29,6 @@ export default function ViewPet({ route, navigation }) {
   const [modalMessage, setModalMessage] = useState("Upload profile picture");
   const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
   const [image, setImage] = useState(pet.profile_path);
-  const [recordsModalVisible, setRecordsModalVisible] = useState(false);
 
   useEffect(() => {
     const getPets = async () => {
@@ -47,28 +45,16 @@ export default function ViewPet({ route, navigation }) {
   const handleDelete = async () => {
     try {
       await deletePet(pet.pet_id);
-      Alert.alert("Success", "Pet deleted successfully");
+      showUploadProToast("Pet profile", "delete");
       navigation.goBack();
     } catch (error) {
       console.error("Failed to delete pet:", error);
-      Alert.alert("Error", "Failed to delete pet");
+      showUploadProToast("Pet profile", "error");
     }
   };
 
   const confirmDelete = () => {
-    Alert.alert(
-      "Confirm Delete",
-      "Are you sure you want to delete this pet?",
-      [
-        {
-          text: "Cancel",
-          // onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        { text: "Delete", onPress: handleDelete },
-      ],
-      { cancelable: false }
-    );
+    setModalDeleteVisible(true);
   };
 
   const handleEdit = () => {
@@ -115,7 +101,7 @@ export default function ViewPet({ route, navigation }) {
   };
 
   const handleConfirmDelete = () => {
-    removeImage(image);
+    handleDelete();
     setModalDeleteVisible(false);
   };
 
@@ -155,14 +141,6 @@ export default function ViewPet({ route, navigation }) {
 
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
-  };
-
-  const handleOpenRecordsModal = () => {
-    setRecordsModalVisible(true);
-  };
-
-  const handleCloseRecordsModal = () => {
-    setRecordsModalVisible(false);
   };
 
   return (
@@ -209,11 +187,11 @@ export default function ViewPet({ route, navigation }) {
 
           {/* Action Grid */}
           <View style={styles.gridContainer}>
-            <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate("Calendar")}>
+            <TouchableOpacity style={styles.gridItem}>
               <Ionicons name="calendar-outline" size={40} color="black" />
               <Text style={styles.gridText}>Calendar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.gridItem} onPress={handleOpenRecordsModal}>
+            <TouchableOpacity style={styles.gridItem}>
               <Ionicons name="document-text-outline" size={40} color="black" />
               <Text style={styles.gridText}>Records</Text>
             </TouchableOpacity>
@@ -231,12 +209,6 @@ export default function ViewPet({ route, navigation }) {
           </View>
         </SafeAreaView>
 
-        <RecordsModal
-          visible={recordsModalVisible}
-          onClose={handleCloseRecordsModal}
-          petId={pet.pet_id}
-        />
-
         <UploadModal
           visible={modalVisible}
           onClose={() => setModalVisible(false)}
@@ -251,7 +223,7 @@ export default function ViewPet({ route, navigation }) {
           visible={modalDeleteVisible}
           onClose={() => setModalDeleteVisible(false)}
           onConfirm={handleConfirmDelete}
-          message={`Are you sure you want to deleted ?`}
+          message={`Are you sure you want to delete this pet?`}
         />
       </SafeAreaView>
     </ImageBackground>

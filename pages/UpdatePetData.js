@@ -16,6 +16,7 @@ import { editPet } from "../api/pet/putPetData";
 import DropdownTypeComponent from "../components/dropdowns/DropdownTypePet.js";
 import { MyStyles } from "../styles/MyStyle";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { showUpdatePetToast } from '../services/showToast';
 
 export default function UpdatePetData({ route, navigation }) {
   const { pet } = route.params;
@@ -61,10 +62,10 @@ export default function UpdatePetData({ route, navigation }) {
       if (!pet.pet_id) {
         throw new Error("Pet ID is undefined");
       } else if (!petName) {
-        Alert.alert("Error", "Pet Name Cannot be Empty");
+        showUpdatePetToast("error", "Pet Name Cannot be Empty");
         return;
       } else if (!weight) {
-        Alert.alert("Error", "Weight Cannot be Empty");
+        showUpdatePetToast("error", "Weight Cannot be Empty");
         return;
       }
       const updatedPetData = {
@@ -80,12 +81,12 @@ export default function UpdatePetData({ route, navigation }) {
         image,
       };
       await editPet(pet.pet_id, updatedPetData);
-      Alert.alert("Success", "Pet updated successfully", [
-        { text: "OK", onPress: () => navigation.navigate("HomeScreen") },
-      ]);
+      showUpdatePetToast("success", "Pet updated successfully");
+      navigation.navigate("HomeScreen") 
+    
     } catch (error) {
       console.error("Error updating pet:", error);
-      Alert.alert("Error", "Failed to update pet");
+      showUpdatePetToast("error", "Failed to update pet");
     }
   };
 
@@ -177,7 +178,7 @@ export default function UpdatePetData({ route, navigation }) {
           <View style={styles.radioContainer}>
             <TouchableOpacity
               style={[
-                styles.genderButton,
+                styles.radioButton,
                 gender === "male" && styles.selectedRadio,
               ]}
               onPress={() => setGender("male")}
@@ -187,7 +188,7 @@ export default function UpdatePetData({ route, navigation }) {
             </TouchableOpacity>
             <TouchableOpacity
               style={[
-                styles.genderButton,
+                styles.radioButton,
                 gender === "female" && styles.selectedRadio,
               ]}
               onPress={() => setGender("female")}
@@ -272,6 +273,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: "black",
     textAlign: "center",
+    fontWeight: "bold",
   },
   sectionTitle: {
     marginBottom: 5,
@@ -318,20 +320,6 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight: "bold",
   },
-  genderButton: {
-    flex: 1,
-    padding: 10,
-    marginHorizontal: 5,
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: "#B6917B",
-    alignItems: "center",
-    backgroundColor: "#F5E4D8",
-  },
-  genderText: {
-    color: "#4A4A4A",
-    fontWeight: "bold",
-  },
   input: {
     height: 49,
     borderColor: "#B6917B",
@@ -352,27 +340,6 @@ const styles = StyleSheet.create({
   dropdown: {
     height: 40,
     width: "100%",
-  },
-  genderContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-  genderOption: {
-    flex: 1,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    alignItems: "center",
-    marginHorizontal: 5,
-    backgroundColor: "#fff",
-  },
-  genderSelected: {
-    backgroundColor: "#B6917B",
-  },
-  genderText: {
-    color: "#000",
   },
   weightContainer: {
     flexDirection: "row",

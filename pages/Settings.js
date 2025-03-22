@@ -5,11 +5,9 @@ import {
   StyleSheet, 
   TouchableOpacity, 
   ImageBackground, 
-  ScrollView, 
-  Image, 
-  Alert, 
-  Linking, 
-  RefreshControl 
+  ScrollView , 
+  Image ,
+  Linking
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MyStyles } from "../styles/MyStyle";
@@ -18,7 +16,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import petplaceholder from '../assets/petplaceholder.png';
 import { getUser } from '../api/user/getUser';
 import { useFocusEffect } from '@react-navigation/native';
-import { showLogOutToast, showDelUserToast } from '../services/showToast';
+import { showLogOutToast , showDelUserToast } from '../services/showToast';
+import ConfirmModal from "../components/modals/ConfirmModal";
 
 function parseJWT(token) {
   const base64Url = token.split('.')[1];
@@ -35,7 +34,7 @@ export default function Settings({ navigation }) {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [image, setImage] = useState(null);
-  const [refreshing, setRefreshing] = useState(false);
+  const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
 
   const fetchUserData = async () => {
     try {
@@ -44,7 +43,7 @@ export default function Settings({ navigation }) {
         const decodedToken = parseJWT(token);
         const userId = decodedToken.userId;
         const userData = await getUser(userId);
-        // console.log('User data:', userData);
+        console.log('User data:', userData);
         if (userData.user_firstname) setFirstName(userData.user_firstname);
         if (userData.user_lastname) setLastName(userData.user_lastname);
         if (userData.email) setEmail(userData.email);
@@ -61,17 +60,11 @@ export default function Settings({ navigation }) {
     }, [])
   );
 
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await fetchUserData();
-    setRefreshing(false);
-  };
-
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('userToken'); // Clear the token
       showLogOutToast('success');
-      navigation.navigate('Auth', { screen: 'FirstPage' });
+      navigation.navigate('Auth', { screen: 'FirstPage' }) 
     } catch (error) {
       console.error('Error logging out:', error);
       showLogOutToast('error');
@@ -79,31 +72,21 @@ export default function Settings({ navigation }) {
   };
 
   const handleDeleteAccount = () => {
-    Alert.alert(
-      "Confirm Delete",
-      "Are you sure you want to delete your account?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel"
-        },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await deleteUserProfile();
-              await AsyncStorage.removeItem('userToken'); // Clear the token
-              showDelUserToast('success');
-              navigation.navigate('Auth', { screen: 'FirstPage' });
-            } catch (error) {
-              console.error('Error deleting account:', error);
-              showDelUserToast('error');
-            }
-          }
-        }
-      ]
-    );
+    setModalDeleteVisible(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteUserProfile();
+      await AsyncStorage.removeItem('userToken'); // Clear the token
+      showDelUserToast('success');
+      navigation.navigate('Auth', { screen: 'FirstPage' });
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      showDelUserToast('error');
+    } finally {
+      setModalDeleteVisible(false);
+    }
   };
 
   return (
@@ -112,12 +95,7 @@ export default function Settings({ navigation }) {
       style={MyStyles.background}
     >
       <SafeAreaView style={styles.container}>
-        <ScrollView
-          contentContainerStyle={styles.scrollViewContent}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <Text style={styles.header}>Settings</Text>
           <View style={styles.section}>
             <View style={styles.profile}>
@@ -131,7 +109,10 @@ export default function Settings({ navigation }) {
           </View>
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Account</Text>
-            <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('EditUserProfile')}>
+            <TouchableOpacity 
+              style={styles.item}
+              onPress={() => navigation.navigate('EditUserProfile')}
+            >
               <Ionicons name="person-outline" size={20} color="black" />
               <Text style={styles.itemText}>Edit Profile</Text>
             </TouchableOpacity>
@@ -158,6 +139,12 @@ export default function Settings({ navigation }) {
             </TouchableOpacity>
           </View>
         </ScrollView>
+        <ConfirmModal
+          visible={modalDeleteVisible}
+          onClose={() => setModalDeleteVisible(false)}
+          onConfirm={handleConfirmDelete}
+          message={`Are you sure you want to delete your account?`}
+        />
       </SafeAreaView>
     </ImageBackground>
   );
@@ -189,6 +176,7 @@ const styles = StyleSheet.create({
   profile: {
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 10,
   },
   image: {
     width: 100,
