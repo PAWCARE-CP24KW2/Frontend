@@ -21,7 +21,7 @@ import { Ionicons } from "@expo/vector-icons";
 import UploadModal from "../components/modals/UploadModal";
 import ConfirmModal from "../components/modals/ConfirmModal";
 import * as ImagePicker from "expo-image-picker";
-import { showAddToast } from "../services/showToast";
+import { showAddPetToast } from "../services/showToast";
 
 export default function AddPet({ navigation }) {
   const [Item, setItem] = useState({
@@ -80,13 +80,13 @@ export default function AddPet({ navigation }) {
         weight: parseFloat(Item.weight), // Convert weight to a number
       };
       if (!Item.name) {
-        showAddToast('error', "Please fill Pet Name");
+        showAddPetToast('error name');
         return;
       } else if (!Item.weight) {
-        showAddToast('error', "Please fill Weight");
+        showAddPetToast('error weight');
         return;
       } else if (!selectedDate) {
-        showAddToast('error', "Please fill Date of Birth");
+        showAddPetToast('error Date of Birth');
         return;
       }
 
@@ -125,13 +125,13 @@ export default function AddPet({ navigation }) {
         profile_picture: null,
       });
       setSelectedDate(null);
-
+      showAddPetToast('success');
       navigation.navigate("HomeScreen", {
         pet: { ...petData, id: response.pet_id },
       });
     } catch (error) {
       console.error("Error adding pet:", error);
-      showAddToast('error', "Failed to add pet");
+      showAddPetToast('error');
     }
   };
 

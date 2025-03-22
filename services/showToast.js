@@ -16,20 +16,38 @@ export function showToast(status) {
     }
 }
 
-export function showAddToast(text, action) {
-    if (action == 'success') {
+export function showAddPetToast(status) {
+    if (status == 'success') {
         Toast.show({
             type: 'success',
-            text1: `Added successful`,
-            text2: `${text} was added.`,
+            text1: `add successful`,
+            text2: 'You added successfully ✅'
         });
-    }else if (action == 'error') {
+    }else if (status == 'error') {
         Toast.show({
             type: 'error',
-            text1: `Delete successful`,
-            text2: `${text}`,
+            text1: "Can't add to pet",
+            text2: "Failed to add pet ❌"
         });
-    }
+    }else if (status == 'error name') {
+        Toast.show({
+            type: 'error',
+            text1: "Can't add to pet",
+            text2: "Please fill Pet Name ❌"
+        });
+    }else if (status == 'error weight') {
+        Toast.show({
+            type: 'error',
+            text1: "Can't add to pet",
+            text2: "Please fill Weight ❌"
+        });
+    }else if (status == 'error Date of Birth') {
+        Toast.show({
+            type: 'error',
+            text1: "Can't add to pet",
+            text2: "Please fill Date of Birth ❌"
+        });
+    } 
 }
 
 export function showDelToast(name) {
@@ -91,6 +109,45 @@ export function showUpdatePetToast(text, action)  {
     }
 }
 
+export function showCreateUserToast(status) {
+    if (status == 'success') {
+        Toast.show({
+            type: 'success',
+            text1: `Login successful`,
+            text2: 'You logined successfully ✅'
+        });
+    }else if (status == 'error') {
+        Toast.show({
+            type: 'error',
+            text1: "Can't create to user",
+            text2: "Failed to create account ❌"
+        });
+    }else if (status == 'error username already') {
+        Toast.show({
+            type: 'error',
+            text1: "Can't create to user",
+            text2: "Username already exists ❌"
+        });
+    }else if (status == 'error required') {
+        Toast.show({
+            type: 'error',
+            text1: "Can't create user",
+            text2: "All fields are required ❌"
+        });
+    }else if (status == 'error not match') {
+        Toast.show({
+            type: 'error',
+            text1: "Can't create to user",
+            text2: "Passwords do not match ❌"
+        });
+    }else if (status == 'error password must contain') {
+        Toast.show({
+            type: 'error',
+            text1: "Can't create to user",
+            text2: "Password must contain at least 8 characters to 20 characters, including uppercase, lowercase, number, and special character ❌"
+        });
+    }  
+}
 
 export function showLoginToast(status) {
     if (status == 'success') {

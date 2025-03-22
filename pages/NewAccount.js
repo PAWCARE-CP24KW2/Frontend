@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   ImageBackground,
   Image,
 } from "react-native";
@@ -16,6 +15,8 @@ import petplaceholder from "../assets/petplaceholder.png";
 import UploadModal from "../components/modals/UploadModal";
 import ConfirmModal from "../components/modals/ConfirmModal";
 import * as ImagePicker from "expo-image-picker";
+import { showToast } from '../services/showToast';
+import { showCreateUserToast } from '../services/showToast';
 
 export default function CreateAccountScreen({ navigation }) {
   const [username, setUsername] = useState("");
@@ -37,12 +38,18 @@ export default function CreateAccountScreen({ navigation }) {
 
   const handleContinue = async () => {
     if (!firstname || !lastname || !username || !password || !confirmPassword || !email || !phone) {
-      Alert.alert("Error", "All fields are required.");
+      showCreateUserToast('error required');
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match.");
+      showCreateUserToast('error not match');
+      return;
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,16}$/;
+    if (!passwordRegex.test(password)) {
+      showCreateUserToast('error password must contain');
       return;
     }
 
@@ -66,11 +73,14 @@ export default function CreateAccountScreen({ navigation }) {
 
     try {
       await postUser(formData);
-      Alert.alert("Success", "Account created successfully", [
-        { text: "OK", onPress: () => navigation.navigate('Login') }
-      ]);
+      showCreateUserToast('success', "Account created successfully");
+      navigation.navigate('Login');
     } catch (error) {
-      Alert.alert("Error", "Failed to create account");
+      if (error.response && error.response.status === 400 && error.response.data.message === "Username already exists") {
+        showCreateUserToast('error username already');
+      } else {
+        showCreateUserToast('error');
+      }
     }
   };
 
@@ -100,7 +110,7 @@ export default function CreateAccountScreen({ navigation }) {
         await saveImage(result.assets[0].uri);
       }
     } catch (error) {
-      alert("Failed to upload image:", error.message);
+      showToast('error', "Failed to upload image");
       setModalVisible(false);
     }
   };
@@ -132,7 +142,7 @@ export default function CreateAccountScreen({ navigation }) {
       setImage(null);
       setModalVisible(false);
     } catch ({ message }) {
-      alert(message);
+      showToast('error', message);
       setModalVisible(false);
     }
   };
@@ -282,7 +292,7 @@ export default function CreateAccountScreen({ navigation }) {
           visible={modalDeleteVisible}
           onClose={() => setModalDeleteVisible(false)}
           onConfirm={handleConfirmDelete}
-          message={`Are you sure you want to deleted ?`}
+          message={`Are you sure you want to delete?`}
         />
       </View>
     </ImageBackground>
