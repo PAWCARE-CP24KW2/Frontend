@@ -211,7 +211,7 @@ export default function AddPet({ navigation }) {
           >
             <Ionicons name="arrow-back-outline" size={30} color="black" />
           </TouchableOpacity>
-          <View style={{ flex: 1, alignItems: "center" }}>
+          <View style={{ flex: 1 }}>
             <Text style={styles.header}>Add your pet</Text>
           </View>
           <View style={{ width: 35 }} />
@@ -387,12 +387,8 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
-    justifyContent: "space-around",
     color: "black",
     textAlign: "center",
-    textShadowColor: "#493628",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
   },
   input: {
     height: 49,

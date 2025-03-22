@@ -100,7 +100,7 @@ export default function UpdatePetData({ route, navigation }) {
       source={require('../assets/wallpaper.jpg')}
       style={MyStyles.background}
     >
-      <SafeAreaView style={MyStyles.container}>
+      <SafeAreaView style={styles.container}>
         <View style={MyStyles.arrowHeader}>
           <TouchableOpacity
             style={MyStyles.arrowIcon}
@@ -108,7 +108,7 @@ export default function UpdatePetData({ route, navigation }) {
           >
             <Ionicons name="arrow-back-outline" size={30} color="black" />
           </TouchableOpacity>
-          <View style={{ flex: 1, alignItems: "center" }}>
+          <View style={{ flex: 1}}>
             <Text style={styles.header}>Edit Pet Data</Text>
           </View>
           <View style={{ width: 35 }} />
@@ -262,7 +262,6 @@ export default function UpdatePetData({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#EACEBE",
   },
   scrollViewContent: {
     flexGrow: 1,
@@ -271,31 +270,13 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
-    justifyContent: "space-around",
     color: "black",
-    textAlign: "center",
-    textShadowColor: "#493628",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
-  },
-  image: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginRight: 10,
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
     textAlign: "center",
   },
   sectionTitle: {
     marginBottom: 5,
     fontSize: 16,
     fontWeight: "bold",
-    color: "#4A4A4A",
   },
   dateContainer: {
     height: 49,
@@ -336,7 +317,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     color: "black",
     fontWeight: "bold",
-    alignItems: "center",
   },
   genderButton: {
     flex: 1,
@@ -350,28 +330,6 @@ const styles = StyleSheet.create({
   },
   genderText: {
     color: "#4A4A4A",
-    fontWeight: "bold",
-  },
-  imageContainer: {
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  petImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-  },
-  editImageButton: {
-    position: "absolute",
-    bottom: 0,
-    right: 10,
-    backgroundColor: "#fff",
-    borderRadius: 15,
-    padding: 5,
-    elevation: 3,
-  },
-  editImageText: {
-    fontSize: 16,
     fontWeight: "bold",
   },
   input: {

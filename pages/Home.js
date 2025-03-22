@@ -108,7 +108,6 @@ export default function Home({ navigation }) {
   if (loading) {
     return (
       <SafeAreaView style={MyStyles.container}>
-        <View style={MyStyles.header}></View>
         <LoadingScreen />
       </SafeAreaView>
     );
@@ -120,8 +119,11 @@ export default function Home({ navigation }) {
       style={MyStyles.background}
     >
       <SafeAreaView style={MyStyles.container}>
-        <View style={MyStyles.header}></View>
-
+        <View style={styles.header}>
+          <Text style={styles.headerText}>My pets</Text>
+          <View style={styles.divider} />
+        </View>
+        
         {items.length > 0 ? (
           <FlatList
             data={items}
@@ -168,6 +170,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#EACEBE",
+  },
+  header: {
+    justifyContent: "center",
+    height: 65,
+  },
+  headerText: {
+    fontSize: 30,
+    fontWeight: "bold",
+    textAlign: "center",
+    paddingBottom: 5,
+    color: "#493628",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#71543F',
+    marginHorizontal: 20,
   },
   image: {
     width: 60,
@@ -222,7 +240,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   petCard: {
-    backgroundColor: "#e4ccb9",
+    // backgroundColor: "#e4ccb9",
+    backgroundColor: "#fff",
     borderRadius: 15,
     marginHorizontal: 20,
     marginVertical: 8,
@@ -242,7 +261,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 60,
-    backgroundColor: "#71543F",
+    // backgroundColor: "#71543F",
+    backgroundColor: "#8c684f",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
   },
@@ -295,7 +315,7 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   addIcon: {
-    width: 49,
-    height: 49,
+    width: 40,
+    height: 40,
   },
 });

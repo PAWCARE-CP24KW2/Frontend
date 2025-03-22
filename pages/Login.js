@@ -30,7 +30,6 @@ export default function LoginScreen({ navigation }) {
 
     try {
       const response = await postLoginUser(userData);
-      showLoginToast('success');
       navigation.navigate('Main');
     } catch (error) {
       if (error.response && error.response.status === 401) {

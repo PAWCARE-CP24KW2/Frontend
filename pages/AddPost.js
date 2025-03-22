@@ -220,12 +220,8 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
-    justifyContent: "space-around",
-    color: "black",
     textAlign: "center",
-    textShadowColor: "#493628",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
+    color: "black",
   },
   inputContainer: {
     position: 'relative',

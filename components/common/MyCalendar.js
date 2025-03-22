@@ -5,6 +5,7 @@ import {
   Image,
   RefreshControl,
   ImageBackground,
+  header,
 } from "react-native";
 import { MyStyles } from "../../styles/MyStyle.js";
 import React, { useState, useEffect, useCallback } from "react";
@@ -25,6 +26,7 @@ import LoadingScreen from "./LoadingScreen.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getPetByPetId } from "../../api/pet/getPetByPetId.js";
 import petplaceholder from "../../assets/petplaceholder.png";
+import addAgenda from "../../assets/addAgenda.png";
 
 import appointmentIcon from "../../assets/agendaIcons/appointment.png";
 import bathIcon from "../../assets/agendaIcons/bath.png";
@@ -35,6 +37,7 @@ import treatmentIcon from "../../assets/agendaIcons/treatment.png";
 import foodIcon from "../../assets/agendaIcons/food.png";
 import groomingIcon from "../../assets/agendaIcons/grooming.png";
 import birthdayIcon from "../../assets/agendaIcons/birthday.png";
+import { all } from "axios";
 
 export default function MyCalendar({ navigation }) {
   const getCurrentTime = () => {
@@ -84,7 +87,6 @@ export default function MyCalendar({ navigation }) {
     try {
       const agendas = await fetchAgendas();
       setItems(agendas);
-      console.log(items)
     } catch (error) {
       console.error("Failed to fetch agendas in component:", error);
     } finally {
@@ -92,11 +94,13 @@ export default function MyCalendar({ navigation }) {
     }
 
     const petImages = {};
+    const petNames = {};
     for (const pet of pets) {
       if (pet.pet_id) {
         try {
           const petData = await getPetByPetId(pet.pet_id);
           petImages[pet.pet_id] = petData.profile_path;
+          petNames[pet.pet_id] = pet.pet_name;
         } catch (error) {
           console.error(
             `Failed to fetch pet image for pet_id ${pet.pet_id}:`,
@@ -113,6 +117,7 @@ export default function MyCalendar({ navigation }) {
         updatedItems[date] = prevItems[date].map((appointment) => ({
           ...appointment,
           petImage: petImages[appointment.petid] || null,
+          pet_name: petNames[appointment.petid] || "Unknown Pet",
         }));
       }
       return updatedItems;
@@ -196,49 +201,15 @@ export default function MyCalendar({ navigation }) {
     agendaDayTextColor: "black",
     agendaDayNumColor: "black",
     agendaTodayColor: "black",
-    agendaKnobColor: "#B6917B",
-    selectedDayBackgroundColor: "#B6917B",
-    calendarBackground: "#FFE6D7",
-    todayTextColor: "white",
+    agendaKnobColor: "#493628",
+    selectedDayBackgroundColor: "#493628",
+    calendarBackground: "#fff",
+    todayTextColor: "blue",
     textMonthFontSize: 18,
     textSectionTitleColor: "black",
-    reservationsBackgroundColor: "#EACEBE",
+    // reservationsBackgroundColor: "#f1e1d4",
+    reservationsBackgroundColor: "#f5f5f5",
   };
-
-  const RenderAgendaItem = React.memo(({ item, date }) => {
-    return (
-      <TouchableOpacity
-        style={MyStyles.item}
-        onPress={() => {
-          setSelectedItem(item);
-          setEditDate(date);
-          setisEditModalVisible(true);
-          setCurrentTitle(item.title);
-        }}
-      >
-        <View style={styles.itemContainer}>
-          {/* <Image
-            source={item.petImage ? { uri: item.petImage } : petplaceholder}
-            style={[styles.petImage, item && styles.imageWithBorder]}
-          /> */}
-          {iconMapping[item.title] && (
-            <Image source={iconMapping[item.title]} style={styles.icon} />
-          )}
-          <View style={styles.textContainer}>
-            <Text style={MyStyles.itemHeader}>{item.title}</Text>
-            <Text style={MyStyles.itemText}>{item.message}</Text>
-            <Text style={MyStyles.itemTime}>{item.time}</Text>
-          </View>
-        </View>
-        <TouchableOpacity
-          onPress={() => handleDeletePress(item)}
-          style={MyStyles.deleteButton}
-        >
-          <AntDesign name="delete" size={20} color="black" />
-        </TouchableOpacity>
-      </TouchableOpacity>
-    );
-  });
 
   const handleDeletePress = (item) => {
     setSelectedItem(item);
@@ -258,30 +229,51 @@ export default function MyCalendar({ navigation }) {
     navigation.navigate("Home");
   };
 
+  const RenderAgendaItem = React.memo(({ item, date }) => {
+    return (
+      <TouchableOpacity
+        style={MyStyles.item}
+        onPress={() => {
+          setSelectedItem(item);
+          setEditDate(date);
+          setisEditModalVisible(true);
+          setCurrentTitle(item.title);
+        }}
+      >
+        <View style={styles.itemContainer}>
+          {iconMapping[item.title] && (
+            <Image source={iconMapping[item.title]} style={styles.icon} />
+          )}
+          <View style={styles.textContainer}>
+            <Text style={MyStyles.itemHeader}>{item.title} <Text style={styles.petName}>({item.pet_name})</Text></Text>
+            <Text style={MyStyles.itemText}>{item.message}</Text>
+            <Text style={MyStyles.itemTime}>{item.time}</Text>
+          </View>
+        </View>
+        <TouchableOpacity
+          onPress={() => handleDeletePress(item)}
+          style={MyStyles.deleteButton}
+        >
+          <AntDesign name="delete" size={20} color="black" />
+        </TouchableOpacity>
+      </TouchableOpacity>
+    );
+  });
+
   if (loading) {
     return (
       <SafeAreaView style={MyStyles.container}>
-        <View style={MyStyles.header}>
-          <TouchableOpacity>
-            <Ionicons name="add-circle-outline" size={45} color="black" />
-          </TouchableOpacity>
-        </View>
         <LoadingScreen />
       </SafeAreaView>
     );
   }
 
   return (
-  <ImageBackground
-    source={require("../../assets/wallpaper.jpg")}
-    style={MyStyles.background}
-  >
-    <SafeAreaView style={MyStyles.container}>
-      <View style={MyStyles.header}>
-        <TouchableOpacity onPress={() => setisAddModalVisible(true)}>
-          <Ionicons name="add-circle-outline" size={45} color="black" />
-        </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Calendar</Text>
       </View>
+      
       <Agenda
         items={items}
         showOnlySelectedDayItems={true}
@@ -295,6 +287,13 @@ export default function MyCalendar({ navigation }) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       />
+
+      <TouchableOpacity
+        style={styles.createPostButton}
+        onPress={() => setisAddModalVisible(true)}
+      >
+        <Image source={addAgenda} style={styles.addIcon} />
+      </TouchableOpacity>
 
       <AddAgenda
         isAddModalVisible={isAddModalVisible}
@@ -335,12 +334,32 @@ export default function MyCalendar({ navigation }) {
         buttonText="Add pet"
       />
     </SafeAreaView>
-
-  </ImageBackground>
   );
 }
 
 const styles = {
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  header: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 65,
+    // backgroundColor: "#B6917B",
+    backgroundColor: "#493628",
+  },
+  headerText: {
+    fontSize: 30,
+    fontWeight: "bold",
+    textAlign: "center",
+    // paddingBottom: 5,
+    color: "white",
+  },
+  petName: {
+    fontSize: 14,
+    color: "#493628",
+  },
   itemContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -365,4 +384,22 @@ const styles = {
     height: 50,
     marginLeft: 5,
   },
+  createPostButton: {
+    position: 'absolute',
+    backgroundColor: "#71543F",
+    borderRadius: 100,
+    padding: 12,
+    bottom: 10,
+    right: 10,
+    zIndex: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  addIcon: {
+    width: 35,
+    height: 35,
+  }
 };

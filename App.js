@@ -97,6 +97,8 @@ function MainTabs() {
         tabBarInactiveTintColor: '#493628',
         tabBarStyle: {
           backgroundColor: '#B6917B',
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10,
           height: 60,
           paddingBottom: 5,
         },

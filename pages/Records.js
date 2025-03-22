@@ -135,6 +135,7 @@ export default function RecordsModal({ visible, onClose, petId }) {
                 data={records}
                 keyExtractor={(item) => item.agenda_id.toString()}
                 renderItem={renderRecordItem}
+                showsVerticalScrollIndicator={false}
               />
             ) : (
               <Text style={styles.noRecordsText}>No records found</Text>
