@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { MenuProvider } from 'react-native-popup-menu';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from './services/toastConfig';
+import { useFonts } from "expo-font";
 
 import Home from './pages/Home';
 import FirstPage from './pages/FirstPage';

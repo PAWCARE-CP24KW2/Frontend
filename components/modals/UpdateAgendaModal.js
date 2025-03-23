@@ -49,12 +49,10 @@ export default function UpdateAgenda({
         let agendas;
   
         if (selectedItem.id) {
-          // Fetch a single agenda when selectedItem.id exists
           const singleAgenda = await getAgendaFromId(selectedItem.id);
-          agendas = [singleAgenda]; // Normalize single agenda into an array for uniform processing
+          agendas = [singleAgenda];
         }
   
-        // Assume agendas array has only one item to return a single object
         const agenda = agendas[0];
         const date = agenda.appointment.split('T')[0];
         const time = agenda.appointment.split('T')[1].split(':').slice(0, 2).join(':');
@@ -152,7 +150,7 @@ export default function UpdateAgenda({
             message: newItem.message,
             time: newItem.time,
             status: newItem.status,
-            notificationId, // Store the new notification ID
+            notificationId,
           };
         } else {
           // Add new item
@@ -162,11 +160,10 @@ export default function UpdateAgenda({
             message: newItem.message,
             time: newItem.time,
             status: newItem.status,
-            notificationId, // Store the new notification ID
+            notificationId,
           });
         }
 
-        // console.log('Items updated:', updatedItems);
         return updatedItems;
       });
       setTransformedAgenda((prevAgenda) => ({
@@ -201,7 +198,7 @@ export default function UpdateAgenda({
       } else if (mode === "time") {
         const currentTime = selectedValue || new Date(`1970-01-01T${transformedAgenda.time}:00`);
         setTime(currentTime);
-        setSelectedTime(formatTime(currentTime)); // Format and store the time
+        setSelectedTime(formatTime(currentTime));
         setNewItem((prevNewItem) => ({
           ...prevNewItem,
           time: formatTime(currentTime),
@@ -212,9 +209,9 @@ export default function UpdateAgenda({
   };
 
   const formatTime = (date) => {
-    const hours = String(date.getHours()).padStart(2, "0"); // Ensure two digits
-    const minutes = String(date.getMinutes()).padStart(2, "0"); // Ensure two digits
-    return `${hours}:${minutes}`; // Format as HH:MM
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
   };
 
   return (
@@ -223,7 +220,7 @@ export default function UpdateAgenda({
       onRequestClose={onClose}
       animationType="slide"
     >
-      <View style={{ flex: 1, backgroundColor: "#EACEBE" }}>
+      <View style={{ flex: 1, backgroundColor: "#eadfd9" }}>
         <TopBar onClose={onClose} />
         <View style={MyStyles.modal}>
           <Text style={{ fontSize: 27, textAlign: "center", paddingTop: 4 }}>

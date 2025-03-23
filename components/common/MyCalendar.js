@@ -203,12 +203,12 @@ export default function MyCalendar({ navigation }) {
     agendaTodayColor: "black",
     agendaKnobColor: "#493628",
     selectedDayBackgroundColor: "#493628",
-    calendarBackground: "#fff",
+    calendarBackground: "#f1e8e1",
     todayTextColor: "blue",
     textMonthFontSize: 18,
     textSectionTitleColor: "black",
-    // reservationsBackgroundColor: "#f1e1d4",
-    reservationsBackgroundColor: "#f5f5f5",
+    reservationsBackgroundColor: "#eadfd9",
+    // reservationsBackgroundColor: "#f5f5f5",
   };
 
   const handleDeletePress = (item) => {
@@ -263,6 +263,9 @@ export default function MyCalendar({ navigation }) {
   if (loading) {
     return (
       <SafeAreaView style={MyStyles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Calendar</Text>
+        </View>
         <LoadingScreen />
       </SafeAreaView>
     );
@@ -346,14 +349,12 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     height: 65,
-    // backgroundColor: "#B6917B",
     backgroundColor: "#493628",
   },
   headerText: {
     fontSize: 30,
     fontWeight: "bold",
     textAlign: "center",
-    // paddingBottom: 5,
     color: "white",
   },
   petName: {

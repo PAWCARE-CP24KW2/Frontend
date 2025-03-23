@@ -108,6 +108,9 @@ export default function Home({ navigation }) {
   if (loading) {
     return (
       <SafeAreaView style={MyStyles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>My Pets</Text>
+        </View>
         <LoadingScreen />
       </SafeAreaView>
     );
@@ -120,8 +123,7 @@ export default function Home({ navigation }) {
     >
       <SafeAreaView style={MyStyles.container}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>My pets</Text>
-          <View style={styles.divider} />
+          <Text style={styles.headerText}>My Pets</Text>
         </View>
         
         {items.length > 0 ? (
@@ -173,19 +175,15 @@ const styles = StyleSheet.create({
   },
   header: {
     justifyContent: "center",
+    alignItems: "center",
     height: 65,
+    backgroundColor: "#493628",
   },
   headerText: {
     fontSize: 30,
     fontWeight: "bold",
     textAlign: "center",
-    paddingBottom: 5,
-    color: "#493628",
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#71543F',
-    marginHorizontal: 20,
+    color: "white",
   },
   image: {
     width: 60,

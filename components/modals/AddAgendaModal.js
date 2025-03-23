@@ -46,7 +46,6 @@ export default function AddAgendaModal({
       if (mode === "date") {
         const currentDate = selectedValue || date;
         setDate(currentDate);
-        // Format the date without timezone offset
         const formattedDate = new Date(currentDate.getTime() - (currentDate.getTimezoneOffset() * 60000))
           .toISOString().split('T')[0];
         setSelectedDate(formattedDate);
@@ -129,7 +128,7 @@ export default function AddAgendaModal({
       onRequestClose={onClose}
       animationType="slide"
     >
-      <View style={{ flex: 1, backgroundColor: "#EACEBE" }}>
+      <View style={{ flex: 1, backgroundColor: "#eadfd9" }}>
         <TopBar onClose={onClose} />
         <View style={MyStyles.modal}>
           <Text style={{ fontSize: 27, textAlign: "center", paddingTop: 4 }}>
