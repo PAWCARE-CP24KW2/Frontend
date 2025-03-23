@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 30,
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
     textAlign: "center",
     color: "white",
   },
@@ -194,15 +194,6 @@ const styles = StyleSheet.create({
   infoContainer: {
     flex: 1,
   },
-  gender: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#4A4A4A",
-  },
-  age: {
-    fontSize: 14,
-    color: "black",
-  },
   noPetsContainer: {
     flex: 1,
     justifyContent: "center",
@@ -211,35 +202,29 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
     color: "#333",
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     color: "#555",
     textAlign: "center",
-    marginBottom: 20,
-  },
-  cardtitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
+    marginBottom: 15,
   },
   button: {
     backgroundColor: "#493628",
-    padding: 15,
+    padding: 10,
     borderRadius: 10,
   },
   buttonText: {
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     color: "#FFF",
-    fontWeight: "bold",
   },
   petCard: {
-    // backgroundColor: "#e4ccb9",
-    backgroundColor: "#fff",
+    backgroundColor: "#f1e8e1",
     borderRadius: 15,
     marginHorizontal: 20,
     marginVertical: 8,
@@ -259,7 +244,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 60,
-    // backgroundColor: "#71543F",
     backgroundColor: "#8c684f",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
@@ -277,22 +261,22 @@ const styles = StyleSheet.create({
   petNameContainer: {
     position: "relative",
     alignItems: "center",
-    marginTop: 10,
   },
   petName: {
     fontSize: 26,
+    fontFamily: "ComfortaaBold",
     color: "black",
   },
   genderIcon: {
     position: "absolute",
     top: -5,
-    right: -28,
+    right: -25,
   },
   petAge: {
     fontSize: 14,
+    fontFamily: "ComfortaaBold",
     color: "black",
-    fontWeight: "bold",
-    opacity: 0.6,
+    opacity: 0.7,
   },
   imageWithBorder: {
     borderWidth: 1.5,

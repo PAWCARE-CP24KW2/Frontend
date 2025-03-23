@@ -271,7 +271,7 @@ export default function CreateAccountScreen({ navigation }) {
         </View>
 
         <TouchableOpacity style={styles.RegisButton} onPress={handleContinue}>
-          <Text style={styles.register}>CONTINUE</Text>
+          <Text style={styles.registerText}>CONTINUE</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
     color: "#493628",
     marginBottom: 10,
     textShadowColor: "#ab886d",
@@ -346,15 +346,16 @@ const styles = StyleSheet.create({
   label: {
     alignSelf: "flex-start",
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     color: "#493628",
-    fontWeight: "bold",
     marginLeft: 3,
   },
   input: {
     flex: 1,
     fontSize: 16,
+    fontFamily: "Comfortaa",
     color: "#000",
-    paddingVertical: 12,
+    paddingVertical: 8,
   },
   passwordContainer: {
     flexDirection: "row",
@@ -363,7 +364,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     borderRadius: 10,
     paddingHorizontal: 12,
-    marginBottom: 10,
+    marginBottom: 5,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
@@ -373,11 +374,12 @@ const styles = StyleSheet.create({
   inputPassword: {
     flex: 1,
     fontSize: 16,
+    fontFamily: "Comfortaa",
     color: "#000",
-    paddingVertical: 12,
+    paddingVertical: 8,
   },
   eyeIcon: {
-    padding: 10,
+    marginRight: 1,
   },
   RegisButton: {
     backgroundColor: "#493628",
@@ -393,14 +395,19 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 5,
   },
-  register: {
+  registerText: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
     color: "#fff",
   },
   linkText: {
     fontSize: 14,
-    color: "#000",
-    marginTop: 10,
+    fontFamily: "ComfortaaBold",
+    color: "black",
+    marginTop: 2,
+    opacity: 0.7,
+    textShadowColor: "#ab886d",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
   },
 });

@@ -1,4 +1,5 @@
 import React from 'react';
+import { ActivityIndicator } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -62,6 +63,15 @@ function AuthStack() {
 }
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    Comfortaa: require("./assets/fonts/Comfortaa-Regular.ttf"),
+    ComfortaaBold: require("./assets/fonts/Comfortaa-Bold.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" color="#000" />;
+  }
+
   return (
     <MenuProvider>
       <NavigationContainer>

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground, } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
 
 export default function FirstPage({ navigation }) {
@@ -43,8 +43,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 46,
+    fontFamily: "ComfortaaBold",
     color: "#493628",
-    marginBottom: 40,
+    marginBottom: 20,
     textShadowColor: "#ab886d",
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 3,
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     width: "80%",
-    marginBottom: 10,
+    marginBottom: 5,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
@@ -65,11 +66,12 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
     color: "#fff",
   },
   linkText: {
     fontSize: 14,
+    fontFamily: "ComfortaaBold",
     color: "black",
     opacity: 0.7,
     textShadowColor: "#ab886d",

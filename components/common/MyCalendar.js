@@ -353,7 +353,7 @@ const styles = {
   },
   headerText: {
     fontSize: 30,
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
     textAlign: "center",
     color: "white",
   },

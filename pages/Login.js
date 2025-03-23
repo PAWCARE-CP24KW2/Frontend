@@ -109,8 +109,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 35,
-    fontWeight: "bold",
+    fontSize: 36,
+    fontFamily: "ComfortaaBold",
     color: "#493628",
     marginBottom: 10,
     textShadowColor: "#ab886d",
@@ -120,15 +120,16 @@ const styles = StyleSheet.create({
   label: {
     alignSelf: "flex-start",
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     color: "#493628",
-    fontWeight: "bold",
-    marginBottom: 5,
+    marginBottom: 1,
     marginLeft: 3,
   },
   input: {
     flex: 1,
     fontSize: 16,
-    color: "#000",
+    fontFamily: "Comfortaa",
+    color: "#493628",
     paddingVertical: 12,
   },
   inputContainer: {
@@ -163,13 +164,14 @@ const styles = StyleSheet.create({
   },
   loginText: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
     color: "#fff",
   },
   linkText: {
     fontSize: 14,
+    fontFamily: "ComfortaaBold",
     color: "black",
-    marginBottom: 10,
+    marginBottom: 5,
     opacity: 0.7,
     textShadowColor: "#ab886d",
     textShadowOffset: { width: 0, height: 1 },
