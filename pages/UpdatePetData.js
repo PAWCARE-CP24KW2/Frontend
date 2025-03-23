@@ -62,10 +62,10 @@ export default function UpdatePetData({ route, navigation }) {
       if (!pet.pet_id) {
         throw new Error("Pet ID is undefined");
       } else if (!petName) {
-        showUpdatePetToast("error", "Pet Name Cannot be Empty");
+        showUpdatePetToast("error name");
         return;
       } else if (!weight) {
-        showUpdatePetToast("error", "Weight Cannot be Empty");
+        showUpdatePetToast("error weight");
         return;
       }
       const updatedPetData = {
@@ -81,12 +81,12 @@ export default function UpdatePetData({ route, navigation }) {
         image,
       };
       await editPet(pet.pet_id, updatedPetData);
-      showUpdatePetToast("success", "Pet updated successfully");
+      showUpdatePetToast("success");
       navigation.navigate("HomeScreen") 
     
     } catch (error) {
       console.error("Error updating pet:", error);
-      showUpdatePetToast("error", "Failed to update pet");
+      showUpdatePetToast("error");
     }
   };
 

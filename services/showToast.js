@@ -58,6 +58,14 @@ export function showDelToast(name) {
     });
 }
 
+export function showDelPetToast(name) {
+    Toast.show({
+        type: 'info',
+        text1: `Delete "${name}" pet`,
+        text2: 'Your pet deleted successfully. 🗑️'
+    });
+}
+
 export function showUpdateToast(status) {
 
     if (status == 'success') {
@@ -76,35 +84,30 @@ export function showUpdateToast(status) {
 }
 
 
-export function showUpdateUserToast(status) {
-
+export function showUpdatePetToast(status) {
     if (status == 'success') {
         Toast.show({
             type: 'success',
-            text1: `Updated user profile.`,
-            text2: 'Your user profile updated successfully. 🔄'
+            text1: `updated successful`,
+            text2: 'Your pet data updated successfully ✅'
+        });
+    }else if (status == 'error name') {
+        Toast.show({
+            type: 'error',
+            text1: "Pet Name Cannot be Empty",
+            text2: "Failed to update pet data ❌"
+        });
+    }else if (status == 'error weight') {
+        Toast.show({
+            type: 'error',
+            text1: "Weight Cannot be Empty",
+            text2: "Failed to update pet data ❌"
         });
     }else if (status == 'error') {
         Toast.show({
             type: 'error',
-            text1: "Can't update User Profile.",
-            text2: "Fields should not be empty. ❌"
-        });
-    }
-}
-
-export function showUpdatePetToast(text, action)  {
-    if (action == 'success') {
-        Toast.show({
-            type: 'success',
-            text1: `updated successful`,
-            text2: `${text}`,
-        });
-    }else if (action == 'error') {
-        Toast.show({
-            type: 'error',
-            text1: `updated failed`,
-            text2: `${text}`,
+            text1: "Can't update pet data",
+            text2: "Failed to update pet data ❌"
         });
     }
 }
@@ -221,6 +224,28 @@ export function showUploadDocToast(text, action) {
             type: 'info',
             text1: `Delete successful`,
             text2: `${text} was deleted.`,
+        });
+    }
+}
+
+export function showUploadPhotoToast(status) {
+    if (status == 'success') {
+        Toast.show({
+            type: 'success',
+            text1: `Upload successful ✅`,
+            text2: `Photo was uploaded.`,
+        });
+    }else if (status == 'fail') {
+        Toast.show({
+            type: 'error',
+            text1: `Can't Upload`,
+            text2: `Failed to upload photo ❌`,
+        });
+    }else if (status == 'error') {
+        Toast.show({
+            type: 'error',
+            text1: `Can't Upload`,
+            text2: `Failed to upload photo ❌`,
         });
     }
 }

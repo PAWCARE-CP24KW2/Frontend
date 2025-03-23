@@ -16,11 +16,11 @@ import petplaceholder from "../assets/petplaceholder.png";
 import UploadModal from "../components/modals/UploadModal";
 import ConfirmModal from "../components/modals/ConfirmModal";
 import * as ImagePicker from "expo-image-picker";
-import { showUploadProToast } from "../services/showToast";
 import { updatePetProfile } from "../api/pet/updatePetProfile";
 import { deletePetProfile } from "../api/pet/deletePetProfile";
-import { showUploadPhotoToast } from "../services/showToast";
- 
+import RecordsModal from "./Records";
+import { showDelPetToast } from "../services/showToast";
+
 export default function ViewPet({ route, navigation }) {
   const FormData = global.FormData;
   const [items, setItems] = useState([]);
@@ -29,6 +29,7 @@ export default function ViewPet({ route, navigation }) {
   const [modalMessage, setModalMessage] = useState("Upload profile picture");
   const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
   const [image, setImage] = useState(pet.profile_path);
+  const [recordsModalVisible, setRecordsModalVisible] = useState(false);
 
   useEffect(() => {
     const getPets = async () => {
@@ -45,11 +46,10 @@ export default function ViewPet({ route, navigation }) {
   const handleDelete = async () => {
     try {
       await deletePet(pet.pet_id);
-      showUploadProToast("Pet profile", "delete");
+      showDelPetToast(pet.pet_name);
       navigation.goBack();
     } catch (error) {
       console.error("Failed to delete pet:", error);
-      showUploadProToast("Pet profile", "error");
     }
   };
 
@@ -87,7 +87,6 @@ export default function ViewPet({ route, navigation }) {
         await saveImage(result.assets[0].uri);
       }
     } catch (error) {
-      alert("Failed to upload image:", error.message);
       setModalVisible(false);
     }
   };
@@ -101,7 +100,7 @@ export default function ViewPet({ route, navigation }) {
   };
 
   const handleConfirmDelete = () => {
-    handleDelete();
+    removeImage(image);
     setModalDeleteVisible(false);
   };
 
@@ -110,9 +109,7 @@ export default function ViewPet({ route, navigation }) {
       setImage(null);
       setModalVisible(false);
       deletePetProfile(pet.pet_id);
-      showUploadProToast("Pet profile picture", "delete");
     } catch ({ message }) {
-      alert(message);
       setModalVisible(false);
     }
   };
@@ -132,15 +129,22 @@ export default function ViewPet({ route, navigation }) {
       });
       await updatePetProfile(pet.pet_id, formData);
 
-      showUploadProToast("Pet profile picture", "upload");
     } catch (error) {
       console.error('Error uploading profile image:', error.response ? error.response.data : error.message);
-      alert("Failed to upload image");
+      showUploadPhotoToast('error');
     }
   };
 
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  const handleOpenRecordsModal = () => {
+    setRecordsModalVisible(true);
+  };
+
+  const handleCloseRecordsModal = () => {
+    setRecordsModalVisible(false);
   };
 
   return (
@@ -187,11 +191,11 @@ export default function ViewPet({ route, navigation }) {
 
           {/* Action Grid */}
           <View style={styles.gridContainer}>
-            <TouchableOpacity style={styles.gridItem}>
+            <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate("Calendar")}>
               <Ionicons name="calendar-outline" size={40} color="black" />
               <Text style={styles.gridText}>Calendar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.gridItem}>
+            <TouchableOpacity style={styles.gridItem} onPress={handleOpenRecordsModal}>
               <Ionicons name="document-text-outline" size={40} color="black" />
               <Text style={styles.gridText}>Records</Text>
             </TouchableOpacity>
@@ -209,6 +213,12 @@ export default function ViewPet({ route, navigation }) {
           </View>
         </SafeAreaView>
 
+        <RecordsModal
+          visible={recordsModalVisible}
+          onClose={handleCloseRecordsModal}
+          petId={pet.pet_id}
+        />
+
         <UploadModal
           visible={modalVisible}
           onClose={() => setModalVisible(false)}
@@ -222,7 +232,7 @@ export default function ViewPet({ route, navigation }) {
         <ConfirmModal
           visible={modalDeleteVisible}
           onClose={() => setModalDeleteVisible(false)}
-          onConfirm={handleConfirmDelete}
+          onConfirm={handleDelete}
           message={`Are you sure you want to delete this pet?`}
         />
       </SafeAreaView>
