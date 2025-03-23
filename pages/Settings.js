@@ -95,8 +95,11 @@ export default function Settings({ navigation }) {
       style={MyStyles.background}
     >
       <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Settings</Text>
+        </View>
+
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <Text style={styles.header}>Settings</Text>
           <View style={styles.section}>
             <View style={styles.profile}>
               <Image
@@ -158,25 +161,36 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 65,
+    backgroundColor: "#493628",
+  },
+  headerText: {
+    fontSize: 30,
+    fontFamily: "ComfortaaBold",
+    textAlign: "center",
+    color: "white",
   },
   section: {
     backgroundColor: '#F5F5F5',
     padding: 20,
     borderRadius: 10,
-    marginBottom: 20,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: "ComfortaaBold",
     marginBottom: 10,
   },
   profile: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 10,
   },
   image: {
     width: 100,
@@ -188,10 +202,11 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: "ComfortaaBold",
   },
   email: {
     fontSize: 16,
+    fontFamily: "Comfortaa",
     color: 'gray',
   },
   item: {
@@ -201,6 +216,7 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     marginLeft: 10,
   },
 });

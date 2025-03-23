@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 18,
+    fontFamily: "ComfortaaBold",
     textAlign: 'center',
     marginBottom: 15,
   },
@@ -49,15 +50,7 @@ const styles = StyleSheet.create({
   },
   buttonConfirm: {
     flex: 1,
-    padding: 10,
-    marginHorizontal: 5,
-    backgroundColor: '#493628',
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  buttonCancel: {
-    flex: 1,
-    padding: 10,
+    padding: 8,
     marginHorizontal: 5,
     backgroundColor: '#493628',
     borderRadius: 5,
@@ -65,7 +58,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     color: '#FFF',
-    fontWeight: 'bold',
   },
 });

@@ -162,10 +162,12 @@ const styles = StyleSheet.create({
     },
     title: {
       fontSize: 27,
+      fontFamily: "ComfortaaBold",
       textAlign: "center",
     },
     subTitle: {
       fontSize: 15,
+      fontFamily: "ComfortaaBold",
       textAlign: "center",
       marginBottom: 15,
       paddingVertical: 5,
@@ -174,7 +176,7 @@ const styles = StyleSheet.create({
       flexDirection: "row",
       alignItems: "center",
       backgroundColor: "#F5F5F5",
-      padding: 20,
+      padding: 18,
       borderRadius: 10,
       marginBottom: 15,
       shadowColor: "#000",
@@ -196,19 +198,22 @@ const styles = StyleSheet.create({
     },
     recordTitle: {
       fontSize: 18,
-      fontWeight: "bold",
+      fontFamily: "ComfortaaBold",
       color: "#333",
     },
     recordDetails: {
       fontSize: 14,
+      fontFamily: "ComfortaaBold",
       color: "#333",
     },
     recordDate: {
       fontSize: 14,
+      fontFamily: "ComfortaaBold",
       color: "gray",
     },
     noRecordsText: {
       fontSize: 16,
+      fontFamily: "ComfortaaBold",
       color: "gray",
       textAlign: "center",
       marginTop: 20,

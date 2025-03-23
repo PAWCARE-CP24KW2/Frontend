@@ -43,14 +43,17 @@ export const MyStyles = StyleSheet.create({
   },
   itemHeader: {
     fontSize: 20,
+    fontFamily: "ComfortaaBold",
   },
   itemText: {
-    color: "#493628",
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
+    color: "#493628",
     paddingLeft: 7,
   },
   itemTime: {
     position: "absolute",
+    fontFamily: "ComfortaaBold",
     right: 0,
     top: -2,
   },
@@ -65,12 +68,12 @@ export const MyStyles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
-    marginTop: 25,
+    marginTop: 10,
   },
   buttonText: {
     color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
     textAlign: "center",
   },
   closeButton: {
@@ -125,15 +128,16 @@ export const MyStyles = StyleSheet.create({
   },
   input: {
     flex: 1,
+    fontFamily: "ComfortaaBold",
     paddingVertical: 5,
-    paddingLeft: 2,
     fontSize: 16,
     color: '#000',
   },
   label: {
     fontSize: 14,
+    fontFamily: "ComfortaaBold",
     color: '#000',
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 5,
     paddingLeft: 4,
   },

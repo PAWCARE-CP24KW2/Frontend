@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     borderRadius: 8,
-    marginBottom: 10,
+    marginBottom: 5,
   },
   dropdown: {
     height: 50,
@@ -80,10 +80,12 @@ const styles = StyleSheet.create({
   placeholderStyle: {
     marginLeft: 10,
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
   },
   selectedTextStyle: {
     marginLeft: 10,
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
   },
   iconStyle: {
     width: 30,

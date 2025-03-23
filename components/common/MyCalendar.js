@@ -4,15 +4,12 @@ import {
   TouchableOpacity,
   Image,
   RefreshControl,
-  ImageBackground,
-  header,
 } from "react-native";
 import { MyStyles } from "../../styles/MyStyle.js";
 import React, { useState, useEffect, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { Agenda, calendarTheme } from "react-native-calendars";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import AddAgenda from "../modals/AddAgendaModal.js";
 import UpdateAgenda from "../modals/UpdateAgendaModal.js";
 import { showDelToast } from "../../services/showToast.js";
@@ -25,7 +22,6 @@ import { getPetsByUserId } from "../../api/pet/getPetFromId.js";
 import LoadingScreen from "./LoadingScreen.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getPetByPetId } from "../../api/pet/getPetByPetId.js";
-import petplaceholder from "../../assets/petplaceholder.png";
 import addAgenda from "../../assets/addAgenda.png";
 
 import appointmentIcon from "../../assets/agendaIcons/appointment.png";
@@ -37,7 +33,6 @@ import treatmentIcon from "../../assets/agendaIcons/treatment.png";
 import foodIcon from "../../assets/agendaIcons/food.png";
 import groomingIcon from "../../assets/agendaIcons/grooming.png";
 import birthdayIcon from "../../assets/agendaIcons/birthday.png";
-import { all } from "axios";
 
 export default function MyCalendar({ navigation }) {
   const getCurrentTime = () => {
@@ -60,7 +55,6 @@ export default function MyCalendar({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalDontHasPet, setModalDontHasPet] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [petImages, setPetImages] = useState({});
   const [refreshing, setRefreshing] = useState(false);
 
   const iconMapping = {
@@ -93,36 +87,31 @@ export default function MyCalendar({ navigation }) {
       setLoading(false);
     }
 
-    const petImages = {};
     const petNames = {};
     for (const pet of pets) {
       if (pet.pet_id) {
         try {
           const petData = await getPetByPetId(pet.pet_id);
-          petImages[pet.pet_id] = petData.profile_path;
           petNames[pet.pet_id] = pet.pet_name;
         } catch (error) {
           console.error(
-            `Failed to fetch pet image for pet_id ${pet.pet_id}:`,
+            `Failed to fetch pet name for pet_id ${pet.pet_id}:`,
             error
           );
         }
       }
     }
-    setPetImages(petImages);
 
     setItems((prevItems) => {
       const updatedItems = {};
       for (const date in prevItems) {
         updatedItems[date] = prevItems[date].map((appointment) => ({
           ...appointment,
-          petImage: petImages[appointment.petid] || null,
           pet_name: petNames[appointment.petid] || "Unknown Pet",
         }));
       }
       return updatedItems;
     });
-    
   };
 
   useFocusEffect(
@@ -170,12 +159,13 @@ export default function MyCalendar({ navigation }) {
   const renderEmptyData = () => {
     return (
       <View style={{ flex: 1, alignItems: "center", marginTop: 25 }}>
-        <Text style={{ fontSize: 20, color: "#493628", fontWeight: "bold" }}>
+        <Text style={{ fontSize: 20, color: "#493628", fontFamily: "ComfortaaBold", }}>
           No activity found for this day.
         </Text>
         <Text
           style={{
             fontSize: 16,
+            fontFamily: "ComfortaaBold",
             color: "#493628",
             textAlign: "center",
             margin: 10,
@@ -208,7 +198,6 @@ export default function MyCalendar({ navigation }) {
     textMonthFontSize: 18,
     textSectionTitleColor: "black",
     reservationsBackgroundColor: "#eadfd9",
-    // reservationsBackgroundColor: "#f5f5f5",
   };
 
   const handleDeletePress = (item) => {
@@ -245,7 +234,9 @@ export default function MyCalendar({ navigation }) {
             <Image source={iconMapping[item.title]} style={styles.icon} />
           )}
           <View style={styles.textContainer}>
-            <Text style={MyStyles.itemHeader}>{item.title} <Text style={styles.petName}>({item.pet_name})</Text></Text>
+            <Text style={MyStyles.itemHeader}>
+              {item.title} <Text style={styles.petName}>({item.pet_name})</Text>
+            </Text>
             <Text style={MyStyles.itemText}>{item.message}</Text>
             <Text style={MyStyles.itemTime}>{item.time}</Text>
           </View>
@@ -276,7 +267,7 @@ export default function MyCalendar({ navigation }) {
       <View style={styles.header}>
         <Text style={styles.headerText}>Calendar</Text>
       </View>
-      
+
       <Agenda
         items={items}
         showOnlySelectedDayItems={true}
@@ -370,30 +361,20 @@ const styles = {
     flex: 1,
     marginLeft: 10,
   },
-  petImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
-  },
-  imageWithBorder: {
-    borderWidth: 1,
-    borderColor: "black",
-  },
   icon: {
     width: 50,
     height: 50,
     marginLeft: 5,
   },
   createPostButton: {
-    position: 'absolute',
+    position: "absolute",
     backgroundColor: "#71543F",
     borderRadius: 100,
     padding: 12,
     bottom: 10,
     right: 10,
     zIndex: 1,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 4, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -402,5 +383,5 @@ const styles = {
   addIcon: {
     width: 35,
     height: 35,
-  }
+  },
 };

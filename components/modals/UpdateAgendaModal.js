@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   TextInput,
   Modal,
-  Platform,
+  StyleSheet,
 } from "react-native";
 import { MyStyles } from "../../styles/MyStyle.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -223,17 +223,10 @@ export default function UpdateAgenda({
       <View style={{ flex: 1, backgroundColor: "#eadfd9" }}>
         <TopBar onClose={onClose} />
         <View style={MyStyles.modal}>
-          <Text style={{ fontSize: 27, textAlign: "center", paddingTop: 4 }}>
+          <Text style={styles.title}>
             Update "{transformedAgenda.title}"
           </Text>
-          <Text
-            style={{
-              fontSize: 19,
-              textAlign: "center",
-              paddingVertical: 5,
-              marginBottom: 15,
-            }}
-          >
+          <Text style={styles.subTitle}>
             What would you like to change about the activity ? 
           </Text>
 
@@ -317,3 +310,19 @@ export default function UpdateAgenda({
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  title: { 
+    fontSize: 27, 
+    fontFamily: "ComfortaaBold",
+    textAlign: "center", 
+    paddingTop: 4 
+  },
+  subTitle: {
+    fontSize: 19,
+    fontFamily: "ComfortaaBold",
+    textAlign: "center",
+    paddingVertical: 5,
+    marginBottom: 15,
+  }
+});

@@ -248,7 +248,6 @@ export default function AddPet({ navigation }) {
           />
           <Text style={styles.sectionTitle}>Pet Type:</Text>
           <DropdownTypeComponent
-            style={styles.DropdownType}
             type={Item.type}
             Item={Item}
             setItem={setItem}
@@ -300,7 +299,7 @@ export default function AddPet({ navigation }) {
               ]}
               onPress={() => setItem({ ...Item, gender: "male" })}
             >
-              <Text style={styles.radioText}>Male</Text>
+              <Text style={[styles.radioText, Item.gender === "male" && styles.selectedRadioText]}>Male</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -309,7 +308,7 @@ export default function AddPet({ navigation }) {
               ]}
               onPress={() => setItem({ ...Item, gender: "female" })}
             >
-              <Text style={styles.radioText}>Female</Text>
+              <Text style={[styles.radioText, Item.gender === "female" && styles.selectedRadioText]}>Female</Text>
             </TouchableOpacity>
           </View>
           <Text style={styles.sectionTitle}>Living Environment:</Text>
@@ -321,7 +320,7 @@ export default function AddPet({ navigation }) {
               ]}
               onPress={() => setItem({ ...Item, environment: "outdoor" })}
             >
-              <Text style={styles.radioText}>Outdoor</Text>
+              <Text style={[styles.radioText, Item.environment === "outdoor" && styles.selectedRadioText]}>Outdoor</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -330,7 +329,7 @@ export default function AddPet({ navigation }) {
               ]}
               onPress={() => setItem({ ...Item, environment: "indoor" })}
             >
-              <Text style={styles.radioText}>Indoor</Text>
+              <Text style={[styles.radioText, Item.environment === "indoor" && styles.selectedRadioText]}>Indoor</Text>
             </TouchableOpacity>
           </View>
           <Text style={styles.sectionTitle}>Has your animal been neutered?</Text>
@@ -342,7 +341,7 @@ export default function AddPet({ navigation }) {
               ]}
               onPress={() => setItem({ ...Item, neutered: "yes" })}
             >
-              <Text style={styles.radioText}>Yes</Text>
+              <Text style={[styles.radioText, Item.neutered === "yes" && styles.selectedRadioText]}>Yes</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -351,11 +350,11 @@ export default function AddPet({ navigation }) {
               ]}
               onPress={() => setItem({ ...Item, neutered: "No" })}
             >
-              <Text style={styles.radioText}>No</Text>
+              <Text style={[styles.radioText, Item.neutered === "No" && styles.selectedRadioText]}>No</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.button} onPress={handleAddPet}>
-            <Text style={styles.buttonText}>Add</Text>
+            <Text style={styles.buttonText}>ADD</Text>
           </TouchableOpacity>
         </ScrollView>
 
@@ -384,10 +383,11 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
     justifyContent: "center",
-    padding: 25,
+    padding: 20,
   },
   header: {
     fontSize: 24,
+    fontFamily: "ComfortaaBold",
     color: "black",
     textAlign: "center",
   },
@@ -398,13 +398,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderColor: '#000',
     marginBottom: 5,
-    paddingHorizontal: 10,
-    backgroundColor: "#FFF",
-  },
-  genderContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
+    paddingHorizontal: 12,
+    backgroundColor: "#fff",
+    fontFamily: "ComfortaaBold",
   },
   dateContainer: {
     height: 49,
@@ -414,14 +410,13 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderRadius: 8,
     paddingHorizontal: 10,
-    paddingVertical: 5,
     marginBottom: 5,
     backgroundColor: '#FFF',
   },
   radioContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 10,
+    marginBottom: 2,
   },
   radioButton: {
     flex: 1,
@@ -433,22 +428,23 @@ const styles = StyleSheet.create({
     borderColor: "#B6917B",
   },
   selectedRadio: {
-    backgroundColor: "#B6917B",
+    backgroundColor: "#71543F",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 5,
   },
+  selectedRadioText: {
+    color: "#FFF",
+  },
   radioText: {
     marginLeft: 10,
-    color: "black",
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
   },
   sectionTitle: {
-    marginBottom: 5,
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
   },
   datePicker: {
     marginBottom: 20,
@@ -459,14 +455,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
   },
-  dateText: {
-    color: "#4A4A4A",
-  },
   button: {
     backgroundColor: "#493628",
-    padding: 15,
+    padding: 12,
     borderRadius: 10,
-    marginTop: 20,
+    marginTop: 10,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -476,7 +469,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#FFF",
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
     fontSize: 16,
   },
   profile: {

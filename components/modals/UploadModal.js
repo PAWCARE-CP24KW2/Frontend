@@ -60,8 +60,9 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 20,
+    fontFamily: "ComfortaaBold",
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -90,9 +91,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     color: '#FFF',
-    fontWeight: 'bold',
-    marginTop: 5,
   },
   buttonIcon: {
     marginBottom: 1,

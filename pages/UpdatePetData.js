@@ -184,7 +184,7 @@ export default function UpdatePetData({ route, navigation }) {
               onPress={() => setGender("male")}
               value={gender}
             >
-              <Text style={styles.radioText}>Male</Text>
+              <Text style={[styles.radioText, gender === "male" && styles.selectedRadioText]}>Male</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -194,7 +194,7 @@ export default function UpdatePetData({ route, navigation }) {
               onPress={() => setGender("female")}
               value={gender}
             >
-              <Text style={styles.radioText}>Female</Text>
+              <Text style={[styles.radioText, gender === "female" && styles.selectedRadioText]}>Female</Text>
             </TouchableOpacity>
           </View>
 
@@ -208,7 +208,7 @@ export default function UpdatePetData({ route, navigation }) {
               onPress={() => setEnvironment("outdoor")}
               value={environment}
             >
-              <Text style={styles.radioText}>Outdoor</Text>
+              <Text style={[styles.radioText, environment === "outdoor" && styles.selectedRadioText]}>Outdoor</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -218,7 +218,7 @@ export default function UpdatePetData({ route, navigation }) {
               onPress={() => setEnvironment("indoor")}
               value={environment}
             >
-              <Text style={styles.radioText}>Indoor</Text>
+              <Text style={[styles.radioText, environment === "indoor" && styles.selectedRadioText]}>Indoor</Text>
             </TouchableOpacity>
           </View>
           <Text style={styles.sectionTitle}>Has your animal been neutered?</Text>
@@ -231,7 +231,7 @@ export default function UpdatePetData({ route, navigation }) {
               onPress={() => setNeutered("yes")}
               value={neutered}
             >
-              <Text style={styles.radioText}>Yes</Text>
+              <Text style={[styles.radioText, neutered === "yes" && styles.selectedRadioText]}>Yes</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -241,7 +241,7 @@ export default function UpdatePetData({ route, navigation }) {
               onPress={() => setNeutered("no")}
               value={neutered}
             >
-              <Text style={styles.radioText}>No</Text>
+              <Text style={[styles.radioText, neutered === "no" && styles.selectedRadioText]}>No</Text>
             </TouchableOpacity>
           </View>
 
@@ -267,18 +267,16 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
     justifyContent: "center",
-    padding: 25,
+    padding: 20,
   },
   header: {
     fontSize: 24,
-    color: "black",
+    fontFamily: "ComfortaaBold",
     textAlign: "center",
-    fontWeight: "bold",
   },
   sectionTitle: {
-    marginBottom: 5,
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
   },
   dateContainer: {
     height: 49,
@@ -295,7 +293,6 @@ const styles = StyleSheet.create({
   radioContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 10,
   },
   radioButton: {
     flex: 1,
@@ -308,26 +305,30 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5E4D8",
   },
   selectedRadio: {
-    backgroundColor: "#B6917B",
+    backgroundColor: "#71543F",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 5,
   },
+  selectedRadioText: {
+    color: "#FFF",
+  },
   radioText: {
     marginLeft: 10,
     color: "black",
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
   },
   input: {
+    fontFamily: "ComfortaaBold",
     height: 49,
     borderColor: "#B6917B",
     borderWidth: 1,
     borderRadius: 8,
     borderColor: '#000',
     marginBottom: 5,
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
     backgroundColor: "#FFF",
   },
   dropdownContainer: {

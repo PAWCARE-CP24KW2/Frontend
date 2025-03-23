@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingVertical: 11,
     height: 65,
-    backgroundColor: "#B6917B",
+    backgroundColor: "#493628",
   },
   searchIcon: {
     position: 'absolute',
@@ -337,8 +337,10 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     flex: 1,
+    fontFamily: "ComfortaaBold",
+    fontSize: 16,
     height: 45,
-    backgroundColor: "#E0E0E0",
+    backgroundColor: "#fff",
     borderWidth: 1,
     borderRadius: 10,
     paddingLeft: 35,
@@ -357,7 +359,7 @@ const styles = StyleSheet.create({
   },
   sortLabel: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: "ComfortaaBold",
     marginRight: 5,
     opacity: 0.6,
   },
@@ -372,8 +374,8 @@ const styles = StyleSheet.create({
   },
   sortButtonText: {
     color: "#000",
+    fontFamily: "ComfortaaBold",
     opacity: 0.6,
-    fontWeight: "bold",
   },
   activeSortButtonText: {
     color: "#FFF",

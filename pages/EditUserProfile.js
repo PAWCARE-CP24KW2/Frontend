@@ -274,12 +274,9 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
-    justifyContent: "space-around",
-    color: "black",
+    fontFamily: "ComfortaaBold",
     textAlign: "center",
-    textShadowColor: "#493628",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
+    color: "black",
   },
   profile: {
     alignItems: 'center',
@@ -307,18 +304,19 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   sectionTitle: {
-    marginBottom: 5,
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#4A4A4A",
+    fontSize: 17,
+    fontFamily: "ComfortaaBold",
+    color: "#000",
   },
   input: {
+    fontSize: 16,
+    fontFamily: "ComfortaaBold",
     height: 49,
     borderColor: "#B6917B",
     borderWidth: 1,
     borderRadius: 8,
     marginBottom: 5,
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
     backgroundColor: "#FFF",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -333,7 +331,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#493628",
-    padding: 15,
+    padding: 10,
     borderRadius: 10,
     alignItems: "center",
     flex: 1,
@@ -349,7 +347,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     color: "#FFF",
-    fontWeight: "bold",
   },
 });

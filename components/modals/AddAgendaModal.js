@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   TextInput,
   Modal,
+  StyleSheet,
 } from "react-native";
 import { MyStyles } from "../../styles/MyStyle.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -131,17 +132,10 @@ export default function AddAgendaModal({
       <View style={{ flex: 1, backgroundColor: "#eadfd9" }}>
         <TopBar onClose={onClose} />
         <View style={MyStyles.modal}>
-          <Text style={{ fontSize: 27, textAlign: "center", paddingTop: 4 }}>
+          <Text style={styles.title}>
             Create Activity
           </Text>
-          <Text
-            style={{
-              fontSize: 19,
-              textAlign: "center",
-              paddingVertical: 5,
-              marginBottom: 15,
-            }}
-          >
+          <Text style={styles.subTitle}>
             Which activities do you want to be reminded of ?
           </Text>
 
@@ -228,3 +222,19 @@ export default function AddAgendaModal({
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  title: { 
+    fontSize: 27, 
+    fontFamily: "ComfortaaBold",
+    textAlign: "center", 
+    paddingTop: 4 
+  },
+  subTitle: {
+    fontSize: 19,
+    fontFamily: "ComfortaaBold",
+    textAlign: "center",
+    paddingVertical: 5,
+    marginBottom: 15,
+  }
+});

@@ -231,11 +231,11 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 20,
-    fontWeight: "bold",
-    color: "#5B3A29",
+    fontFamily: "ComfortaaBold",
   },
   date: {
     fontSize: 14,
+    fontFamily: "ComfortaaBold",
     color: "gray",
   },
   moreIcon: {
@@ -258,12 +258,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: "bold",
-    color: "#4A2C23",
+    fontFamily: "ComfortaaBold",
     marginBottom: 5,
   },
   content: {
     fontSize: 16,
+    fontFamily: "Comfortaa",
     color: "#4A2C23",
     marginBottom: 10,
   },
@@ -296,10 +296,12 @@ const styles = StyleSheet.create({
   },
   menuOptionText: {
     fontSize: 18,
+    fontFamily: "ComfortaaBold",
     marginLeft: 10,
   },
   menuOptionDeleteText: {
     fontSize: 18,
+    fontFamily: "ComfortaaBold",
     marginLeft: 10,
     color: 'red',
   },

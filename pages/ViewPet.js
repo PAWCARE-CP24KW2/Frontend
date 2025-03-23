@@ -277,42 +277,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 28,
+    fontFamily: "ComfortaaBold",
     justifyContent: "space-around",
     color: "black",
     textAlign: "center",
     marginBottom: 10,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "black",
-    marginBottom: 10,
-    marginTop: 10,
-    textAlign: "center",
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "black",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  cardtitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
-  },
-  button: {
-    backgroundColor: "#B6917B",
-    padding: 15,
-    borderRadius: 10,
-  },
-  buttonText: {
-    fontSize: 16,
-    color: "#FFF",
-    fontWeight: "bold",
   },
   actionButtons: {
     flexDirection: "row",
@@ -343,7 +313,7 @@ const styles = StyleSheet.create({
   },
   gridText: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
     marginTop: 10,
     textAlign: "center",
   },

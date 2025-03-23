@@ -20,7 +20,7 @@ export function showAddPetToast(status) {
     if (status == 'success') {
         Toast.show({
             type: 'success',
-            text1: `add successful`,
+            text1: `Add successful`,
             text2: 'You added successfully ✅'
         });
     }else if (status == 'error') {
@@ -83,12 +83,11 @@ export function showUpdateToast(status) {
     }
 }
 
-
 export function showUpdatePetToast(status) {
     if (status == 'success') {
         Toast.show({
             type: 'success',
-            text1: `updated successful`,
+            text1: `Updated successful`,
             text2: 'Your pet data updated successfully ✅'
         });
     }else if (status == 'error name') {

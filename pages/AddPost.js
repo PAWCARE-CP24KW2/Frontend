@@ -220,8 +220,13 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
+    fontFamily: "ComfortaaBold",
     textAlign: "center",
-    color: "black",
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontFamily: "ComfortaaBold",
+    color: "#000",
   },
   inputContainer: {
     position: 'relative',
@@ -237,12 +242,14 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 16,
+    fontFamily: "Comfortaa",
     height: 49,
     borderRadius: 10,
     paddingHorizontal: 10,
   },
   contentInput: {
     fontSize: 16,
+    fontFamily: "Comfortaa",
     height: 130,
     marginBottom: 5,
     borderRadius: 10,
@@ -257,12 +264,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     backgroundColor: '#fff',
   },
-  sectionTitle: {
-    marginBottom: 5,
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#4A4A4A",
-  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -270,7 +271,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#493628",
-    padding: 15,
+    padding: 10,
     borderRadius: 10,
     alignItems: "center",
     flex: 1,
@@ -286,7 +287,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#FFF",
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
     fontSize: 16,
   },
   image: {
@@ -302,7 +303,7 @@ const styles = StyleSheet.create({
   },
   fullImageContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.85)', // Increased opacity
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
     justifyContent: 'center',
     alignItems: 'center',
   },
