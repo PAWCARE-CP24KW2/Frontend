@@ -17,6 +17,7 @@ import ConfirmModal from "../components/modals/ConfirmModal";
 import * as ImagePicker from "expo-image-picker";
 import { showToast } from '../services/showToast';
 import { showCreateUserToast } from '../services/showToast';
+import AlertModal from "../components/modals/AlertModal";
 
 export default function CreateAccountScreen({ navigation }) {
   const [username, setUsername] = useState("");
@@ -28,6 +29,7 @@ export default function CreateAccountScreen({ navigation }) {
   const [phone, setPhone] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
 
   //Profile image
   const FormData = global.FormData;
@@ -49,7 +51,7 @@ export default function CreateAccountScreen({ navigation }) {
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,16}$/;
     if (!passwordRegex.test(password)) {
-      showCreateUserToast('error password must contain');
+      setAlertVisible(true);
       return;
     }
 
@@ -202,7 +204,13 @@ export default function CreateAccountScreen({ navigation }) {
           />
         </View>
 
-        <Text style={styles.label}>Password</Text>
+        <View style={styles.labelContainer}>
+          <Text style={styles.label}>Password</Text>
+          <TouchableOpacity onPress={() => setAlertVisible(true)} style={styles.alertIconContainer}>
+            <Ionicons name="alert-circle-outline" size={20} color="#493628" />
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.passwordContainer}>
           <TextInput
             style={styles.inputPassword}
@@ -294,6 +302,22 @@ export default function CreateAccountScreen({ navigation }) {
           onConfirm={handleConfirmDelete}
           message={`Are you sure you want to delete?`}
         />
+
+        <AlertModal
+          visible={alertVisible}
+          onClose={() => setAlertVisible(false)}
+          onConfirm={() => setAlertVisible(false)}
+          message={
+            "Password must contain\n" +
+            "• Be 8-16 characters long\n" +
+            "• Include at least one uppercase letter\n" +
+            "• Include at least one lowercase letter\n" +
+            "• Include at least one number\n" +
+            "• Include at least one special character"
+          }
+          buttonText="OK"
+          textStyle={{ textAlign: "left" }}
+        />
       </View>
     </ImageBackground>
   );
@@ -356,6 +380,15 @@ const styles = StyleSheet.create({
     fontFamily: "Comfortaa",
     color: "#000",
     paddingVertical: 8,
+  },
+  labelContainer: {
+    position: "relative",
+    alignSelf: "flex-start",
+  },
+  alertIconContainer: {
+    position: "absolute",
+    right: -21,
+    bottom: 2,
   },
   passwordContainer: {
     flexDirection: "row",

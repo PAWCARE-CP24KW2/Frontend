@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 
-export default function AlertModal({ visible, onClose, onConfirm, message, buttonText }) {
+export default function AlertModal({ visible, onClose, onConfirm, message, buttonText, textStyle }) {
   return (
     <Modal
       transparent={true}
@@ -11,7 +11,7 @@ export default function AlertModal({ visible, onClose, onConfirm, message, butto
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
-          <Text style={styles.message}>{message}</Text>
+          <Text style={[styles.message, textStyle]}>{message}</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.buttonConfirm} onPress={onConfirm}>
               <Text style={styles.buttonText}>{buttonText}</Text>

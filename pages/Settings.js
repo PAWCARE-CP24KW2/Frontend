@@ -43,7 +43,6 @@ export default function Settings({ navigation }) {
         const decodedToken = parseJWT(token);
         const userId = decodedToken.userId;
         const userData = await getUser(userId);
-        console.log('User data:', userData);
         if (userData.user_firstname) setFirstName(userData.user_firstname);
         if (userData.user_lastname) setLastName(userData.user_lastname);
         if (userData.email) setEmail(userData.email);

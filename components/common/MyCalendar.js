@@ -174,7 +174,7 @@ export default function MyCalendar({ navigation }) {
           Add your first Schedule by clicking the + button at the top or button
           below.
         </Text>
-        <TouchableOpacity style={MyStyles.button}>
+        <TouchableOpacity style={styles.noPetButton}>
           <Text
             style={MyStyles.buttonText}
             onPress={() => setisAddModalVisible(true)}
@@ -283,7 +283,7 @@ export default function MyCalendar({ navigation }) {
       />
 
       <TouchableOpacity
-        style={styles.createPostButton}
+        style={styles.createAgenButton}
         onPress={() => setisAddModalVisible(true)}
       >
         <Image source={addAgenda} style={styles.addIcon} />
@@ -352,6 +352,11 @@ const styles = {
     fontSize: 14,
     color: "#493628",
   },
+  noPetButton: {
+    backgroundColor: "#71543F",
+    padding: 10,
+    borderRadius: 10,
+  },
   itemContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -366,7 +371,7 @@ const styles = {
     height: 50,
     marginLeft: 5,
   },
-  createPostButton: {
+  createAgenButton: {
     position: "absolute",
     backgroundColor: "#71543F",
     borderRadius: 100,

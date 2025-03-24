@@ -115,8 +115,8 @@ export function showCreateUserToast(status) {
     if (status == 'success') {
         Toast.show({
             type: 'success',
-            text1: `Login successful`,
-            text2: 'You logined successfully ✅'
+            text1: `Sign Up ✅`,
+            text2: 'You account was ready.'
         });
     }else if (status == 'error') {
         Toast.show({
@@ -142,13 +142,7 @@ export function showCreateUserToast(status) {
             text1: "Can't create to user",
             text2: "Passwords do not match ❌"
         });
-    }else if (status == 'error password must contain') {
-        Toast.show({
-            type: 'error',
-            text1: "Can't create to user",
-            text2: "Password must contain at least 8 characters to 20 characters, including uppercase, lowercase, number, and special character ❌"
-        });
-    }  
+    } 
 }
 
 export function showLoginToast(status) {
