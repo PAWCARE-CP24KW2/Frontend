@@ -15,6 +15,7 @@ import { showPostToast } from "../services/showToast.js";
 import { Dimensions } from 'react-native';
 import PostItem from '../components/common/PostItems.js';
 import LoadingScreen from '../components/common/LoadingScreen';
+import ImageViewer from "react-native-image-zoom-viewer";
 
 export default function Webboard({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -295,13 +296,22 @@ export default function Webboard({ navigation }) {
           <Image source={edit} style={styles.editIcon} />
         </TouchableOpacity>
 
-        <Modal visible={fullImageVisible} transparent={true} animationType='fade'>
-          <View style={styles.fullImageContainer}>
-            <TouchableOpacity style={styles.closeButton} onPress={handleCloseFullImage}>
-              <Ionicons name="close" size={30} color="white" />
-            </TouchableOpacity>
-            {selectedImage && <Image source={{ uri: selectedImage }} style={styles.fullImage} />}
-          </View>
+        <Modal visible={fullImageVisible} transparent={true} animationType="fade">
+          <ImageViewer
+            imageUrls={[{ url: selectedImage }]}
+            enableSwipeDown={true}
+            onSwipeDown={handleCloseFullImage}
+            renderHeader={() => (
+              <View style={styles.headerFullImageContainer}>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={handleCloseFullImage}
+                >
+                  <Ionicons name="close" size={30} color="white" />
+                </TouchableOpacity>
+              </View>
+            )}
+          />
         </Modal>
 
         <ConfirmModal
@@ -418,12 +428,6 @@ const styles = StyleSheet.create({
     height: '90%',
     resizeMode: 'contain',
   },
-  closeButton: {
-    position: 'absolute',
-    top: 40,
-    right: 20,
-    zIndex: 1,
-  },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -432,5 +436,18 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     color: 'gray',
+  },
+  headerFullImageContainer: {
+    position: "absolute",
+    top: 0,
+    width: "100%",
+    zIndex: 1,
+    alignItems: "flex-end",
+    padding: 10,
+  },
+  closeButton: {
+    position: "absolute",
+    top: 20,
+    right: 10,
   },
 });

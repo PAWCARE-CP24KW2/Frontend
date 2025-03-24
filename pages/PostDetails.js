@@ -10,6 +10,7 @@ import { getLikedPost } from '../api/post/getLikedPost';
 import { getPostById } from '../api/post/getPostById';
 import Comments from '../components/common/comments';
 import { MenuProvider } from 'react-native-popup-menu';
+import ImageViewer from "react-native-image-zoom-viewer";
 
 const PostDetails = ({
   visible,
@@ -179,21 +180,22 @@ const PostDetails = ({
               contentContainerStyle={styles.scrollViewContent}
             />
 
-            <Modal visible={fullImageVisible} transparent={true} animationType='fade'>
-              <View style={styles.fullImageContainer}>
-                <TouchableOpacity
-                  style={styles.closeButton}
-                  onPress={handleCloseFullImage}
-                >
-                  <Ionicons name="close" size={30} color="white" />
-                </TouchableOpacity>
-                {selectedImage && (
-                  <Image
-                    source={{ uri: selectedImage }}
-                    style={styles.fullImage}
-                  />
+            <Modal visible={fullImageVisible} transparent={true} animationType="fade">
+              <ImageViewer
+                imageUrls={[{ url: selectedImage }]}
+                enableSwipeDown={true}
+                onSwipeDown={handleCloseFullImage}
+                renderHeader={() => (
+                  <View style={styles.headerFullImageContainer}>
+                    <TouchableOpacity
+                      style={styles.closeButton}
+                      onPress={handleCloseFullImage}
+                    >
+                      <Ionicons name="close" size={30} color="white" />
+                    </TouchableOpacity>
+                  </View>
                 )}
-              </View>
+              />
             </Modal>
 
           </SafeAreaView>
@@ -284,12 +286,6 @@ const styles = StyleSheet.create({
     height: '90%',
     resizeMode: 'contain',
   },
-  closeButton: {
-    position: 'absolute',
-    top: 40,
-    right: 20,
-    zIndex: 1,
-  },
   footer: {
     flexDirection: "row",
     justifyContent: "flex-start",
@@ -307,6 +303,19 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     fontSize: 14,
     color: "#5B3A29",
+  },
+  headerFullImageContainer: {
+    position: "absolute",
+    top: 0,
+    width: "100%",
+    zIndex: 1,
+    alignItems: "flex-end",
+    padding: 10,
+  },
+  closeButton: {
+    position: "absolute",
+    top: 20,
+    right: 10,
   },
 });
 
