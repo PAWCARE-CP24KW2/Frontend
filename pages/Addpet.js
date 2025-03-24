@@ -110,7 +110,6 @@ export default function AddPet({ navigation }) {
           type: `image/${fileType}`,
         });
       }
-      
       const response = await addPet(formData);
 
       setItem({

@@ -4,16 +4,23 @@ import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MyStyles } from "../styles/MyStyle";
 import getGallery from "../api/pet/gallery/getGallery";
+import postGallery from '../api/pet/gallery/postGallery';
 import ImageViewer from "react-native-image-zoom-viewer";
 import addImageButton from "../assets/addImageButton.png";
+import UploadModal from "../components/modals/UploadModal"; // Import the UploadModal component
+import * as ImagePicker from "expo-image-picker";
 
 export default function GalleryPage({ navigation, route }) {
   const { petId, petName } = route.params;
+  const FormData = global.FormData;
   const [galleryData, setGalleryData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [fullImageVisible, setFullImageVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [image, setImage] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("Upload an image");
 
   const fetchGalleryData = async () => {
     try {
@@ -44,6 +51,49 @@ export default function GalleryPage({ navigation, route }) {
   const handleCloseFullImage = () => {
     setFullImageVisible(false);
     setSelectedImage(null);
+  };
+
+  const uploadImage = async (mode) => {
+    try {
+      let result = {};
+
+      if (mode === "gallery") {
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+        result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ["images"],
+          allowsEditing: true,
+          quality: 1,
+        });
+      } else if (mode === "camera") {
+        await ImagePicker.requestCameraPermissionsAsync();
+        result = await ImagePicker.launchCameraAsync({
+          allowsEditing: true,
+          quality: 1,
+        });
+      }
+
+      if (!result.canceled) {
+        const formData = new FormData();
+        formData.append("gallery_image", {
+          uri: result.assets[0].uri,
+          name: `gallery_${Date.now()}.jpg`,
+          type: "image/jpeg",
+        });
+  
+        const response = await postGallery(petId, formData);
+        console.log("Image uploaded successfully:", response);
+  
+        setModalVisible(false);
+        fetchGalleryData();
+      }
+    } catch (error) {
+      console.error("Failed to upload image:", error);
+      setModalVisible(false);
+    }
+  };
+
+  const handleOpenModal = () => {
+    setModalVisible(true);
   };
 
   const renderImageItem = ({ item }) => (
@@ -112,10 +162,18 @@ export default function GalleryPage({ navigation, route }) {
 
         <TouchableOpacity
           style={styles.createPetButton}
-          // onPress={() => navigation.navigate("AddPet")}
+          onPress={handleOpenModal}
         >
           <Image source={addImageButton} style={styles.addIcon} />
         </TouchableOpacity>
+
+        <UploadModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          message={modalMessage}
+          onCameraPress={() => uploadImage("camera")}
+          onGalleryPress={() => uploadImage("gallery")}
+        />
       </SafeAreaView>
     </ImageBackground>
   );

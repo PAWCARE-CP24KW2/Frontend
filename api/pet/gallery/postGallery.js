@@ -2,19 +2,15 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '@env';
 
-const getUser = async (userId) => {
+const postGallery = async (petId, formData) => {
   try {
-    const token = await AsyncStorage.getItem('userToken'); 
-    if (!token) {
-      throw new Error('No token found');
-    }
-
-    const response = await axios.get(`${BASE_URL}/api/user/${userId}`, {
+    const token = await AsyncStorage.getItem('userToken');
+    const response = await axios.post(`${BASE_URL}/api/pet/gallery/${petId}`, formData, {
       headers: {
-        Authorization: `Bearer ${token}` 
-      }
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
     });
-
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -30,4 +26,4 @@ const getUser = async (userId) => {
   }
 };
 
-export default getUser;
+export default postGallery;

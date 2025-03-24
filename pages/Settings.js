@@ -14,7 +14,7 @@ import { MyStyles } from "../styles/MyStyle";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import petplaceholder from '../assets/petplaceholder.png';
-import { getUser } from '../api/user/getUser';
+import getUser from '../api/user/getUser';
 import { useFocusEffect } from '@react-navigation/native';
 import { showLogOutToast , showDelUserToast } from '../services/showToast';
 import ConfirmModal from "../components/modals/ConfirmModal";

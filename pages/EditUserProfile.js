@@ -20,7 +20,7 @@ import ConfirmModal from "../components/modals/ConfirmModal";
 import { updateUserProfile } from '../api/user/editUser';
 import { editImageUser } from '../api/user/editImageUser';
 import { deleteImageUser } from '../api/user/deleteImageUser';
-import { getUser } from '../api/user/getUser';
+import getUser from '../api/user/getUser';
 import { showUpdateUserToast } from '../services/showToast';
 
 function parseJWT(token) {
