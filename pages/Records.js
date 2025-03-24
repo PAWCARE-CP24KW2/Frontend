@@ -120,7 +120,7 @@ export default function RecordsModal({ visible, onClose, petId }) {
         <SafeAreaView style={[MyStyles.container, { flex: 1 }]}>
           <View style={MyStyles.arrowHeader}>
             <TouchableOpacity style={MyStyles.arrowIcon} onPress={onClose}>
-            <Ionicons name="arrow-back-outline" size={30} color="black" />
+            <Ionicons name="arrow-back-outline" size={30} color="white" />
             </TouchableOpacity>
             <View style={{ width: 35 }} />
           </View>

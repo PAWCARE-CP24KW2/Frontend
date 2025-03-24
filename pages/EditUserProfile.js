@@ -44,6 +44,7 @@ export default function EditUserProfile({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("Upload profile picture");
   const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
+  const [originalData, setOriginalData] = useState({});
 
   useEffect(() => {
     const getTokenData = async () => {
@@ -61,6 +62,14 @@ export default function EditUserProfile({ navigation }) {
           if (userData.user_phone) setPhone(userData.user_phone);
           if (userData.email) setEmail(userData.email);
           if (userData.photo_path) setImage(userData.photo_path);
+          
+          setOriginalData({
+            firstName: userData.user_firstname,
+            lastName: userData.user_lastname,
+            phone: userData.user_phone,
+            email: userData.email,
+            image: userData.photo_path,
+          });
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -75,6 +84,17 @@ export default function EditUserProfile({ navigation }) {
   };
 
   const handleSave = async () => {
+    if (
+      firstName === originalData.firstName &&
+      lastName === originalData.lastName &&
+      phone === originalData.phone &&
+      email === originalData.email &&
+      image === originalData.image
+    ) {
+      navigation.goBack()
+      return;
+    }
+
     try {
       const updatedUserData = {
         userId,
@@ -179,7 +199,7 @@ export default function EditUserProfile({ navigation }) {
             style={MyStyles.arrowIcon}
             onPress={() => navigation.goBack()}
           >
-            <Ionicons name="arrow-back-outline" size={30} color="black" />
+            <Ionicons name="arrow-back-outline" size={30} color="white" />
           </TouchableOpacity>
           <View style={{ flex: 1, alignItems: "center" }}>
             <Text style={styles.header}>Edit User Profile</Text>
@@ -276,7 +296,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: "ComfortaaBold",
     textAlign: "center",
-    color: "black",
+    color: "white",
   },
   profile: {
     alignItems: 'center',

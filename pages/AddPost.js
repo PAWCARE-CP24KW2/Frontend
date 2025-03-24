@@ -133,7 +133,7 @@ export default function AddPost({ navigation }) {
             style={MyStyles.arrowIcon}
             onPress={() => navigation.goBack()}
           >
-            <Ionicons name="arrow-back-outline" size={30} color="black" />
+            <Ionicons name="arrow-back-outline" size={30} color="white" />
           </TouchableOpacity>
           <View style={{ flex: 1, alignItems: "center" }}>
             <Text style={styles.header}>Create post</Text>
@@ -222,6 +222,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: "ComfortaaBold",
     textAlign: "center",
+    color: "white",
   },
   sectionTitle: {
     fontSize: 18,

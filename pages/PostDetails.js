@@ -23,7 +23,7 @@ const PostDetails = ({
   setLikes,
   setIsLiking,
   setLiked,
-  comments,
+  userProfileImage,
 }) => {
   const [post, setPost] = useState(null);
   const [fullImageVisible, setFullImageVisible] = useState(false);
@@ -113,7 +113,10 @@ const PostDetails = ({
   const renderPostDetails = () => (
     <View style={styles.card}>
       <View style={styles.header}>
-        <Image source={userholder} style={styles.avatar} />
+      <Image
+        source={userProfileImage}
+        style={styles.avatar}
+      />
         <View style={styles.headerText}>
           <Text style={styles.name}>{fullName}</Text>
           <Text style={styles.date}>{formatDate(post.create_at)}</Text>
@@ -147,6 +150,7 @@ const PostDetails = ({
         postId={postId} 
         formatDate={formatDate}
         fetchPostDetails={fetchPostDetails}
+        userProfileImage={userProfileImage}
       />
     </View>
   );
@@ -161,7 +165,7 @@ const PostDetails = ({
           <SafeAreaView style={[MyStyles.container, { flex: 1 }]}>
             <View style={MyStyles.arrowHeader}>
               <TouchableOpacity style={MyStyles.arrowIcon} onPress={onClose}>
-                <Ionicons name="arrow-back-outline" size={30} color="black" />
+                <Ionicons name="arrow-back-outline" size={30} color="white" />
               </TouchableOpacity>
               <View style={{ flex: 1, alignItems: "center" }}>
                 <Text style={styles.headerBarText}></Text>

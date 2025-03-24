@@ -153,7 +153,7 @@ export default function EditPost({ route, navigation }) {
             style={MyStyles.arrowIcon}
             onPress={() => navigation.goBack()}
           >
-            <Ionicons name="arrow-back-outline" size={30} color="black" />
+            <Ionicons name="arrow-back-outline" size={30} color="white" />
           </TouchableOpacity>
           <View style={{ flex: 1, alignItems: "center" }}>
             <Text style={styles.header}>Edit post</Text>
@@ -251,6 +251,7 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
+    color: "white",
     fontFamily: "ComfortaaBold",
     textAlign: "center",
   },

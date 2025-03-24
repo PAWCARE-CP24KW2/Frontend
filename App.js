@@ -24,6 +24,7 @@ import AddPost from './pages/AddPost';
 import EditUserProfile from './pages/EditUserProfile';
 import EditPost from './pages/EditPost';
 import PostDetails from './pages/PostDetails';
+import GalleryPage from './pages/GalleryPage';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -37,6 +38,7 @@ function HomeStack() {
       <Stack.Screen name="UpdatePetData" component={UpdatePetData} />
       <Stack.Screen name="Documents" component={Documents} />
       <Stack.Screen name="EditUserProfile" component={EditUserProfile} />
+      <Stack.Screen name="Gallery" component={GalleryPage} />
     </Stack.Navigator>
   );
 }

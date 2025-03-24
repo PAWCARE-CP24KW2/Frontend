@@ -159,7 +159,7 @@ export default function ViewPet({ route, navigation }) {
             style={MyStyles.arrowIcon}
             onPress={() => navigation.goBack()}
           >
-            <Ionicons name="arrow-back-outline" size={30} color="black" />
+            <Ionicons name="arrow-back-outline" size={30} color="white" />
           </TouchableOpacity>
         </View>
 
@@ -200,7 +200,7 @@ export default function ViewPet({ route, navigation }) {
               <Ionicons name="document-text-outline" size={40} color="black" />
               <Text style={styles.gridText}>Records</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.gridItem}>
+            <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate("Gallery", { petId: pet.pet_id })}>
               <Ionicons name="images-outline" size={40} color="black" />
               <Text style={styles.gridText}>Gallery</Text>
             </TouchableOpacity>

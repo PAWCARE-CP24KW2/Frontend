@@ -11,7 +11,7 @@ import userholder from '../../assets/userholder.png';
 import ConfirmModal from '../modals/ConfirmModal';
 import AlertModal from '../modals/AlertModal';
 
-const Comments = ({ postId, formatDate, fetchPostDetails }) => {
+const Comments = ({ postId, formatDate, fetchPostDetails, userProfileImage }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
@@ -132,23 +132,15 @@ const Comments = ({ postId, formatDate, fetchPostDetails }) => {
                 {getFullName(item.user_firstname, item.user_lastname)}
                 {editingCommentId === item.comment_id && <Text style={styles.editingText}> (Editing)</Text>}
               </Text>
-              {userId === item.user_id && (
+              {userId === item.user_id && editingCommentId !== item.comment_id && (
                 <Menu>
                   <MenuTrigger style={styles.moreIcon}>
-                    <Ionicons
-                      name="ellipsis-horizontal"
-                      size={24}
-                      color="black"
-                    />
+                    <Ionicons name="ellipsis-horizontal" size={24} color="black" />
                   </MenuTrigger>
                   <MenuOptions>
                     <MenuOption onSelect={() => handleEditComment(item.comment_id, item.comment_content)}>
                       <View style={styles.menuOption}>
-                        <Ionicons
-                          name="create-outline"
-                          size={20}
-                          color="black"
-                        />
+                        <Ionicons name="create-outline" size={20} color="black" />
                         <Text style={styles.menuOptionText}>Edit Comment</Text>
                       </View>
                     </MenuOption>
@@ -160,9 +152,7 @@ const Comments = ({ postId, formatDate, fetchPostDetails }) => {
                     >
                       <View style={styles.menuOption}>
                         <Ionicons name="trash-outline" size={20} color="red" />
-                        <Text style={styles.menuOptionDeleteText}>
-                          Delete Comment
-                        </Text>
+                        <Text style={styles.menuOptionDeleteText}>Delete Comment</Text>
                       </View>
                     </MenuOption>
                   </MenuOptions>
@@ -223,7 +213,10 @@ const Comments = ({ postId, formatDate, fetchPostDetails }) => {
       />
   
       <View style={styles.commentInputContainer}>
-        <Image source={userholder} style={styles.avatar} />
+        <Image
+          source={userProfileImage}
+          style={styles.avatar}
+        />
         <TextInput
           style={styles.commentInput}
           placeholder="Write a comment..."

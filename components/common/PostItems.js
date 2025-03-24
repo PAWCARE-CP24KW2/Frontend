@@ -194,6 +194,7 @@ const PostItem = ({
         setIsLiking={setIsLiking}
         liked={liked}
         setLiked={setLiked}
+        userProfileImage={item.photo_path ? { uri: item.photo_path } : userholder}
       />
     </>
   );

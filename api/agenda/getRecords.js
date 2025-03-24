@@ -8,7 +8,7 @@ export const getRecords = async (petId) => {
     if (!token) {
       throw new Error('No token found');
     }
-    const response = await axios.get(`${BASE_URL}/api/pet/${petId}/expiredAgendas`, {
+    const response = await axios.get(`${BASE_URL}/api/agendas/expiredAgendas/${petId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -210,7 +210,7 @@ export default function AddPet({ navigation }) {
             style={MyStyles.arrowIcon}
             onPress={() => navigation.goBack()}
           >
-            <Ionicons name="arrow-back-outline" size={30} color="black" />
+            <Ionicons name="arrow-back-outline" size={30} color="white" />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Text style={styles.header}>Add your pet</Text>
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     fontFamily: "ComfortaaBold",
-    color: "black",
+    color: "white",
     textAlign: "center",
   },
   input: {
