@@ -1,13 +1,20 @@
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '@env';
 
-export const postUser = async (formData) => {
+export const getUser = async (userId) => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/user/register`, formData, {
+    const token = await AsyncStorage.getItem('userToken'); 
+    if (!token) {
+      throw new Error('No token found');
+    }
+
+    const response = await axios.get(`${BASE_URL}/api/user/${userId}`, {
       headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+        Authorization: `Bearer ${token}` 
+      }
     });
+
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -19,7 +26,6 @@ export const postUser = async (formData) => {
     } else {
       console.error('Error message:', error.message);
     }
-    console.log("Error in frontend/composable/postUser.js");
     throw error;
   }
 };

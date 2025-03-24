@@ -227,7 +227,6 @@ export default function Webboard({ navigation }) {
   if (loading) {
     return (
       <SafeAreaView style={MyStyles.container}>
-        <View style={MyStyles.header}></View>
         <LoadingScreen />
       </SafeAreaView>
     );
@@ -239,7 +238,7 @@ export default function Webboard({ navigation }) {
       style={MyStyles.background}
     >
       <SafeAreaView style={MyStyles.container}>
-        <View style={MyStyles.header}>
+        <View style={styles.header}>
           <View style={styles.searchContainer}>
             <Ionicons name="search" size={20} color="black" style={styles.searchIcon} />
             <TextInput
@@ -325,6 +324,12 @@ const styles = StyleSheet.create({
     position: 'relative',
     marginHorizontal: 20,
   },
+  header: {
+    flexDirection: "row",
+    paddingVertical: 11,
+    height: 65,
+    backgroundColor: "#493628",
+  },
   searchIcon: {
     position: 'absolute',
     left: 10,
@@ -332,8 +337,10 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     flex: 1,
+    fontFamily: "ComfortaaBold",
+    fontSize: 16,
     height: 45,
-    backgroundColor: "#E0E0E0",
+    backgroundColor: "#fff",
     borderWidth: 1,
     borderRadius: 10,
     paddingLeft: 35,
@@ -342,7 +349,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     zIndex: 1,
-    backgroundColor: "#D9D9D9",
+    backgroundColor: "#E0E0E0",
   },
   sortContainer: {
     flexDirection: 'row',
@@ -352,7 +359,7 @@ const styles = StyleSheet.create({
   },
   sortLabel: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: "ComfortaaBold",
     marginRight: 5,
     opacity: 0.6,
   },
@@ -367,8 +374,8 @@ const styles = StyleSheet.create({
   },
   sortButtonText: {
     color: "#000",
+    fontFamily: "ComfortaaBold",
     opacity: 0.6,
-    fontWeight: "bold",
   },
   activeSortButtonText: {
     color: "#FFF",
@@ -386,7 +393,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: "#71543F",
     borderRadius: 100,
-    padding: 17,
+    padding: 15,
     bottom: 10,
     right: 10,
     zIndex: 1,
@@ -397,8 +404,8 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   editIcon: {
-    width: 35,
-    height: 35,
+    width: 30,
+    height: 30,
   },
   fullImageContainer: {
     flex: 1,

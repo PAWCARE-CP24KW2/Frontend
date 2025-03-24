@@ -5,12 +5,12 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   ImageBackground,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { postLoginUser } from "../api/user/postLoginUser";
 import { MyStyles } from "../styles/MyStyle";
+import { showLoginToast } from '../services/showToast';
 
 export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState("");
@@ -19,7 +19,7 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = async () => {
     if (!username || !password) {
-      Alert.alert("Error", "All fields are required.");
+      showLoginToast('error require');
       return;
     }
 
@@ -30,14 +30,12 @@ export default function LoginScreen({ navigation }) {
 
     try {
       const response = await postLoginUser(userData);
-      Alert.alert("Success", "Login successful", [
-        { text: "OK", onPress: () => navigation.navigate('Main') }
-      ]);
+      navigation.navigate('Main');
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        Alert.alert("Error", "Invalid username or password");
+        showLoginToast('error');
       } else {
-        Alert.alert("Error", "Failed to login");
+        showLoginToast('error 401');
       }
     } finally {
       setUsername("");
@@ -111,8 +109,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 35,
-    fontWeight: "bold",
+    fontSize: 36,
+    fontFamily: "ComfortaaBold",
     color: "#493628",
     marginBottom: 10,
     textShadowColor: "#ab886d",
@@ -122,15 +120,16 @@ const styles = StyleSheet.create({
   label: {
     alignSelf: "flex-start",
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     color: "#493628",
-    fontWeight: "bold",
-    marginBottom: 5,
+    marginBottom: 1,
     marginLeft: 3,
   },
   input: {
     flex: 1,
     fontSize: 16,
-    color: "#000",
+    fontFamily: "Comfortaa",
+    color: "#493628",
     paddingVertical: 12,
   },
   inputContainer: {
@@ -165,13 +164,14 @@ const styles = StyleSheet.create({
   },
   loginText: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
     color: "#fff",
   },
   linkText: {
     fontSize: 14,
+    fontFamily: "ComfortaaBold",
     color: "black",
-    marginBottom: 10,
+    marginBottom: 5,
     opacity: 0.7,
     textShadowColor: "#ab886d",
     textShadowOffset: { width: 0, height: 1 },

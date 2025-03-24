@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  ImageBackground,
 } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -184,146 +185,155 @@ export default function Documents({ navigation, route }) {
   if (loading) {
     return (
       <SafeAreaView style={MyStyles.container}>
-        <SafeAreaView style={styles.topBar}>
-          <TouchableOpacity style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="black" />
+        <View style={MyStyles.arrowHeader}>
+          <TouchableOpacity>
+            <Ionicons name="arrow-back-outline" size={30} color="black" />
           </TouchableOpacity>
-        </SafeAreaView>
+        </View>
         <LoadingScreen />
       </SafeAreaView>
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#EACEBE" }}>
-      <SafeAreaView style={styles.topBar}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
+    <ImageBackground
+      source={require("../assets/wallpaper.jpg")}
+      style={MyStyles.background}
+    >
+      <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.arrowHeader}>
+          <TouchableOpacity
+            style={MyStyles.arrowIcon}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="arrow-back-outline" size={30} color="black" />
+          </TouchableOpacity>
+        </View>
+      
+
+        <View style={MyStyles.modal}>
+          <Text style={styles.title}>Pet Documents </Text>
+          <Text style={styles.subTitle}>
+            Record important documents here
+          </Text>
+
+          <TouchableOpacity style={styles.card} onPress={() => handleShowDocument(registrationImage)}>
+            <Ionicons name="folder" size={26} color="black" />
+            <Text style={[styles.cardText, registrationImage && styles.underlineText]}>
+              Registration No.
+            </Text>
+            {registrationImage ? (
+              <TouchableOpacity style={styles.addButton} onPress={() => handleDeletePress("Registration No.")}>
+                <Ionicons name="trash-outline" size={24} color="white" />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.addButton} onPress={() => handleOpenModal("Upload Registration No.")}>
+                <Ionicons name="add" size={24} color="white" />
+              </TouchableOpacity>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.card} onPress={() => handleShowDocument(medicalBookImage)}>
+            <Ionicons name="folder" size={26} color="black" />
+            <Text  style={[styles.cardText, medicalBookImage && styles.underlineText]}>
+              Medical Book
+            </Text>
+            {medicalBookImage ? (
+              <TouchableOpacity style={styles.addButton} onPress={() => handleDeletePress("Medical Book")}>
+                <Ionicons name="trash-outline" size={24} color="white" />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.addButton} onPress={() => handleOpenModal("Upload Medical Book")}>
+                <Ionicons name="add" size={24} color="white" />
+              </TouchableOpacity>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.card} onPress={() => handleShowDocument(passportImage)}>
+            <Ionicons name="folder" size={26} color="black" />
+            <Text style={[styles.cardText, passportImage && styles.underlineText]}>
+              Passport No.
+            </Text>
+            {passportImage ? (
+              <TouchableOpacity style={styles.addButton} onPress={() => handleDeletePress("Passport No.")}>
+                <Ionicons name="trash-outline" size={24} color="white" />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.addButton} onPress={() => handleOpenModal("Upload Passport No.")}>
+                <Ionicons name="add" size={24} color="white" />
+              </TouchableOpacity>
+            )}
+          </TouchableOpacity>
+
+          <View>
+            <UploadModal
+              visible={modalVisible}
+              onClose={() => setModalVisible(false)}
+              message={modalMessage}
+              onCameraPress={() => {
+                if (modalMessage.includes("Registration")) {
+                  uploadImage(setRegistrationImage, "camera");
+                } else if (modalMessage.includes("Medical")) {
+                  uploadImage(setMedicalBookImage, "camera");
+                } else if (modalMessage.includes("Passport")) {
+                  uploadImage(setPassportImage, "camera");
+                }
+              }}
+              onGalleryPress={() => {
+                if (modalMessage.includes("Registration")) {
+                  uploadImage(setRegistrationImage, "gallery");
+                } else if (modalMessage.includes("Medical")) {
+                  uploadImage(setMedicalBookImage, "gallery");
+                } else if (modalMessage.includes("Passport")) {
+                  uploadImage(setPassportImage, "gallery");
+                }
+              }}
+              onRemovePress={handleDeletePress}
+              showRemoveButton={
+                modalMessage.includes("Registration")
+                  ? !!registrationImage
+                  : modalMessage.includes("Medical")
+                  ? !!medicalBookImage
+                  : !!passportImage
+              }
+            />
+          </View>
+
+          <View>
+            <ShowDocumentModal
+              visible={showDocumentModalVisible}
+              onClose={() => setShowDocumentModalVisible(false)}
+              uri={image}
+            />
+          </View>
+
+          <View>
+            <ConfirmModal
+              visible={modalDeleteVisible}
+              onClose={() => setModalDeleteVisible(false)}
+              onConfirm={handleConfirmDelete}
+              message={`Are you sure you want to deleted ${modalMessage}?`}
+            />
+          </View>
+        </View>
       </SafeAreaView>
-
-      <View style={MyStyles.modal}>
-        <Text style={{ fontSize: 27, textAlign: "center", paddingTop: 4 }}>
-          Documents
-        </Text>
-        <Text
-          style={{
-            fontSize: 15,
-            textAlign: "center",
-            paddingVertical: 5,
-            marginBottom: 15,
-          }}
-        >
-          Record important documents here
-        </Text>
-
-        <TouchableOpacity style={styles.card} onPress={() => handleShowDocument(registrationImage)}>
-          <Ionicons name="folder" size={26} color="black" />
-          <Text style={[styles.cardText, registrationImage && styles.underlineText]}>
-            Registration No.
-          </Text>
-          {registrationImage ? (
-            <TouchableOpacity style={styles.addButton} onPress={() => handleDeletePress("Registration No.")}>
-              <Ionicons name="trash-outline" size={24} color="white" />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.addButton} onPress={() => handleOpenModal("Upload Registration No.")}>
-              <Ionicons name="add" size={24} color="white" />
-            </TouchableOpacity>
-          )}
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.card} onPress={() => handleShowDocument(medicalBookImage)}>
-          <Ionicons name="folder" size={26} color="black" />
-          <Text  style={[styles.cardText, medicalBookImage && styles.underlineText]}>
-            Medical Book
-          </Text>
-          {medicalBookImage ? (
-            <TouchableOpacity style={styles.addButton} onPress={() => handleDeletePress("Medical Book")}>
-              <Ionicons name="trash-outline" size={24} color="white" />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.addButton} onPress={() => handleOpenModal("Upload Medical Book")}>
-              <Ionicons name="add" size={24} color="white" />
-            </TouchableOpacity>
-          )}
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.card} onPress={() => handleShowDocument(passportImage)}>
-          <Ionicons name="folder" size={26} color="black" />
-          <Text style={[styles.cardText, passportImage && styles.underlineText]}>
-            Passport No.
-          </Text>
-          {passportImage ? (
-            <TouchableOpacity style={styles.addButton} onPress={() => handleDeletePress("Passport No.")}>
-              <Ionicons name="trash-outline" size={24} color="white" />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.addButton} onPress={() => handleOpenModal("Upload Passport No.")}>
-              <Ionicons name="add" size={24} color="white" />
-            </TouchableOpacity>
-          )}
-        </TouchableOpacity>
-
-        <View>
-          <UploadModal
-            visible={modalVisible}
-            onClose={() => setModalVisible(false)}
-            message={modalMessage}
-            onCameraPress={() => {
-              if (modalMessage.includes("Registration")) {
-                uploadImage(setRegistrationImage, "camera");
-              } else if (modalMessage.includes("Medical")) {
-                uploadImage(setMedicalBookImage, "camera");
-              } else if (modalMessage.includes("Passport")) {
-                uploadImage(setPassportImage, "camera");
-              }
-            }}
-            onGalleryPress={() => {
-              if (modalMessage.includes("Registration")) {
-                uploadImage(setRegistrationImage, "gallery");
-              } else if (modalMessage.includes("Medical")) {
-                uploadImage(setMedicalBookImage, "gallery");
-              } else if (modalMessage.includes("Passport")) {
-                uploadImage(setPassportImage, "gallery");
-              }
-            }}
-            onRemovePress={handleDeletePress}
-            showRemoveButton={
-              modalMessage.includes("Registration")
-                ? !!registrationImage
-                : modalMessage.includes("Medical")
-                ? !!medicalBookImage
-                : !!passportImage
-            }
-          />
-        </View>
-
-        <View>
-          <ShowDocumentModal
-            visible={showDocumentModalVisible}
-            onClose={() => setShowDocumentModalVisible(false)}
-            uri={image}
-          />
-        </View>
-
-        <View>
-          <ConfirmModal
-            visible={modalDeleteVisible}
-            onClose={() => setModalDeleteVisible(false)}
-            onConfirm={handleConfirmDelete}
-            message={`Are you sure you want to deleted ${modalMessage}?`}
-          />
-        </View>
-      </View>
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  title:{
+    fontSize: 27, 
+    fontFamily: "ComfortaaBold",
+    textAlign: "center", 
+    paddingTop: 4
+  },
+  subTitle:{
+    fontSize: 15,
+    fontFamily: "ComfortaaBold",
+    textAlign: "center",
+    marginBottom: 15,
+  },
   card: {
     flexDirection: "row",
     alignItems: "center",
@@ -340,6 +350,7 @@ const styles = StyleSheet.create({
   cardText: {
     flex: 1,
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     color: "#333",
     marginLeft: 10,
   },
@@ -350,37 +361,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#EACEBE",
-  },
-  text: {
-    fontSize: 18,
-    fontWeight: "bold",
   },
   uploadContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginVertical: 10,
   },
-  input: {
-    flex: 1,
-    height: 40,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    marginHorizontal: 10,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    backgroundColor: "#fff",
-  },
   addButton: {
     backgroundColor: "#493628",
     paddingVertical: 3,
     paddingHorizontal: 5,
     borderRadius: 5,
-  },
-  buttonText: {
-    fontSize: 13,
-    color: "#FFF",
-    fontWeight: "bold",
   },
   topBar: {
     flexDirection: "row",
@@ -390,8 +381,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
-    borderBottomLeftRadius: 14,
-    borderBottomRightRadius: 14,
   },
   backButton: {
     marginRight: 16,

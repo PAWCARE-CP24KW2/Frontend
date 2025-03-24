@@ -1,11 +1,14 @@
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '@env';
 
-export const postUser = async (formData) => {
+export const deleteImageUser = async () => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/user/register`, formData, {
+    const token = await AsyncStorage.getItem('userToken');
+    const response = await axios.delete(`${BASE_URL}/api/user/delete-photo`, {
       headers: {
         'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`,
       },
     });
     return response.data;
@@ -19,7 +22,6 @@ export const postUser = async (formData) => {
     } else {
       console.error('Error message:', error.message);
     }
-    console.log("Error in frontend/composable/postUser.js");
     throw error;
   }
 };

@@ -258,6 +258,7 @@ const styles = StyleSheet.create({
   },
   editCommentInput: {
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     color: "#000",
   },
   comment: {
@@ -285,22 +286,25 @@ const styles = StyleSheet.create({
   },
   commentAuthor: {
     fontSize: 17,
-    fontWeight: 'bold',
+    fontFamily: "ComfortaaBold",
     color: '#000',
   },
   editingText: {
-    fontSize: 17,
+    fontSize: 16,
+    fontFamily: "ComfortaaBold",
     fontWeight: 'thin',
     color: 'red',
   },
   date: {
     fontSize: 14,
+    fontFamily: "ComfortaaBold",
     color: 'gray',
     marginLeft: 10,
   },
   commentText: {
     fontSize: 16,
-    color: "#000",
+    fontFamily: "Comfortaa",
+    color: "#4A2C23",
   },
   moreIcon: {
     position: 'absolute',
@@ -316,10 +320,12 @@ const styles = StyleSheet.create({
   },
   menuOptionText: {
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     marginLeft: 10,
   },
   menuOptionDeleteText: {
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     marginLeft: 10,
     color: 'red',
   },
@@ -341,6 +347,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingLeft: 15,
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     borderRadius: 20,
     backgroundColor: '#ebecee',
     marginRight: 10,
@@ -358,6 +365,7 @@ const styles = StyleSheet.create({
   },
   editButtonText: {
     color: 'white',
+    fontFamily: "ComfortaaBold",
     fontSize: 14,
   },
   cancelButton: {

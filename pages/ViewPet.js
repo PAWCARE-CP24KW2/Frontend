@@ -5,7 +5,6 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  Alert,
   ImageBackground
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,9 +16,10 @@ import petplaceholder from "../assets/petplaceholder.png";
 import UploadModal from "../components/modals/UploadModal";
 import ConfirmModal from "../components/modals/ConfirmModal";
 import * as ImagePicker from "expo-image-picker";
-import { showUploadProToast } from "../services/showToast";
 import { updatePetProfile } from "../api/pet/updatePetProfile";
 import { deletePetProfile } from "../api/pet/deletePetProfile";
+import RecordsModal from "./Records";
+import { showDelPetToast } from "../services/showToast";
 
 export default function ViewPet({ route, navigation }) {
   const FormData = global.FormData;
@@ -29,6 +29,7 @@ export default function ViewPet({ route, navigation }) {
   const [modalMessage, setModalMessage] = useState("Upload profile picture");
   const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
   const [image, setImage] = useState(pet.profile_path);
+  const [recordsModalVisible, setRecordsModalVisible] = useState(false);
 
   useEffect(() => {
     const getPets = async () => {
@@ -44,34 +45,19 @@ export default function ViewPet({ route, navigation }) {
 
   const handleDelete = async () => {
     try {
-      // console.log("Pet data:", pet); // Log the pet data
       await deletePet(pet.pet_id);
-      Alert.alert("Success", "Pet deleted successfully");
+      showDelPetToast(pet.pet_name);
       navigation.goBack();
     } catch (error) {
       console.error("Failed to delete pet:", error);
-      Alert.alert("Error", "Failed to delete pet");
     }
   };
 
   const confirmDelete = () => {
-    Alert.alert(
-      "Confirm Delete",
-      "Are you sure you want to delete this pet?",
-      [
-        {
-          text: "Cancel",
-          // onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        { text: "Delete", onPress: handleDelete },
-      ],
-      { cancelable: false }
-    );
+    setModalDeleteVisible(true);
   };
 
   const handleEdit = () => {
-    // console.log("Edit pet data:", pet);
     navigation.navigate("UpdatePetData", { pet });
   };
 
@@ -101,7 +87,6 @@ export default function ViewPet({ route, navigation }) {
         await saveImage(result.assets[0].uri);
       }
     } catch (error) {
-      alert("Failed to upload image:", error.message);
       setModalVisible(false);
     }
   };
@@ -124,9 +109,7 @@ export default function ViewPet({ route, navigation }) {
       setImage(null);
       setModalVisible(false);
       deletePetProfile(pet.pet_id);
-      showUploadProToast("Pet profile picture", "delete");
     } catch ({ message }) {
-      alert(message);
       setModalVisible(false);
     }
   };
@@ -146,15 +129,22 @@ export default function ViewPet({ route, navigation }) {
       });
       await updatePetProfile(pet.pet_id, formData);
 
-      showUploadProToast("Pet profile picture", "upload");
     } catch (error) {
       console.error('Error uploading profile image:', error.response ? error.response.data : error.message);
-      alert("Failed to upload image");
+      showUploadPhotoToast('error');
     }
   };
 
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  const handleOpenRecordsModal = () => {
+    setRecordsModalVisible(true);
+  };
+
+  const handleCloseRecordsModal = () => {
+    setRecordsModalVisible(false);
   };
 
   return (
@@ -201,11 +191,11 @@ export default function ViewPet({ route, navigation }) {
 
           {/* Action Grid */}
           <View style={styles.gridContainer}>
-            <TouchableOpacity style={styles.gridItem}>
+            <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate("Calendar")}>
               <Ionicons name="calendar-outline" size={40} color="black" />
               <Text style={styles.gridText}>Calendar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.gridItem}>
+            <TouchableOpacity style={styles.gridItem} onPress={handleOpenRecordsModal}>
               <Ionicons name="document-text-outline" size={40} color="black" />
               <Text style={styles.gridText}>Records</Text>
             </TouchableOpacity>
@@ -223,6 +213,12 @@ export default function ViewPet({ route, navigation }) {
           </View>
         </SafeAreaView>
 
+        <RecordsModal
+          visible={recordsModalVisible}
+          onClose={handleCloseRecordsModal}
+          petId={pet.pet_id}
+        />
+
         <UploadModal
           visible={modalVisible}
           onClose={() => setModalVisible(false)}
@@ -236,8 +232,8 @@ export default function ViewPet({ route, navigation }) {
         <ConfirmModal
           visible={modalDeleteVisible}
           onClose={() => setModalDeleteVisible(false)}
-          onConfirm={handleConfirmDelete}
-          message={`Are you sure you want to deleted ?`}
+          onConfirm={handleDelete}
+          message={`Are you sure you want to delete this pet?`}
         />
       </SafeAreaView>
     </ImageBackground>
@@ -281,42 +277,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 28,
+    fontFamily: "ComfortaaBold",
     justifyContent: "space-around",
     color: "black",
     textAlign: "center",
     marginBottom: 10,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "black",
-    marginBottom: 10,
-    marginTop: 10,
-    textAlign: "center",
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "black",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  cardtitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
-  },
-  button: {
-    backgroundColor: "#B6917B",
-    padding: 15,
-    borderRadius: 10,
-  },
-  buttonText: {
-    fontSize: 16,
-    color: "#FFF",
-    fontWeight: "bold",
   },
   actionButtons: {
     flexDirection: "row",
@@ -347,7 +313,7 @@ const styles = StyleSheet.create({
   },
   gridText: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
     marginTop: 10,
     textAlign: "center",
   },

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 
-export default function AlertModal({ visible, onClose, onConfirm, message, buttonText }) {
+export default function AlertModal({ visible, onClose, onConfirm, message, buttonText, textStyle }) {
   return (
     <Modal
       transparent={true}
@@ -11,7 +11,7 @@ export default function AlertModal({ visible, onClose, onConfirm, message, butto
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
-          <Text style={styles.message}>{message}</Text>
+          <Text style={[styles.message, textStyle]}>{message}</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.buttonConfirm} onPress={onConfirm}>
               <Text style={styles.buttonText}>{buttonText}</Text>
@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 18,
+    fontFamily: "ComfortaaBold",
     textAlign: 'center',
     marginBottom: 15,
   },
@@ -49,15 +50,7 @@ const styles = StyleSheet.create({
   },
   buttonConfirm: {
     flex: 1,
-    padding: 10,
-    marginHorizontal: 5,
-    backgroundColor: '#493628',
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  buttonCancel: {
-    flex: 1,
-    padding: 10,
+    padding: 8,
     marginHorizontal: 5,
     backgroundColor: '#493628',
     borderRadius: 5,
@@ -65,7 +58,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     color: '#FFF',
-    fontWeight: 'bold',
   },
 });

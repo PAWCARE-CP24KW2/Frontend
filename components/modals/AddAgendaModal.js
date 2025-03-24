@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   TextInput,
   Modal,
-  Platform,
+  StyleSheet,
 } from "react-native";
 import { MyStyles } from "../../styles/MyStyle.js";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,12 +13,10 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import TopBar from "../common/Topbar.js";
 import Icon from "react-native-vector-icons/Ionicons";
 import { showToast } from "../../services/showToast.js";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import DropdownComponent from "../dropdowns/Dropdown.js";
 import { postAgenda } from "../../api/agenda/postAgenda.js";
 import { scheduleNotification } from '../../services/notificationService.js';
 import DropdownSelectPet from "../dropdowns/DropdownSelectPet.js";
-import { fetchAgendas } from "../../api/agenda/getAllAgendas.js";
 
 export default function AddAgendaModal({
   isAddModalVisible,
@@ -49,7 +47,6 @@ export default function AddAgendaModal({
       if (mode === "date") {
         const currentDate = selectedValue || date;
         setDate(currentDate);
-        // Format the date without timezone offset
         const formattedDate = new Date(currentDate.getTime() - (currentDate.getTimezoneOffset() * 60000))
           .toISOString().split('T')[0];
         setSelectedDate(formattedDate);
@@ -132,20 +129,13 @@ export default function AddAgendaModal({
       onRequestClose={onClose}
       animationType="slide"
     >
-      <View style={{ flex: 1, backgroundColor: "#EACEBE" }}>
+      <View style={{ flex: 1, backgroundColor: "#eadfd9" }}>
         <TopBar onClose={onClose} />
         <View style={MyStyles.modal}>
-          <Text style={{ fontSize: 27, textAlign: "center", paddingTop: 4 }}>
+          <Text style={styles.title}>
             Create Activity
           </Text>
-          <Text
-            style={{
-              fontSize: 19,
-              textAlign: "center",
-              paddingVertical: 5,
-              marginBottom: 15,
-            }}
-          >
+          <Text style={styles.subTitle}>
             Which activities do you want to be reminded of ?
           </Text>
 
@@ -232,3 +222,19 @@ export default function AddAgendaModal({
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  title: { 
+    fontSize: 27, 
+    fontFamily: "ComfortaaBold",
+    textAlign: "center", 
+    paddingTop: 4 
+  },
+  subTitle: {
+    fontSize: 19,
+    fontFamily: "ComfortaaBold",
+    textAlign: "center",
+    paddingVertical: 5,
+    marginBottom: 15,
+  }
+});

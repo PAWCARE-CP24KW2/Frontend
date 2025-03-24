@@ -78,11 +78,13 @@ const styles = StyleSheet.create({
   },
   placeholderStyle: {
     marginLeft: 10,
+    fontFamily: "ComfortaaBold",
     fontSize: 16,
   },
   selectedTextStyle: {
-    marginLeft: 10,
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
+    marginLeft: 10,
   },
   iconStyle: {
     width: 30,

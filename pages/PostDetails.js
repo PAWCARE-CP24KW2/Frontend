@@ -166,7 +166,6 @@ const PostDetails = ({
               <View style={{ flex: 1, alignItems: "center" }}>
                 <Text style={styles.headerBarText}></Text>
               </View>
-              <View style={{ width: 35 }} />
             </View>
 
             <FlatList
@@ -245,22 +244,23 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#000',
+    fontFamily: "ComfortaaBold",
   },
   date: {
     fontSize: 14,
+    fontFamily: "ComfortaaBold",
     color: 'gray',
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: "ComfortaaBold",
     color: '#000',
     marginBottom: 5,
   },
   content: {
     fontSize: 16,
-    color: '#000',
+    fontFamily: "Comfortaa",
+    color: "#4A2C23",
     marginBottom: 10,
   },
   postImage: {

@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 18,
+    fontFamily: "ComfortaaBold",
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     color: '#FFF',
-    fontWeight: 'bold',
   },
 });

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import {
   View,
   Text,
@@ -22,6 +21,7 @@ import { Ionicons } from "@expo/vector-icons";
 import UploadModal from "../components/modals/UploadModal";
 import ConfirmModal from "../components/modals/ConfirmModal";
 import * as ImagePicker from "expo-image-picker";
+import { showAddPetToast } from "../services/showToast";
 
 export default function AddPet({ navigation }) {
   const [Item, setItem] = useState({
@@ -42,7 +42,7 @@ export default function AddPet({ navigation }) {
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalMessage, setModalMessage] = useState("Upload profile picture");
+  const [modalMessage, setModalMessage] = useState("Upload pet's profile picture");
   const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
   const [image, setImage] = useState();
 
@@ -80,13 +80,13 @@ export default function AddPet({ navigation }) {
         weight: parseFloat(Item.weight), // Convert weight to a number
       };
       if (!Item.name) {
-        Alert.alert("Error", "Please fill Pet Name");
+        showAddPetToast('error name');
         return;
       } else if (!Item.weight) {
-        Alert.alert("Error", "Please fill Weight");
+        showAddPetToast('error weight');
         return;
       } else if (!selectedDate) {
-        Alert.alert("Error", "Please fill Date of Birth");
+        showAddPetToast('error Date of Birth');
         return;
       }
 
@@ -125,13 +125,13 @@ export default function AddPet({ navigation }) {
         profile_picture: null,
       });
       setSelectedDate(null);
-
+      showAddPetToast('success');
       navigation.navigate("HomeScreen", {
         pet: { ...petData, id: response.pet_id },
       });
     } catch (error) {
       console.error("Error adding pet:", error);
-      Alert.alert("Error", "Failed to add pet");
+      showAddPetToast('error');
     }
   };
 
@@ -212,7 +212,7 @@ export default function AddPet({ navigation }) {
           >
             <Ionicons name="arrow-back-outline" size={30} color="black" />
           </TouchableOpacity>
-          <View style={{ flex: 1, alignItems: "center" }}>
+          <View style={{ flex: 1 }}>
             <Text style={styles.header}>Add your pet</Text>
           </View>
           <View style={{ width: 35 }} />
@@ -248,7 +248,6 @@ export default function AddPet({ navigation }) {
           />
           <Text style={styles.sectionTitle}>Pet Type:</Text>
           <DropdownTypeComponent
-            style={styles.DropdownType}
             type={Item.type}
             Item={Item}
             setItem={setItem}
@@ -295,21 +294,21 @@ export default function AddPet({ navigation }) {
           <View style={styles.radioContainer}>
             <TouchableOpacity
               style={[
-                styles.genderButton,
+                styles.radioButton,
                 Item.gender === "male" && styles.selectedRadio,
               ]}
               onPress={() => setItem({ ...Item, gender: "male" })}
             >
-              <Text style={styles.genderText}>Male</Text>
+              <Text style={[styles.radioText, Item.gender === "male" && styles.selectedRadioText]}>Male</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
-                styles.genderButton,
+                styles.radioButton,
                 Item.gender === "female" && styles.selectedRadio,
               ]}
               onPress={() => setItem({ ...Item, gender: "female" })}
             >
-              <Text style={styles.genderText}>Female</Text>
+              <Text style={[styles.radioText, Item.gender === "female" && styles.selectedRadioText]}>Female</Text>
             </TouchableOpacity>
           </View>
           <Text style={styles.sectionTitle}>Living Environment:</Text>
@@ -321,7 +320,7 @@ export default function AddPet({ navigation }) {
               ]}
               onPress={() => setItem({ ...Item, environment: "outdoor" })}
             >
-              <Text style={styles.radioText}>Outdoor</Text>
+              <Text style={[styles.radioText, Item.environment === "outdoor" && styles.selectedRadioText]}>Outdoor</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -330,7 +329,7 @@ export default function AddPet({ navigation }) {
               ]}
               onPress={() => setItem({ ...Item, environment: "indoor" })}
             >
-              <Text style={styles.radioText}>Indoor</Text>
+              <Text style={[styles.radioText, Item.environment === "indoor" && styles.selectedRadioText]}>Indoor</Text>
             </TouchableOpacity>
           </View>
           <Text style={styles.sectionTitle}>Has your animal been neutered?</Text>
@@ -342,7 +341,7 @@ export default function AddPet({ navigation }) {
               ]}
               onPress={() => setItem({ ...Item, neutered: "yes" })}
             >
-              <Text style={styles.radioText}>Yes</Text>
+              <Text style={[styles.radioText, Item.neutered === "yes" && styles.selectedRadioText]}>Yes</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -351,11 +350,11 @@ export default function AddPet({ navigation }) {
               ]}
               onPress={() => setItem({ ...Item, neutered: "No" })}
             >
-              <Text style={styles.radioText}>No</Text>
+              <Text style={[styles.radioText, Item.neutered === "No" && styles.selectedRadioText]}>No</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.button} onPress={handleAddPet}>
-            <Text style={styles.buttonText}>Add</Text>
+            <Text style={styles.buttonText}>ADD</Text>
           </TouchableOpacity>
         </ScrollView>
 
@@ -384,16 +383,13 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
     justifyContent: "center",
-    padding: 25,
+    padding: 20,
   },
   header: {
     fontSize: 24,
-    justifyContent: "space-around",
+    fontFamily: "ComfortaaBold",
     color: "black",
     textAlign: "center",
-    textShadowColor: "#493628",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
   },
   input: {
     height: 49,
@@ -402,13 +398,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderColor: '#000',
     marginBottom: 5,
-    paddingHorizontal: 10,
-    backgroundColor: "#FFF",
-  },
-  genderContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
+    paddingHorizontal: 12,
+    backgroundColor: "#fff",
+    fontFamily: "ComfortaaBold",
   },
   dateContainer: {
     height: 49,
@@ -418,23 +410,13 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderRadius: 8,
     paddingHorizontal: 10,
-    paddingVertical: 5,
     marginBottom: 5,
     backgroundColor: '#FFF',
-  },
-  genderButton: {
-    flex: 1,
-    padding: 10,
-    marginHorizontal: 5,
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: "#B6917B",
-    alignItems: "center",
   },
   radioContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 10,
+    marginBottom: 2,
   },
   radioButton: {
     flex: 1,
@@ -446,24 +428,23 @@ const styles = StyleSheet.create({
     borderColor: "#B6917B",
   },
   selectedRadio: {
-    backgroundColor: "#B6917B",
-    borderWidth: 1,
-    borderColor: "black"
+    backgroundColor: "#71543F",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  selectedRadioText: {
+    color: "#FFF",
   },
   radioText: {
     marginLeft: 10,
-    color: "black",
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
   },
   sectionTitle: {
-    marginBottom: 5,
     fontSize: 16,
-    fontWeight: "bold",
-    color: "#4A4A4A",
-  },
-  genderText: {
-    color: "black",
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
   },
   datePicker: {
     marginBottom: 20,
@@ -474,19 +455,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
   },
-  dateText: {
-    color: "#4A4A4A",
-  },
   button: {
     backgroundColor: "#493628",
-    padding: 15,
+    padding: 12,
     borderRadius: 10,
-    marginTop: 20,
+    marginTop: 10,
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   buttonText: {
     color: "#FFF",
-    fontWeight: "bold",
+    fontFamily: "ComfortaaBold",
     fontSize: 16,
   },
   profile: {

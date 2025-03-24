@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     height: 50,
+    fontFamily: "ComfortaaBold",
     borderColor: 'black',
     borderWidth: 1,
     borderRadius: 8,
@@ -75,11 +76,13 @@ const styles = StyleSheet.create({
   },
   placeholderStyle: {
     marginLeft: 10,
+    fontFamily: "ComfortaaBold",
     fontSize: 16,
   },
   selectedTextStyle: {
     marginLeft: 10,
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
   },
   iconStyle: {
     width: 30,

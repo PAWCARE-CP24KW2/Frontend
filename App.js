@@ -1,4 +1,5 @@
 import React from 'react';
+import { ActivityIndicator } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -6,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { MenuProvider } from 'react-native-popup-menu';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from './services/toastConfig';
+import { useFonts } from "expo-font";
 
 import Home from './pages/Home';
 import FirstPage from './pages/FirstPage';
@@ -61,6 +63,15 @@ function AuthStack() {
 }
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    Comfortaa: require("./assets/fonts/Comfortaa-Regular.ttf"),
+    ComfortaaBold: require("./assets/fonts/Comfortaa-Bold.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" color="#000" />;
+  }
+
   return (
     <MenuProvider>
       <NavigationContainer>
@@ -93,12 +104,15 @@ function MainTabs() {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: 'black',
-        tabBarInactiveTintColor: '#493628',
+        tabBarActiveTintColor: 'white',
+        tabBarInactiveTintColor: 'white',
         tabBarStyle: {
-          backgroundColor: '#B6917B',
+          backgroundColor: '#493628',
           height: 60,
-          paddingBottom: 5,
+        },
+        tabBarLabelStyle: {
+          fontFamily: 'ComfortaaBold',
+          fontSize: 12,
         },
         headerShown: false,
       })}

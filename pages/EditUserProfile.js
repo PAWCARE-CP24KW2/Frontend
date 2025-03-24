@@ -17,9 +17,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import UploadModal from "../components/modals/UploadModal";
 import ConfirmModal from "../components/modals/ConfirmModal";
-import { updateUserProfile } from '../api/user/updateUserProfile';
-import { updateUserPhoto } from '../api/user/updateUserPhoto';
-import { deleteUserProfile } from '../api/user/deleteUserProfile';
+import { updateUserProfile } from '../api/user/editUser';
+import { editImageUser } from '../api/user/editImageUser';
+import { deleteImageUser } from '../api/user/deleteImageUser';
+import { getUser } from '../api/user/getUser';
+import { showUpdateUserToast } from '../services/showToast';
 
 function parseJWT(token) {
   const base64Url = token.split('.')[1];
@@ -49,16 +51,19 @@ export default function EditUserProfile({ navigation }) {
         const token = await AsyncStorage.getItem('userToken');
         if (token) {
           const decodedToken = parseJWT(token);
-          if (decodedToken.userId) setUserId(decodedToken.userId);
-          if (decodedToken.userName) setUserName(decodedToken.userName);
-          if (decodedToken.firstName) setFirstName(decodedToken.firstName);
-          if (decodedToken.lastName) setLastName(decodedToken.lastName);
-          if (decodedToken.phone) setPhone(decodedToken.phone);
-          if (decodedToken.email) setEmail(decodedToken.email);
-          if (decodedToken.photo_path) setImage(decodedToken.photo_path);
+          const userId = decodedToken.userId;
+          const userData = await getUser(userId);
+          // console.log('Edit User data:', userData);
+          if (userData.user_id) setUserId(userData.user_id);
+          if (userData.username) setUserName(userData.username);
+          if (userData.user_firstname) setFirstName(userData.user_firstname);
+          if (userData.user_lastname) setLastName(userData.user_lastname);
+          if (userData.user_phone) setPhone(userData.user_phone);
+          if (userData.email) setEmail(userData.email);
+          if (userData.photo_path) setImage(userData.photo_path);
         }
       } catch (error) {
-        console.error('Error decoding token:', error);
+        console.error('Error fetching user data:', error);
       }
     };
 
@@ -80,12 +85,24 @@ export default function EditUserProfile({ navigation }) {
         email,
       };
       await updateUserProfile(updatedUserData);
-      Alert.alert("Success", "Profile updated successfully", [
-        { text: "OK", onPress: () => navigation.goBack() },
-      ]);
+
+      if (image) {
+        const uriParts = image.split(".");
+        const fileType = uriParts[uriParts.length - 1];
+        const formData = new FormData();
+        formData.append("profile_user", {
+          uri: image,
+          name: `profile_user.${fileType}`,
+          type: `image/${fileType}`,
+        });
+        await editImageUser(formData);
+      }
+
+      showUpdateUserToast('success');
+      navigation.goBack()
     } catch (error) {
       console.error("Error updating profile:", error);
-      Alert.alert("Error", "Failed to update profile");
+      showUpdateUserToast('error');
     }
   };
 
@@ -124,18 +141,6 @@ export default function EditUserProfile({ navigation }) {
     try {
       setImage(image);
       setModalVisible(false);
-
-      const uriParts = image.split(".");
-      const fileType = uriParts[uriParts.length - 1];
-      const formData = new FormData();
-      formData.append("file", {
-        uri: image,
-        name: `file.${fileType}`,
-        type: `image/${fileType}`,
-      });
-      await updateUserPhoto(formData);
-
-      Alert.alert("Success", "Profile picture updated successfully");
     } catch (error) {
       console.error('Error uploading profile image:', error.response ? error.response.data : error.message);
       alert("Failed to upload image");
@@ -146,7 +151,7 @@ export default function EditUserProfile({ navigation }) {
     try {
       setImage(null);
       setModalVisible(false);
-      await deleteUserProfile();
+      await deleteImageUser();
       Alert.alert("Success", "Profile picture deleted successfully");
     } catch ({ message }) {
       alert(message);
@@ -269,16 +274,12 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
-    justifyContent: "space-around",
-    color: "black",
+    fontFamily: "ComfortaaBold",
     textAlign: "center",
-    textShadowColor: "#493628",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
+    color: "black",
   },
   profile: {
     alignItems: 'center',
-    marginBottom: 20,
   },
   imageContainer: {
     position: 'relative',
@@ -291,50 +292,62 @@ const styles = StyleSheet.create({
   },
   imageWithBorder: {
     borderWidth: 2,
-    borderColor: '#B6917B',
+    borderColor: '#000',
   },
   cameraIcon: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: '#FFF',
+    bottom: 7,
+    right: 7,
+    backgroundColor: 'white',
     borderRadius: 15,
-    padding: 5,
+    padding: 4,
+    borderWidth: 2,
   },
   sectionTitle: {
-    marginBottom: 5,
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#4A4A4A",
+    fontSize: 17,
+    fontFamily: "ComfortaaBold",
+    color: "#000",
   },
   input: {
+    fontSize: 16,
+    fontFamily: "ComfortaaBold",
     height: 49,
     borderColor: "#B6917B",
     borderWidth: 1,
     borderRadius: 8,
     marginBottom: 5,
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
     backgroundColor: "#FFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
+    marginTop: 15,
   },
   button: {
     backgroundColor: "#493628",
-    padding: 15,
+    padding: 10,
     borderRadius: 10,
     alignItems: "center",
     flex: 1,
     marginHorizontal: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   cancelButton: {
     backgroundColor: "#fd7444",
   },
   buttonText: {
     fontSize: 16,
+    fontFamily: "ComfortaaBold",
     color: "#FFF",
-    fontWeight: "bold",
   },
 });
