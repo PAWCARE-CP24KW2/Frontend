@@ -200,7 +200,7 @@ export default function ViewPet({ route, navigation }) {
               <Ionicons name="document-text-outline" size={40} color="black" />
               <Text style={styles.gridText}>Records</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate("Gallery", { petId: pet.pet_id })}>
+            <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate("Gallery", { petId: pet.pet_id, petName: pet.pet_name })}>
               <Ionicons name="images-outline" size={40} color="black" />
               <Text style={styles.gridText}>Gallery</Text>
             </TouchableOpacity>
