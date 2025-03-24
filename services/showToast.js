@@ -111,6 +111,22 @@ export function showUpdatePetToast(status) {
     }
 }
 
+export function showUpdateUserToast(status) {
+    if (status == 'success') {
+        Toast.show({
+            type: 'success',
+            text1: `Updated successful`,
+            text2: 'Your user data updated successfully ✅'
+        });
+    }else if (status == 'error') {
+        Toast.show({
+            type: 'error',
+            text1: "Can't update user data",
+            text2: "Failed to update user data ❌"
+        });
+    }
+}
+
 export function showCreateUserToast(status) {
     if (status == 'success') {
         Toast.show({
