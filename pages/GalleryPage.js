@@ -118,10 +118,17 @@ export default function GalleryPage({ navigation, route }) {
           >
             <Ionicons name="arrow-back-outline" size={30} color="white" />
           </TouchableOpacity>
+
           <View style={{ flex: 1 }}>
             <Text style={styles.headerText}>{`${petName}'s Gallery`}</Text>
           </View>
-          <View style={{ width: 35 }} />
+
+          <TouchableOpacity
+            style={styles.moreOptionsIcon}
+            onPress={() => console.log("More options pressed")}
+          >
+            <Ionicons name="ellipsis-vertical" size={24} color="white" />
+          </TouchableOpacity>
         </View>
 
         {loading ? (
@@ -189,6 +196,10 @@ const styles = StyleSheet.create({
     fontFamily: "ComfortaaBold",
     color: "white",
     textAlign: "center",
+  },
+  moreOptionsIcon: {
+    padding: 5,
+    // backgroundColor: "blue",
   },
   loadingText: {
     fontSize: 18,
