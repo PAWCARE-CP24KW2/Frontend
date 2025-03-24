@@ -28,6 +28,7 @@ export default function ViewPet({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("Upload profile picture");
   const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
+  const [modalDeletePetVisible, setModalDeletePetVisible] = useState(false);
   const [image, setImage] = useState(pet.profile_path);
   const [recordsModalVisible, setRecordsModalVisible] = useState(false);
 
@@ -54,7 +55,7 @@ export default function ViewPet({ route, navigation }) {
   };
 
   const confirmDelete = () => {
-    setModalDeleteVisible(true);
+    setModalDeletePetVisible(true);
   };
 
   const handleEdit = () => {
@@ -232,6 +233,13 @@ export default function ViewPet({ route, navigation }) {
         <ConfirmModal
           visible={modalDeleteVisible}
           onClose={() => setModalDeleteVisible(false)}
+          onConfirm={handleConfirmDelete}
+          message={`Are you sure you want to delete this Photo pet?`}
+        />
+
+        <ConfirmModal
+          visible={modalDeletePetVisible}
+          onClose={() => setModalDeletePetVisible(false)}
           onConfirm={handleDelete}
           message={`Are you sure you want to delete this pet?`}
         />
