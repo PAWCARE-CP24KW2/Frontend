@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { MyStyles } from "../styles/MyStyle";
 import getGallery from "../api/pet/gallery/getGallery";
 import ImageViewer from "react-native-image-zoom-viewer";
+import addImageButton from "../assets/addImageButton.png";
 
 export default function GalleryPage({ navigation, route }) {
   const { petId, petName } = route.params;
@@ -108,6 +109,13 @@ export default function GalleryPage({ navigation, route }) {
             )}
           />
         </Modal>
+
+        <TouchableOpacity
+          style={styles.createPetButton}
+          // onPress={() => navigation.navigate("AddPet")}
+        >
+          <Image source={addImageButton} style={styles.addIcon} />
+        </TouchableOpacity>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -174,5 +182,23 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 20,
     right: 10,
+  },
+  createPetButton: {
+    position: 'absolute',
+    backgroundColor: "#71543F",
+    borderRadius: 100,
+    padding: 12,
+    bottom: 10,
+    right: 10,
+    zIndex: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  addIcon: {
+    width: 46,
+    height: 46,
   },
 });

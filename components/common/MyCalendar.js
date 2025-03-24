@@ -386,7 +386,7 @@ const styles = {
     elevation: 8,
   },
   addIcon: {
-    width: 35,
-    height: 35,
+    width: 46,
+    height: 46,
   },
 };

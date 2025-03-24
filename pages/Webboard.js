@@ -414,8 +414,8 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   editIcon: {
-    width: 30,
-    height: 30,
+    width: 40,
+    height: 40,
   },
   fullImageContainer: {
     flex: 1,
