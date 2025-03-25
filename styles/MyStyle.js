@@ -19,7 +19,6 @@ export const MyStyles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     height: 65,
-    // backgroundColor: "#B6917B",
     backgroundColor: "#493628",
   },
   arrowIcon: {

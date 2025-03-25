@@ -6,6 +6,7 @@ import getComments from '../../api/post/comments/getComments';
 import deleteComment from '../../api/post/comments/deleteComments';
 import postComment from '../../api/post/comments/postComment';
 import editComment from '../../api/post/comments/editComment';
+import getUser from '../../api/user/getUser';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import userholder from '../../assets/userholder.png';
 import ConfirmModal from '../modals/ConfirmModal';
@@ -22,17 +23,7 @@ const Comments = ({ postId, formatDate, fetchPostDetails, userProfileImage }) =>
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editedComment, setEditedComment] = useState('');
   const editInputRef = useRef(null);
-
-  const fetchComments = async () => {
-    try {
-      const commentsData = await getComments(postId);
-      setComments(commentsData);
-    } catch (error) {
-      console.error('Error fetching comments:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [userPhoto, setUserPhoto] = useState(userholder);
 
   function parseJWT(token) {
     const base64Url = token.split('.')[1];
@@ -44,12 +35,31 @@ const Comments = ({ postId, formatDate, fetchPostDetails, userProfileImage }) =>
     return JSON.parse(jsonPayload);
   }
 
+  const fetchComments = async () => {
+    try {
+      const commentsData = await getComments(postId);
+      const sortedComments = commentsData.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+      setComments(sortedComments);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getTokenData = async () => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       if (token) {
         const decodedToken = parseJWT(token);
         setUserId(decodedToken.userId);
+
+        const userData = await getUser(decodedToken.userId);
+        if (userData.photo_path) {
+          setUserPhoto({ uri: userData.photo_path });
+        } else {
+          setUserPhoto(userholder);
+        }
       }
     } catch (error) {
       console.error('Error decoding token:', error);
@@ -59,7 +69,7 @@ const Comments = ({ postId, formatDate, fetchPostDetails, userProfileImage }) =>
   useEffect(() => {
     fetchComments();
     getTokenData();
-  }, [postId]);
+  }, [userId]);
 
   const handleDeleteComment = async () => {
     try {
@@ -123,7 +133,10 @@ const Comments = ({ postId, formatDate, fetchPostDetails, userProfileImage }) =>
 
   const renderItem = ({ item }) => (
     <View style={styles.container}>
-      <Image source={userholder} style={styles.avatar} />
+      <Image
+        source={item.photo_path ? { uri: item.photo_path } : userholder} // Use photo_path or fallback to userholder
+        style={styles.avatar}
+      />
       <View style={styles.commentContainer}>
         <View style={[styles.comment, editingCommentId === item.comment_id && styles.editingContainer]}>
           <View style={styles.header}>
@@ -214,7 +227,7 @@ const Comments = ({ postId, formatDate, fetchPostDetails, userProfileImage }) =>
   
       <View style={styles.commentInputContainer}>
         <Image
-          source={userProfileImage}
+          source={userPhoto}
           style={styles.avatar}
         />
         <TextInput
