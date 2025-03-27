@@ -19,12 +19,12 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  
+          node-version: '18'
 
       - name: Install Dependencies
         run: |
-          npm install
-          cd android && ./gradlew clean 
+          npm install --legacy-peer-deps  # ติดตั้ง dependencies ด้วยตัวเลือกนี้
+          cd android && chmod +x gradlew && ./gradlew clean  # เพิ่มการให้สิทธิ์การทำงานให้ gradlew
 
       - name: Lint Code (ตรวจสอบโค้ด)
         run: npm run lint
@@ -32,18 +32,7 @@ jobs:
       - name: Run Tests (ถ้ามี)
         run: npm test
 
-      - name: Check Android Build 
+      - name: Check Android Build (ตรวจสอบว่า Build ผ่านหรือไม่)
         run: |
           cd android
-          ./gradlew assembleDebug  
-
-      - name: Upload APK as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-apk
-          path: android/app/build/outputs/apk/release/*.apk
-
-      - name: Clean up Artifacts
-        run: |
-          echo "Cleaning up artifacts"
-          rm -rf android/app/build  # ลบไฟล์ build ไม่จำเป็น
+          ./gradlew assembleDebug  # รัน Build Debug บน Android
