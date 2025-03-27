@@ -1,0 +1,32 @@
+name: PR Code Check for React Native
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  check:
+    name: Check React Native Code Before Merge
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: |
+          npm install --legacy-peer-deps  # ติดตั้ง dependencies ด้วยตัวเลือกนี้
+          cd android && chmod +x gradlew && ./gradlew clean  # เพิ่มการให้สิทธิ์การทำงานให้ gradlew
+
+      - name: Check Android Build (ตรวจสอบว่า Build ผ่านหรือไม่)
+        run: |
+          cd android
+          ./gradlew assembleDebug  # รัน Build Debug บน Android
