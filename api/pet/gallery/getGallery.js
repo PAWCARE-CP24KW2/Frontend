@@ -8,7 +8,7 @@ const getGallery = async (petId) => {
     if (!token) {
       throw new Error('No token found');
     }
-    const response = await axios.get(`${BASE_URL}/api/pet/getGallery/${petId}`, {
+    const response = await axios.get(`${BASE_URL}/api/gallery/${petId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
