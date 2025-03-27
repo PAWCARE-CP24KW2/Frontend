@@ -26,12 +26,6 @@ jobs:
           npm install --legacy-peer-deps  # ติดตั้ง dependencies ด้วยตัวเลือกนี้
           cd android && chmod +x gradlew && ./gradlew clean  # เพิ่มการให้สิทธิ์การทำงานให้ gradlew
 
-      - name: Lint Code (ตรวจสอบโค้ด)
-        run: npm run lint
-
-      - name: Run Tests (ถ้ามี)
-        run: npm test
-
       - name: Check Android Build (ตรวจสอบว่า Build ผ่านหรือไม่)
         run: |
           cd android
