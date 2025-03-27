@@ -9,7 +9,7 @@ export const deleteGalleryImage = async (gallery_id) => {
       throw new Error("No token found");
     }
 
-    const response = await axios.delete(`${BASE_URL}/api/pet/gallery/${gallery_id}`, {
+    const response = await axios.delete(`${BASE_URL}/api/gallery/${gallery_id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
