@@ -1,0 +1,49 @@
+name: PR Code Check for React Native
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  check:
+    name: Check React Native Code Before Merge
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  
+
+      - name: Install Dependencies
+        run: |
+          npm install
+          cd android && ./gradlew clean 
+
+      - name: Lint Code (ตรวจสอบโค้ด)
+        run: npm run lint
+
+      - name: Run Tests (ถ้ามี)
+        run: npm test
+
+      - name: Check Android Build 
+        run: |
+          cd android
+          ./gradlew assembleDebug  
+
+      - name: Upload APK as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: android/app/build/outputs/apk/release/*.apk
+
+      - name: Clean up Artifacts
+        run: |
+          echo "Cleaning up artifacts"
+          rm -rf android/app/build  # ลบไฟล์ build ไม่จำเป็น
