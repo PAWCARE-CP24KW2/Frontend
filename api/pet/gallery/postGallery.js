@@ -5,7 +5,7 @@ import { BASE_URL } from '@env';
 const postGallery = async (petId, formData) => {
   try {
     const token = await AsyncStorage.getItem('userToken');
-    const response = await axios.post(`${BASE_URL}/api/gallery/${petId}`, formData, {
+    const response = await axios.post(`${BASE_URL}/api/pet/gallery/${petId}`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'multipart/form-data',
