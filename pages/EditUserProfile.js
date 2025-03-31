@@ -106,7 +106,8 @@ export default function EditUserProfile({ navigation }) {
       };
       await updateUserProfile(updatedUserData);
 
-      if (image) {
+      if (image.startsWith("file://")) {
+        // Case 1: Local file path
         const uriParts = image.split(".");
         const fileType = uriParts[uriParts.length - 1];
         const formData = new FormData();
@@ -116,6 +117,12 @@ export default function EditUserProfile({ navigation }) {
           type: `image/${fileType}`,
         });
         await editImageUser(formData);
+      } else if (image.startsWith("https://")) {
+        // Case 2: URL (already uploaded)
+        console.log("Image is already uploaded:", image);
+        // You can handle this case differently if needed
+      } else {
+        console.error("Invalid image format");
       }
 
       showUpdateUserToast('success');
