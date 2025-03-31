@@ -347,6 +347,7 @@ const styles = {
     fontFamily: "ComfortaaBold",
     textAlign: "center",
     color: "white",
+    includeFontPadding: false,
   },
   petName: {
     fontSize: 14,

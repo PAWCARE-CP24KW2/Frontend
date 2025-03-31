@@ -389,6 +389,7 @@ const styles = StyleSheet.create({
     fontFamily: "ComfortaaBold",
     color: "white",
     textAlign: "center",
+    includeFontPadding: false,
   },
   input: {
     height: 49,

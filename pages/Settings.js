@@ -18,6 +18,7 @@ import getUser from '../api/user/getUser';
 import { useFocusEffect } from '@react-navigation/native';
 import { showLogOutToast , showDelUserToast } from '../services/showToast';
 import ConfirmModal from "../components/modals/ConfirmModal";
+import { deleteUser } from '../api/user/deleteUser';
 
 function parseJWT(token) {
   const base64Url = token.split('.')[1];
@@ -76,7 +77,7 @@ export default function Settings({ navigation }) {
 
   const handleConfirmDelete = async () => {
     try {
-      await deleteUserProfile();
+      await deleteUser();
       await AsyncStorage.removeItem('userToken'); // Clear the token
       showDelUserToast('success');
       navigation.navigate('Auth', { screen: 'FirstPage' });
@@ -170,6 +171,7 @@ const styles = StyleSheet.create({
     fontFamily: "ComfortaaBold",
     textAlign: "center",
     color: "white",
+    includeFontPadding: false,
   },
   section: {
     backgroundColor: '#F5F5F5',

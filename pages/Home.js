@@ -184,6 +184,7 @@ const styles = StyleSheet.create({
     fontFamily: "ComfortaaBold",
     textAlign: "center",
     color: "white",
+    includeFontPadding: false,
   },
   image: {
     width: 60,

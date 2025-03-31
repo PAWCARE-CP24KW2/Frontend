@@ -18,6 +18,7 @@ import * as ImagePicker from "expo-image-picker";
 import { showToast } from '../services/showToast';
 import { showCreateUserToast } from '../services/showToast';
 import AlertModal from "../components/modals/AlertModal";
+import { ScrollView } from "react-native";
 
 export default function CreateAccountScreen({ navigation }) {
   const [username, setUsername] = useState("");
@@ -154,6 +155,7 @@ export default function CreateAccountScreen({ navigation }) {
       source={require('../assets/wallpaper.jpg')}
       style={MyStyles.background}
     >
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.container}>
         <Text style={styles.title}>Create Account</Text>
 
@@ -319,6 +321,7 @@ export default function CreateAccountScreen({ navigation }) {
           textStyle={{ textAlign: "left" }}
         />
       </View>
+      </ScrollView>
     </ImageBackground>
   );
 }

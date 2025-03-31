@@ -274,6 +274,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontFamily: "ComfortaaBold",
     textAlign: "center",
+    includeFontPadding: false,
   },
   sectionTitle: {
     fontSize: 16,
