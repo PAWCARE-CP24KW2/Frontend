@@ -20,6 +20,7 @@ import { updatePetProfile } from "../api/pet/updatePetProfile";
 import { deletePetProfile } from "../api/pet/deletePetProfile";
 import RecordsModal from "./Records";
 import { showDelPetToast } from "../services/showToast";
+import { StatusBar } from "expo-status-bar";
 
 export default function ViewPet({ route, navigation }) {
   const FormData = global.FormData;
@@ -153,6 +154,7 @@ export default function ViewPet({ route, navigation }) {
       source={require('../assets/wallpaper.jpg')}
       style={MyStyles.background}
     >
+      <StatusBar backgroundColor="transparent" style="dark" />
       <SafeAreaView style={MyStyles.container}>
         <View style={MyStyles.arrowHeader}>
           <TouchableOpacity

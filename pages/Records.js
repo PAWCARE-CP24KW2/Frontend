@@ -25,6 +25,7 @@ import treatmentIcon from "../assets/agendaIcons/treatment.png";
 import foodIcon from "../assets/agendaIcons/food.png";
 import groomingIcon from "../assets/agendaIcons/grooming.png";
 import birthdayIcon from "../assets/agendaIcons/birthday.png";
+import { StatusBar } from "expo-status-bar";
 
 export default function RecordsModal({ visible, onClose, petId }) {
   const [records, setRecords] = useState([]);
@@ -117,6 +118,7 @@ export default function RecordsModal({ visible, onClose, petId }) {
         source={require("../assets/wallpaper.jpg")}
         style={MyStyles.background}
       >
+        <StatusBar backgroundColor="transparent" style="dark" />
         <SafeAreaView style={[MyStyles.container, { flex: 1 }]}>
           <View style={MyStyles.arrowHeader}>
             <TouchableOpacity style={MyStyles.arrowIcon} onPress={onClose}>

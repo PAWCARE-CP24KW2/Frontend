@@ -16,6 +16,7 @@ import { Dimensions } from 'react-native';
 import PostItem from '../components/common/PostItems.js';
 import LoadingScreen from '../components/common/LoadingScreen';
 import ImageViewer from "react-native-image-zoom-viewer";
+import { StatusBar } from "expo-status-bar";
 
 export default function Webboard({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -238,6 +239,7 @@ export default function Webboard({ navigation }) {
       source={require('../assets/wallpaper.jpg')}
       style={MyStyles.background}
     >
+      <StatusBar backgroundColor="transparent" style="dark" />
       <SafeAreaView style={MyStyles.container}>
         <View style={styles.header}>
           <View style={styles.searchContainer}>

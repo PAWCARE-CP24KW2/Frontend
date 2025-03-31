@@ -22,6 +22,7 @@ import { deleteDocument } from "../api/documents/deleteDocument";
 import { getDocument } from "../api/documents/getDocument";
 import { useFocusEffect } from "@react-navigation/native";
 import LoadingScreen from "../components/common/LoadingScreen";
+import { StatusBar } from "expo-status-bar";
 
 export default function Documents({ navigation, route }) {
   const { petId } = route.params;
@@ -200,6 +201,7 @@ export default function Documents({ navigation, route }) {
       source={require("../assets/wallpaper.jpg")}
       style={MyStyles.background}
     >
+      <StatusBar backgroundColor="transparent" style="dark" />
       <SafeAreaView style={MyStyles.container}>
         <View style={MyStyles.arrowHeader}>
           <TouchableOpacity

@@ -19,6 +19,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { showLogOutToast , showDelUserToast } from '../services/showToast';
 import ConfirmModal from "../components/modals/ConfirmModal";
 import { deleteUser } from '../api/user/deleteUser';
+import { StatusBar } from "expo-status-bar";
 
 function parseJWT(token) {
   const base64Url = token.split('.')[1];
@@ -94,6 +95,7 @@ export default function Settings({ navigation }) {
       source={require('../assets/wallpaper.jpg')}
       style={MyStyles.background}
     >
+      <StatusBar backgroundColor="transparent" style="dark" />
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.headerText}>Settings</Text>

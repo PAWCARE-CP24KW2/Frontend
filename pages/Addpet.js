@@ -22,6 +22,7 @@ import UploadModal from "../components/modals/UploadModal";
 import ConfirmModal from "../components/modals/ConfirmModal";
 import * as ImagePicker from "expo-image-picker";
 import { showAddPetToast } from "../services/showToast";
+import { StatusBar } from "expo-status-bar";
 
 export default function AddPet({ navigation }) {
   const [Item, setItem] = useState({
@@ -202,6 +203,7 @@ export default function AddPet({ navigation }) {
       source={require('../assets/wallpaper.jpg')}
       style={MyStyles.background}
     >
+      <StatusBar backgroundColor="transparent" style="dark" />
       <SafeAreaView style={MyStyles.container}>
 
         <View style={MyStyles.arrowHeader}>

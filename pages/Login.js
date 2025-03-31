@@ -11,6 +11,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { postLoginUser } from "../api/user/postLoginUser";
 import { MyStyles } from "../styles/MyStyle";
 import { showLoginToast } from '../services/showToast';
+import { StatusBar } from "expo-status-bar";
 
 export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState("");
@@ -49,6 +50,7 @@ export default function LoginScreen({ navigation }) {
       style={MyStyles.background}
     >
       <View style={styles.container}>
+         <StatusBar backgroundColor="transparent" style="dark" />
         <Text style={styles.title}>Login</Text>
 
         <Text style={styles.label}>Username</Text>

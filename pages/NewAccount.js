@@ -19,6 +19,7 @@ import { showToast } from '../services/showToast';
 import { showCreateUserToast } from '../services/showToast';
 import AlertModal from "../components/modals/AlertModal";
 import { ScrollView } from "react-native";
+import { StatusBar } from "expo-status-bar";
 
 export default function CreateAccountScreen({ navigation }) {
   const [username, setUsername] = useState("");
@@ -155,6 +156,7 @@ export default function CreateAccountScreen({ navigation }) {
       source={require('../assets/wallpaper.jpg')}
       style={MyStyles.background}
     >
+      <StatusBar backgroundColor="transparent" style="dark" />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.container}>
         <Text style={styles.title}>Create Account</Text>

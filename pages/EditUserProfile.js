@@ -22,6 +22,7 @@ import { editImageUser } from '../api/user/editImageUser';
 import { deleteImageUser } from '../api/user/deleteImageUser';
 import getUser from '../api/user/getUser';
 import { showUpdateUserToast } from '../services/showToast';
+import { StatusBar } from "expo-status-bar";
 
 function parseJWT(token) {
   const base64Url = token.split('.')[1];
@@ -106,7 +107,8 @@ export default function EditUserProfile({ navigation }) {
       };
       await updateUserProfile(updatedUserData);
 
-      if (image) {
+      if (image.startsWith("file://")) {
+        // Case 1: Local file path
         const uriParts = image.split(".");
         const fileType = uriParts[uriParts.length - 1];
         const formData = new FormData();
@@ -116,8 +118,14 @@ export default function EditUserProfile({ navigation }) {
           type: `image/${fileType}`,
         });
         await editImageUser(formData);
+      } else if (image.startsWith("https://")) {
+        // Case 2: URL (already uploaded)
+        console.log("Image is already uploaded:", image);
+        // You can handle this case differently if needed
+      } else {
+        console.error("Invalid image format");
       }
-
+      
       showUpdateUserToast('success');
       navigation.goBack()
     } catch (error) {
@@ -193,6 +201,7 @@ export default function EditUserProfile({ navigation }) {
       source={require('../assets/wallpaper.jpg')}
       style={MyStyles.background}
     >
+      <StatusBar backgroundColor="transparent" style="dark" />
       <SafeAreaView style={MyStyles.container}>
         <View style={MyStyles.arrowHeader}>
           <TouchableOpacity

@@ -20,6 +20,7 @@ import { showPostToast } from "../services/showToast.js";
 import UploadModal from "../components/modals/UploadModal.js";
 import ConfirmModal from "../components/modals/ConfirmModal.js";
 import { deleteImagePost } from '../api/post/deleteImagePost';
+import { StatusBar } from "expo-status-bar";
 
 export default function EditPost({ route, navigation }) {
   const { postId } = route.params;
@@ -147,6 +148,7 @@ export default function EditPost({ route, navigation }) {
       source={require("../assets/wallpaper.jpg")}
       style={MyStyles.background}
     >
+      <StatusBar backgroundColor="transparent" style="dark" />
       <SafeAreaView style={[MyStyles.container, { flex: 1 }]}>
         <View style={MyStyles.arrowHeader}>
           <TouchableOpacity
