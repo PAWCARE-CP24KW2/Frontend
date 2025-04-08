@@ -18,6 +18,7 @@ import { createPost } from '../api/post/postPost';
 import { showPostToast } from "../services/showToast.js";
 import UploadModal from "../components/modals/UploadModal.js";
 import ConfirmModal from "../components/modals/ConfirmModal.js";
+import { StatusBar } from "expo-status-bar";
 
 export default function AddPost({ navigation }) {
   const [title, setTitle] = useState('');
@@ -127,6 +128,7 @@ export default function AddPost({ navigation }) {
       source={require('../assets/wallpaper.jpg')}
       style={MyStyles.background}
     >
+      <StatusBar backgroundColor="transparent" style="dark" />
       <SafeAreaView style={[MyStyles.container, { flex: 1 }]}>
         <View style={MyStyles.arrowHeader}>
           <TouchableOpacity
@@ -223,6 +225,7 @@ const styles = StyleSheet.create({
     fontFamily: "ComfortaaBold",
     textAlign: "center",
     color: "white",
+    includeFontPadding: false,
   },
   sectionTitle: {
     fontSize: 18,

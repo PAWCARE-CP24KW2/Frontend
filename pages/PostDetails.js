@@ -11,6 +11,7 @@ import { getPostById } from '../api/post/getPostById';
 import Comments from '../components/common/comments';
 import { MenuProvider } from 'react-native-popup-menu';
 import ImageViewer from "react-native-image-zoom-viewer";
+import { StatusBar } from "expo-status-bar";
 
 const PostDetails = ({
   visible,
@@ -113,6 +114,7 @@ const PostDetails = ({
 
   const renderPostDetails = () => (
     <View style={styles.card}>
+      <StatusBar backgroundColor="transparent" style="dark" />
       <View style={styles.header}>
       <Image
         source={userProfileImage}

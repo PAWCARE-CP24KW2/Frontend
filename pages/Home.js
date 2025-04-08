@@ -14,9 +14,10 @@ import { getPetsByUserId } from "../api";
 import { useFocusEffect } from "@react-navigation/native";
 import petplaceholder from "../assets/petplaceholder.png";
 import LoadingScreen from "../components/common/LoadingScreen";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
-import vet from '../assets/vet.png';
+import vet from "../assets/vet.png";
+import { StatusBar } from "expo-status-bar";
 
 export default function Home({ navigation }) {
   const [items, setItems] = useState([]);
@@ -93,9 +94,19 @@ export default function Home({ navigation }) {
             {capitalizeFirstLetter(item.pet_name)}
           </Text>
           {item.pet_gender === "male" ? (
-            <Ionicons name="male" size={28} color="black" style={styles.genderIcon} />
+            <Ionicons
+              name="male"
+              size={28}
+              color="black"
+              style={styles.genderIcon}
+            />
           ) : (
-            <Ionicons name="female" size={28} color="black" style={styles.genderIcon} />
+            <Ionicons
+              name="female"
+              size={28}
+              color="black"
+              style={styles.genderIcon}
+            />
           )}
         </View>
         <Text style={styles.petAge}>
@@ -118,14 +129,15 @@ export default function Home({ navigation }) {
 
   return (
     <ImageBackground
-      source={require('../assets/wallpaper.jpg')}
+      source={require("../assets/wallpaper.jpg")}
       style={MyStyles.background}
     >
+      <StatusBar backgroundColor="transparent" style="dark" />
       <SafeAreaView style={MyStyles.container}>
         <View style={styles.header}>
           <Text style={styles.headerText}>My Pets</Text>
         </View>
-        
+
         {items.length > 0 ? (
           <FlatList
             data={items}
@@ -141,8 +153,8 @@ export default function Home({ navigation }) {
           <View style={styles.noPetsContainer}>
             <Text style={styles.title}>NO PETS</Text>
             <Text style={styles.subtitle}>
-              ADD A PET FOR THE FIRST TIME BY CLICKING ON THE BUTTON BELOW OR THE
-              + BUTTON.
+              ADD A PET FOR THE FIRST TIME BY CLICKING ON THE BUTTON BELOW OR
+              THE + BUTTON.
             </Text>
             <TouchableOpacity
               style={styles.button}
@@ -167,7 +179,7 @@ export default function Home({ navigation }) {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    resizeMode: 'cover',
+    resizeMode: "cover",
   },
   container: {
     flex: 1,
@@ -184,6 +196,7 @@ const styles = StyleSheet.create({
     fontFamily: "ComfortaaBold",
     textAlign: "center",
     color: "white",
+    includeFontPadding: false,
   },
   image: {
     width: 60,
@@ -232,7 +245,7 @@ const styles = StyleSheet.create({
     padding: 15,
     alignItems: "center",
     position: "relative",
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
@@ -252,7 +265,7 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90,
     borderRadius: 100,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
@@ -283,14 +296,14 @@ const styles = StyleSheet.create({
     borderColor: "black",
   },
   createPetButton: {
-    position: 'absolute',
+    position: "absolute",
     backgroundColor: "#71543F",
     borderRadius: 100,
     padding: 10,
     bottom: 10,
     right: 10,
     zIndex: 1,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 4, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,

@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground, } from "react-native";
 import { MyStyles } from "../styles/MyStyle";
+import { StatusBar } from "expo-status-bar";
 
 export default function FirstPage({ navigation }) {
   return (
@@ -8,6 +9,7 @@ export default function FirstPage({ navigation }) {
       source={require('../assets/wallpaper.jpg')}
       style={MyStyles.background}
     >
+      <StatusBar backgroundColor="transparent" style="dark" />
       <View style={styles.container}>
         <Image source={require('../assets/Logo_PawCare.png')} style={styles.logo} />
         <Text style={styles.title}>Paw Care</Text>

@@ -17,6 +17,7 @@ import DropdownTypeComponent from "../components/dropdowns/DropdownTypePet.js";
 import { MyStyles } from "../styles/MyStyle";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { showUpdatePetToast } from '../services/showToast';
+import { StatusBar } from "expo-status-bar";
 
 export default function UpdatePetData({ route, navigation }) {
   const { pet } = route.params;
@@ -101,6 +102,7 @@ export default function UpdatePetData({ route, navigation }) {
       source={require('../assets/wallpaper.jpg')}
       style={MyStyles.background}
     >
+      <StatusBar backgroundColor="transparent" style="dark" />
       <SafeAreaView style={styles.container}>
         <View style={MyStyles.arrowHeader}>
           <TouchableOpacity
@@ -274,6 +276,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontFamily: "ComfortaaBold",
     textAlign: "center",
+    includeFontPadding: false,
   },
   sectionTitle: {
     fontSize: 16,

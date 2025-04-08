@@ -13,6 +13,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import { deleteGalleryImage } from "../api/pet/gallery/deleteGallery";
 import ConfirmModal from "../components/modals/ConfirmModal";
+import { StatusBar } from "expo-status-bar";
 
 export default function GalleryPage({ navigation, route }) {
   const { petId, petName } = route.params;
@@ -210,6 +211,7 @@ export default function GalleryPage({ navigation, route }) {
       source={require("../assets/wallpaper.jpg")}
       style={styles.background}
     >
+      <StatusBar backgroundColor="transparent" style="dark" />
       <SafeAreaView style={MyStyles.container}>
         <View style={MyStyles.arrowHeader}>
           <TouchableOpacity

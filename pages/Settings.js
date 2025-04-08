@@ -18,6 +18,8 @@ import getUser from '../api/user/getUser';
 import { useFocusEffect } from '@react-navigation/native';
 import { showLogOutToast , showDelUserToast } from '../services/showToast';
 import ConfirmModal from "../components/modals/ConfirmModal";
+import { deleteUser } from '../api/user/deleteUser';
+import { StatusBar } from "expo-status-bar";
 
 function parseJWT(token) {
   const base64Url = token.split('.')[1];
@@ -76,7 +78,7 @@ export default function Settings({ navigation }) {
 
   const handleConfirmDelete = async () => {
     try {
-      await deleteUserProfile();
+      await deleteUser();
       await AsyncStorage.removeItem('userToken'); // Clear the token
       showDelUserToast('success');
       navigation.navigate('Auth', { screen: 'FirstPage' });
@@ -93,6 +95,7 @@ export default function Settings({ navigation }) {
       source={require('../assets/wallpaper.jpg')}
       style={MyStyles.background}
     >
+      <StatusBar backgroundColor="transparent" style="dark" />
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.headerText}>Settings</Text>
@@ -111,32 +114,34 @@ export default function Settings({ navigation }) {
           </View>
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Account</Text>
+            <View style={styles.divider} />
             <TouchableOpacity 
               style={styles.item}
               onPress={() => navigation.navigate('EditUserProfile')}
             >
-              <Ionicons name="person-outline" size={20} color="black" />
+              <Ionicons name="person-outline" size={25} color="black" />
               <Text style={styles.itemText}>Edit Profile</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.item}
               onPress={() => Linking.openSettings()}
             >
-              <Ionicons name="notifications-outline" size={20} color="black" />
+              <Ionicons name="notifications-outline" size={25} color="black" />
               <Text style={styles.itemText}>Notifications</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Actions</Text>
+            <View style={styles.divider} />
             <TouchableOpacity style={styles.item}
               onPress={handleLogout}
             >
-              <Ionicons name="log-out-outline" size={20} color="red" />
+              <Ionicons name="log-out-outline" size={25} color="red" />
               <Text style={[styles.itemText, { color: 'red' }]}>Log out</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.item}
               onPress={handleDeleteAccount}
             >
-              <Ionicons name="trash-outline" size={20} color="red" />
+              <Ionicons name="trash-outline" size={25} color="red" />
               <Text style={[styles.itemText, { color: 'red' }]}>Delete Account</Text>
             </TouchableOpacity>
           </View>
@@ -170,6 +175,7 @@ const styles = StyleSheet.create({
     fontFamily: "ComfortaaBold",
     textAlign: "center",
     color: "white",
+    includeFontPadding: false,
   },
   section: {
     backgroundColor: '#F5F5F5',
@@ -185,6 +191,11 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontFamily: "ComfortaaBold",
+    marginBottom: 5,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#bdbdbd',
     marginBottom: 10,
   },
   profile: {
@@ -211,7 +222,7 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 8,
   },
   itemText: {
     fontSize: 16,
