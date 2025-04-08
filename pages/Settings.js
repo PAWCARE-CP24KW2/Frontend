@@ -114,32 +114,34 @@ export default function Settings({ navigation }) {
           </View>
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Account</Text>
+            <View style={styles.divider} />
             <TouchableOpacity 
               style={styles.item}
               onPress={() => navigation.navigate('EditUserProfile')}
             >
-              <Ionicons name="person-outline" size={20} color="black" />
+              <Ionicons name="person-outline" size={25} color="black" />
               <Text style={styles.itemText}>Edit Profile</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.item}
               onPress={() => Linking.openSettings()}
             >
-              <Ionicons name="notifications-outline" size={20} color="black" />
+              <Ionicons name="notifications-outline" size={25} color="black" />
               <Text style={styles.itemText}>Notifications</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Actions</Text>
+            <View style={styles.divider} />
             <TouchableOpacity style={styles.item}
               onPress={handleLogout}
             >
-              <Ionicons name="log-out-outline" size={20} color="red" />
+              <Ionicons name="log-out-outline" size={25} color="red" />
               <Text style={[styles.itemText, { color: 'red' }]}>Log out</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.item}
               onPress={handleDeleteAccount}
             >
-              <Ionicons name="trash-outline" size={20} color="red" />
+              <Ionicons name="trash-outline" size={25} color="red" />
               <Text style={[styles.itemText, { color: 'red' }]}>Delete Account</Text>
             </TouchableOpacity>
           </View>
@@ -189,6 +191,11 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontFamily: "ComfortaaBold",
+    marginBottom: 5,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#bdbdbd',
     marginBottom: 10,
   },
   profile: {
@@ -215,7 +222,7 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 8,
   },
   itemText: {
     fontSize: 16,

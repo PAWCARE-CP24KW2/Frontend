@@ -5,11 +5,13 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  ImageBackground
+  ImageBackground,
+  Modal,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { MyStyles } from "../styles/MyStyle";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from "react-native-safe-area-context";
 import { getPetByPetId } from "../api/pet/getPetByPetId";
 import { deletePet } from "../api/pet/deletePet";
 import petplaceholder from "../assets/petplaceholder.png";
@@ -21,6 +23,11 @@ import { deletePetProfile } from "../api/pet/deletePetProfile";
 import RecordsModal from "./Records";
 import { showDelPetToast } from "../services/showToast";
 import { StatusBar } from "expo-status-bar";
+import { ScrollView } from "react-native";
+import AlertModal from "../components/modals/AlertModal";
+import { getQRcode } from "../api/pet/getQRcode";
+import * as FileSystem from "expo-file-system";
+import * as MediaLibrary from "expo-media-library";
 
 export default function ViewPet({ route, navigation }) {
   const FormData = global.FormData;
@@ -32,6 +39,10 @@ export default function ViewPet({ route, navigation }) {
   const [modalDeletePetVisible, setModalDeletePetVisible] = useState(false);
   const [image, setImage] = useState(pet.profile_path);
   const [recordsModalVisible, setRecordsModalVisible] = useState(false);
+  const [qrCodeModalVisible, setQRCodeModalVisible] = useState(false);
+  const [qrCodeImage, setQRCodeImage] = useState(null);
+  const [loadingQRCode, setLoadingQRCode] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
 
   useEffect(() => {
     const getPets = async () => {
@@ -120,7 +131,7 @@ export default function ViewPet({ route, navigation }) {
     try {
       setImage(image);
       setModalVisible(false);
-      
+
       const uriParts = image.split(".");
       const fileType = uriParts[uriParts.length - 1];
       const formData = new FormData();
@@ -130,10 +141,12 @@ export default function ViewPet({ route, navigation }) {
         type: `image/${fileType}`,
       });
       await updatePetProfile(pet.pet_id, formData);
-
     } catch (error) {
-      console.error('Error uploading profile image:', error.response ? error.response.data : error.message);
-      showUploadPhotoToast('error');
+      console.error(
+        "Error uploading profile image:",
+        error.response ? error.response.data : error.message
+      );
+      showUploadPhotoToast("error");
     }
   };
 
@@ -149,9 +162,49 @@ export default function ViewPet({ route, navigation }) {
     setRecordsModalVisible(false);
   };
 
+  const handleOpenQRCodeModal = async () => {
+    setQRCodeModalVisible(true);
+    setLoadingQRCode(true);
+    try {
+      const qrCodeData = await getQRcode(pet.pet_id);
+      setQRCodeImage(qrCodeData.qr_code_base64);
+    } catch (error) {
+      console.error("Failed to fetch QR code:", error);
+    } finally {
+      setLoadingQRCode(false);
+    }
+  };
+
+  const handleDownloadQRCode = async () => {
+    try {
+      const permission = await MediaLibrary.requestPermissionsAsync();
+      if (!permission.granted) {
+        alert("Permission to access media library is required!");
+        return;
+      }
+  
+      const fileUri = `${FileSystem.documentDirectory}QRCode.png`;
+      await FileSystem.writeAsStringAsync(fileUri, qrCodeImage.split(",")[1], {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+  
+      const asset = await MediaLibrary.createAssetAsync(fileUri);
+      await MediaLibrary.createAlbumAsync("Download", asset, false);
+      setAlertVisible(true);
+    } catch (error) {
+      console.error("Failed to download QR Code:", error);
+      alert("Failed to download QR Code.");
+    }
+  };
+
+  const handleCloseQRCodeModal = () => {
+    setQRCodeModalVisible(false);
+    setQRCodeImage(null);
+  };
+
   return (
     <ImageBackground
-      source={require('../assets/wallpaper.jpg')}
+      source={require("../assets/wallpaper.jpg")}
       style={MyStyles.background}
     >
       <StatusBar backgroundColor="transparent" style="dark" />
@@ -163,58 +216,95 @@ export default function ViewPet({ route, navigation }) {
           >
             <Ionicons name="arrow-back-outline" size={30} color="white" />
           </TouchableOpacity>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.headerText}>Pet's Details</Text>
+          </View>
+          <View style={{ width: 35 }} />
         </View>
 
-        <SafeAreaView style={styles.container}>
-
-          <Text style={styles.header}>{capitalizeFirstLetter(pet.pet_name) || "Pet Name"}</Text>
-
-          <View style={styles.profile}>
-            <View style={styles.imageContainer}>
-              <TouchableOpacity onPress={handleOpenModal}>
-                <Image
-                  style={[styles.image, image && styles.imageWithBorder]}
-                  source={image ? { uri: image } : petplaceholder}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.cameraIcon} onPress={handleOpenModal}>
-                <Ionicons name="camera-outline" size={27} color="black" />
-              </TouchableOpacity>
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+          <View style={styles.section}>
+            <View style={styles.profile}>
+              <View style={styles.imageContainer}>
+                <TouchableOpacity onPress={handleOpenModal}>
+                  <Image
+                    style={[styles.image, image && styles.imageWithBorder]}
+                    source={image ? { uri: image } : petplaceholder}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.cameraIcon}
+                  onPress={handleOpenModal}
+                >
+                  <Ionicons name="camera-outline" size={27} color="black" />
+                </TouchableOpacity>
+              </View>
             </View>
+            <Text style={styles.header}>
+              {capitalizeFirstLetter(pet.pet_name) || "Pet Name"}
+            </Text>
+
+            <Text style={styles.sectionTitle}>Actions</Text>
+            <View style={styles.divider} />
+            <TouchableOpacity style={styles.item} onPress={handleEdit}>
+              <Ionicons name="pencil-outline" size={25} color="black" />
+              <Text style={styles.itemText}>Edit Pet</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.item} onPress={confirmDelete}>
+              <Ionicons name="trash-outline" size={25} color="red" />
+              <Text style={[styles.itemText, { color: "red" }]}>
+                Delete Pet
+              </Text>
+            </TouchableOpacity>
           </View>
 
-          <View style={styles.actionButtons}>
-            <TouchableOpacity onPress={handleEdit}>
-              <Ionicons name="pencil-outline" size={30} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={confirmDelete}>
-              <Ionicons name="trash-outline" size={30} color="black" />
-            </TouchableOpacity>
-          </View>
-
-          {/* Action Grid */}
-          <View style={styles.gridContainer}>
-            <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate("Calendar")}>
-              <Ionicons name="calendar-outline" size={40} color="black" />
-              <Text style={styles.gridText}>Calendar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.gridItem} onPress={handleOpenRecordsModal}>
-              <Ionicons name="document-text-outline" size={40} color="black" />
-              <Text style={styles.gridText}>Records</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate("Gallery", { petId: pet.pet_id, petName: pet.pet_name })}>
-              <Ionicons name="images-outline" size={40} color="black" />
-              <Text style={styles.gridText}>Gallery</Text>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>More Options</Text>
+            <View style={styles.divider} />
+            <TouchableOpacity
+              style={styles.item}
+              onPress={() => navigation.navigate("Calendar")}
+            >
+              <Ionicons name="calendar-outline" size={25} color="black" />
+              <Text style={styles.itemText}>Calendar</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.gridItem}
-              onPress={() => navigation.navigate("Home", { screen: "Documents", params: {petId: pet.pet_id} })}
+              style={styles.item}
+              onPress={handleOpenRecordsModal}
             >
-              <Ionicons name="folder-outline" size={40} color="black" />
-              <Text style={styles.gridText}>Documents</Text>
+              <Ionicons name="document-text-outline" size={25} color="black" />
+              <Text style={styles.itemText}>Records</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.item}
+              onPress={() =>
+                navigation.navigate("Gallery", {
+                  petId: pet.pet_id,
+                  petName: pet.pet_name,
+                })
+              }
+            >
+              <Ionicons name="images-outline" size={25} color="black" />
+              <Text style={styles.itemText}>Gallery</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.item}
+              onPress={() =>
+                navigation.navigate("Home", {
+                  screen: "Documents",
+                  params: { petId: pet.pet_id },
+                })
+              }
+            >
+              <Ionicons name="folder-outline" size={25} color="black" />
+              <Text style={styles.itemText}>Documents</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.item} onPress={handleOpenQRCodeModal}>
+              <Ionicons name="qr-code-outline" size={25} color="black" />
+              <Text style={styles.itemText}>QR Code</Text>
             </TouchableOpacity>
           </View>
-        </SafeAreaView>
+        </ScrollView>
 
         <RecordsModal
           visible={recordsModalVisible}
@@ -245,15 +335,95 @@ export default function ViewPet({ route, navigation }) {
           onConfirm={handleDelete}
           message={`Are you sure you want to delete this pet?`}
         />
+
+        <AlertModal
+          visible={alertVisible}
+          onClose={() => setAlertVisible(false)}
+          onConfirm={() => setAlertVisible(false)}
+          message="QR Code downloaded successfully."
+          buttonText="OK"
+        />
+
+        <Modal
+          visible={qrCodeModalVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={handleCloseQRCodeModal}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              {loadingQRCode ? (
+                <ActivityIndicator size="large" color="#000" />
+              ) : qrCodeImage ? (
+                <>
+                  <Image source={{ uri: qrCodeImage }} style={styles.qrCodeImage} />
+                  <View style={styles.buttonRow}>
+                    <TouchableOpacity style={styles.downloadButton} onPress={handleDownloadQRCode}>
+                      <Text style={styles.downloadButtonText}>Download</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.closeButton} onPress={handleCloseQRCodeModal}>
+                      <Text style={styles.closeButtonText}>Close</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              ) : (
+                <Text style={styles.errorText}>Failed to load QR Code</Text>
+              )}
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 25,
+  scrollViewContent: {
+    padding: 20,
+  },
+  headerText: {
+    fontSize: 24,
+    fontFamily: "ComfortaaBold",
+    color: "white",
+    textAlign: "center",
+  },
+  section: {
+    backgroundColor: "#F5F5F5",
+    padding: 20,
+    borderRadius: 10,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  header: {
+    fontSize: 28,
+    fontFamily: "ComfortaaBold",
+    justifyContent: "space-around",
+    color: "black",
+    textAlign: "center",
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontFamily: "ComfortaaBold",
+    marginBottom: 5,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#bdbdbd',
+    marginBottom: 10,
+  },
+  item: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+  },
+  itemText: {
+    fontSize: 16,
+    fontFamily: "ComfortaaBold",
+    marginLeft: 10,
   },
   profile: {
     alignItems: "center",
@@ -283,48 +453,58 @@ const styles = StyleSheet.create({
     padding: 4,
     borderWidth: 2,
   },
-  infoContainer: {
+  modalContainer: {
     flex: 1,
-  },
-  header: {
-    fontSize: 28,
-    fontFamily: "ComfortaaBold",
-    justifyContent: "space-around",
-    color: "black",
-    textAlign: "center",
-    marginBottom: 10,
-  },
-  actionButtons: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignSelf: "center",
-    width: "60%",
-    marginTop: 15,
-    backgroundColor: "#B6917B",
-    padding: 10,
-    borderRadius: 10,
-  },
-  gridContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-evenly",
-    width: "100%",
-    paddingHorizontal: 20,
-    marginTop: 10,
-  },
-  gridItem: {
-    width: "40%",
-    aspectRatio: 1,
-    backgroundColor: "#B6917B",
-    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    margin: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
-  gridText: {
+  modalContent: {
+    backgroundColor: "#FFF",
+    padding: 20,
+    borderRadius: 15,
+    alignItems: "center",
+    width: "80%",
+  },
+  qrCodeImage: {
+    width: 200,
+    height: 200,
+    marginBottom: 10,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  closeButton: {
+    backgroundColor: "#493628",
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    margin: 5,
+    alignItems: "center",
+  },
+  closeButtonText: {
+    color: "#FFF",
     fontSize: 16,
     fontFamily: "ComfortaaBold",
-    marginTop: 10,
-    textAlign: "center",
+  },
+  downloadButton: {
+    backgroundColor: "#4CAF50",
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    margin: 5,
+    alignItems: "center",
+  },
+  downloadButtonText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontFamily: "ComfortaaBold",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 16,
+    marginBottom: 20,
   },
 });
