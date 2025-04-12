@@ -3,7 +3,6 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, Modal
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { MyStyles } from '../styles/MyStyle';
-import userholder from '../assets/userholder.png';
 import { likePost } from '../api/post/likePost';
 import { unlikePost } from '../api/post/unlikePost';
 import { getLikedPost } from '../api/post/getLikedPost';
