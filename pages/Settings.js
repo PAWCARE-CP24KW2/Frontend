@@ -122,6 +122,13 @@ export default function Settings({ navigation }) {
               <Ionicons name="person-outline" size={25} color="black" />
               <Text style={styles.itemText}>Edit Profile</Text>
             </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.item}
+              onPress={() => navigation.navigate('ExpenseBoard')}
+            >
+              <Ionicons name="stats-chart-outline" size={25} color="black" />
+              <Text style={styles.itemText}>Expense Dashboard</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.item}
               onPress={() => Linking.openSettings()}
             >

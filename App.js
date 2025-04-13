@@ -25,6 +25,10 @@ import EditUserProfile from './pages/EditUserProfile';
 import EditPost from './pages/EditPost';
 import PostDetails from './pages/PostDetails';
 import GalleryPage from './pages/GalleryPage';
+import ExpenseBoard from './pages/ExpenseBoard';
+import AddExpense from './pages/AddExpense';
+import ExpenseHistory from './pages/ExpenseHistory';
+import ViewExpenseDetail from './pages/ViewExpenseDetail';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -39,6 +43,7 @@ function HomeStack() {
       <Stack.Screen name="Documents" component={Documents} />
       <Stack.Screen name="EditUserProfile" component={EditUserProfile} />
       <Stack.Screen name="Gallery" component={GalleryPage} />
+      <Stack.Screen name="AddExpense" component={AddExpense} />
     </Stack.Navigator>
   );
 }
@@ -60,6 +65,19 @@ function AuthStack() {
       <Stack.Screen name="FirstPage" component={FirstPage} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="NewAccount" component={NewAccount} />
+    </Stack.Navigator>
+  );
+}
+
+function SettingsStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="SettingsMain" component={Settings} />
+      <Stack.Screen name="EditUserProfile" component={EditUserProfile} />
+      <Stack.Screen name="ExpenseBoard" component={ExpenseBoard} />
+      <Stack.Screen name="AddExpense" component={AddExpense} />
+      <Stack.Screen name="ExpenseHistory" component={ExpenseHistory} />
+      <Stack.Screen name="ViewExpenseDetail" component={ViewExpenseDetail} />
     </Stack.Navigator>
   );
 }
@@ -127,11 +145,6 @@ function MainTabs() {
   );
 }
 
-function SettingsStack() {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="SettingsMain" component={Settings} />
-      <Stack.Screen name="EditUserProfile" component={EditUserProfile} />
-    </Stack.Navigator>
-  );
-}
+
+
+
