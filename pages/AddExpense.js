@@ -22,13 +22,13 @@ export default function AddExpense({ navigation }) {
   const [expense_title, setTitle] = useState("");
   const [expense_detail, setDetail] = useState("");
   const [amount, setAmount] = useState("");
-  const [pets, setPets] = useState([]); // List of pets
-  const [selectedPets, setSelectedPets] = useState([]); // Selected pets
+  const [pets, setPets] = useState([]);
+  const [selectedPets, setSelectedPets] = useState([]);
 
   useEffect(() => {
     const fetchPets = async () => {
       try {
-        const petData = await getPetsByUserId(); // Fetch pets from API
+        const petData = await getPetsByUserId();
         setPets(petData);
       } catch (error) {
         console.error("Error fetching pets:", error);
@@ -58,21 +58,19 @@ export default function AddExpense({ navigation }) {
     }
   
     try {
-      // Calculate the divided amount for each pet
       const dividedAmount = parseFloat(amount) / selectedPets.length;
-  
-      // Loop through each selected pet and send the expense data
+
       for (const petId of selectedPets) {
         const expenseData = {
           expense_title: expense_title.trim(),
           expense_detail: expense_detail.trim(),
-          amount: dividedAmount, // Divided amount for each pet
-          pet_id: petId, // Send one pet_id at a time
+          amount: dividedAmount,
+          pet_id: petId,
         };
 
-        console.log("Expense data:", expenseData); // Log the expense data for debugging
+        console.log("Expense data:", expenseData);
         
-        await addExpense(expenseData); // Call API to add expense
+        await addExpense(expenseData);
       }
   
       showToast("success", "Expense added successfully");
@@ -100,6 +98,7 @@ export default function AddExpense({ navigation }) {
           <View style={{ flex: 1 }}>
             <Text style={styles.headerText}>Add Expense</Text>
           </View>
+          <View style={{ width: 35 }} />
         </View>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <Text style={styles.label}>Title</Text>
@@ -132,7 +131,7 @@ export default function AddExpense({ navigation }) {
           />
           <Text style={styles.label}>Select your Pet </Text>
           <View style={styles.petContainer}>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
               {pets.length > 0 ? (
                 pets.map((pet) => (
                   <TouchableOpacity
@@ -207,13 +206,10 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: "100%",
     backgroundColor: "#FFF",
-    borderRadius: 10,
     marginBottom: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
+    borderWidth: 1,
+    borderColor: "#B6917B",
+    borderRadius: 8,
   },
   input: {
     fontSize: 16,
@@ -227,7 +223,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
   },
   headerText: {
-    fontSize: 30,
+    fontSize: 26,
     fontFamily: "ComfortaaBold",
     textAlign: "center",
     color: "white",
@@ -271,6 +267,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     marginTop: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   buttonText: {
     fontSize: 16,
@@ -278,12 +279,12 @@ const styles = StyleSheet.create({
     color: "#FFF",
   },
   petContainer: {
-    maxHeight: 200, // Limit the height of the container
+    maxHeight: 200,
     borderWidth: 1,
     borderColor: "#B6917B",
     borderRadius: 8,
-    marginBottom: 15,
-    padding: 10,
+    paddingTop: 10,
+    paddingHorizontal: 10,
     backgroundColor: "#FFF",
   },
   petItem: {

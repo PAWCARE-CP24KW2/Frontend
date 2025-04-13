@@ -13,11 +13,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { MyStyles } from "../styles/MyStyle";
 import { StatusBar } from "expo-status-bar";
-import { useFocusEffect } from "@react-navigation/native"; // Import useFocusEffect
 import vet from "../assets/vet.png";
 import { getExpensesByPetId } from "../api/expense/getExpenseByPetId";
 import { getPetsByUserId } from "../api/pet/getPetFromId";
-import petplaceholder from "../assets/petplaceholder.png"; // Placeholder image for pets
+import petplaceholder from "../assets/petplaceholder.png";
 
 export default function ExpenseBoard({ navigation }) {
   const [expenses, setExpenses] = useState([]);
@@ -68,8 +67,8 @@ export default function ExpenseBoard({ navigation }) {
       />
       <View style={styles.recordTextContainer}>
         <Text style={styles.recordTitle}>{expense.expense_title}</Text>
-        <Text style={styles.recordDetails}>Amount: {expense.amount}</Text>
-        <Text style={styles.recordDetails}>Pet: {expense.pet_name}</Text>
+        <Text style={styles.recordDetails}>Amount: {expense.amount} baht</Text>
+        <Text style={styles.recordDetails}>Pet name: {expense.pet_name}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -91,6 +90,7 @@ export default function ExpenseBoard({ navigation }) {
           <View style={{ flex: 1 }}>
             <Text style={styles.headerText}>Expenses History</Text>
           </View>
+          <View style={{ width: 35 }} />
         </View>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           {loading ? (
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   headerText: {
-    fontSize: 30,
+    fontSize: 26,
     fontFamily: "ComfortaaBold",
     textAlign: "center",
     color: "white",
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   recordTitle: {
     fontSize: 18,
     fontFamily: "ComfortaaBold",
-    color: "#333",
+    color: "#000",
   },
   recordDetails: {
     fontSize: 14,
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   icon: {
     width: 60,
     height: 60,
-    borderRadius: 25,
+    borderRadius: 100,
   },
   addIcon: {
     width: 50,
