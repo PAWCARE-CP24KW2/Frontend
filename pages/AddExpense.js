@@ -67,8 +67,6 @@ export default function AddExpense({ navigation }) {
           amount: dividedAmount,
           pet_id: petId,
         };
-
-        console.log("Expense data:", expenseData);
         
         await addExpense(expenseData);
       }
