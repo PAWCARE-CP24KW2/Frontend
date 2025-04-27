@@ -165,7 +165,9 @@ export default function ExpenseBoard({ navigation }) {
       />
       <View style={styles.recordTextContainer}>
         <Text style={styles.recordTitle}>{expense.expense_title}</Text>
-        <Text style={styles.recordDetails}>Amount: {expense.amount} baht</Text>
+        <Text style={styles.recordDetails}>
+          Amount: {parseFloat(expense.amount).toLocaleString()} baht
+          </Text>
         <Text style={styles.recordDetails}>Pet name: {expense.pet_name}</Text>
       </View>
     </TouchableOpacity>
@@ -201,7 +203,7 @@ export default function ExpenseBoard({ navigation }) {
               absolute
             />
             <Text style={styles.totalText}>
-              Totals of Expense:{" "}
+              Total of Expenses:{" "}
               {chartData
                 .reduce((sum, item) => sum + item.population, 0)
                 .toFixed(2)}{" "}
@@ -217,7 +219,7 @@ export default function ExpenseBoard({ navigation }) {
           </View>
 
           <View style={styles.card}>
-            <Text style={styles.sectionTitle}>Filter by Months</Text>
+            <Text style={styles.sectionTitle}>Filter by Month</Text>
             <View style={styles.filterContainer}>
               <DropdownMonths
                 selectedMonth={selectedMonth}

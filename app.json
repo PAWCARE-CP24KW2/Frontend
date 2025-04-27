@@ -1,13 +1,14 @@
 {
   "expo": {
-    "name": "POCproject",
+    "name": "Pawcare",
+    "displayName": "Pawcare",
     "slug": "POCproject",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/PawcareIcon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -18,7 +19,7 @@
       "useCleartextTraffic": true,
       "userInterfaceStyle": "dark",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/PawcareIcon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.anonymous.POCproject"

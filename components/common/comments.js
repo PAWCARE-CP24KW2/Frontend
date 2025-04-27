@@ -351,12 +351,12 @@ const styles = StyleSheet.create({
   commentInput: {
     flex: 1,
     padding: 10,
-    paddingLeft: 15,
+    paddingLeft: 10,
     fontSize: 16,
     fontFamily: "ComfortaaBold",
     borderRadius: 20,
     backgroundColor: '#ebecee',
-    marginRight: 10,
+    marginRight: 5,
   },
   editButtonsContainer: {
     flexDirection: 'row',
